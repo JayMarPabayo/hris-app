@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input {
+    @apply w-full py-2 px-3 focus:outline-none focus:shadow-sm border border-gray-300 rounded-lg focus:border-slate-400 focus:outline-slate-400 focus:outline-1 duration-300;
+}
+
+select {
+    @apply block w-full bg-white border border-gray-200 text-slate-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white/20 focus:border-slate-300;
+}
+
+table {
+    @apply w-full border border-slate-600 border-opacity-10 shadow-sm;
+}
+
+th,
+td {
+    @apply pl-3 py-2 text-left;
+}
+
+.data-row {
+    @apply border-b border-neutral-300 text-slate-600 font-medium hover:bg-slate-100/40 whitespace-nowrap transition-all duration-300;
+}
+
+.btn {
+    @apply bg-white rounded-md px-4 py-2 text-center font-medium text-slate-500 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:scale-105 active:scale-95 duration-300;
+}
+
+.btn-add {
+    @apply bg-white rounded-md px-2 py-1 text-center font-medium text-slate-500 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 hover:scale-105 active:scale-95 duration-300;
+}
+
+.shift-table th {
+    @apply text-center;
+}
+
+.time-style {
+    @apply mx-auto w-fit py-1 px-3 rounded-md text-white font-medium;
+    font-size: 0.65rem;
+}
