@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 Route::middleware('guest')->group(function () {
 
-    Route::get('login', fn () => to_route('auth.login'))->name('login');
+    Route::get('login', fn() => to_route('auth.login'))->name('login');
 
     Route::get('auth/login', function () {
         return view('auth.login');
@@ -43,7 +43,7 @@ Route::middleware('guest')->group(function () {
 // -- USERS
 Route::middleware('auth')->group(function () {
 
-    Route::delete('logout', fn () => to_route('auth.logout'))->name('logout');
+    Route::delete('logout', fn() => to_route('auth.logout'))->name('logout');
 
     Route::put('auth/login/{user}', function (Illuminate\Http\Request $request, User $user) {
         $validatedData = $request->validate([
