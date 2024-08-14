@@ -105,16 +105,29 @@
                                         </div>
                                     </div>
                                 </div>
-                                <form id="auth-logout-form" action="{{ route('auth.logout') }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button
-                                    type="submit"
-                                    x-on:click="submitting=true; document.getElementById('auth-logout-form').submit();"
-                                    class="bg-none w-full text-slate-600 text-start px-3 py-1 rounded-sm hover:bg-slate-200 duration-300">
+                                <div x-data="{ open: false }">
+                                    <button @click.prevent="open = true" title="Delete" class="bg-none w-full text-slate-600 text-start px-3 py-1 rounded-sm hover:bg-slate-200 duration-300">
                                         Log out?
                                     </button>
-                                </form>
+                                    <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+                                        <div class="bg-white pt-4 px-4 pb-3 rounded-lg">
+                                            <p class="mb-4 text-slate-800">Are you sure you want to Log out?</p>
+                                            <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                                                <button type="button" @click="open = false" class="btn">No</button>
+                                                <form id="auth-logout-form" action="{{ route('auth.logout') }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button
+                                                    type="submit"
+                                                    x-on:click="submitting=true; document.getElementById('auth-logout-form').submit();"
+                                                    class="btn">
+                                                        Yes
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
