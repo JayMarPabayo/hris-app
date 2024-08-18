@@ -17,15 +17,13 @@ class ShiftFactory extends Factory
      */
     public function definition(): array
     {
-
         $faker = \Faker\Factory::create();
 
         $shiftNames = Shift::$shiftnames;
         $uniqueShiftName = $faker->unique()->randomElement($shiftNames);
 
-
-        $startTime = \Carbon\Carbon::createFromFormat('H:i:s', $this->faker->time())
-            ->minute($this->faker->randomElement([0, 30]))
+        $startTime = \Carbon\Carbon::createFromFormat('H:i:s', $faker->time())
+            ->minute($faker->randomElement([0, 30]))
             ->second(0)
             ->format('H:i:s');
 
@@ -34,10 +32,10 @@ class ShiftFactory extends Factory
             'start_time' => $startTime,
             'end_time' => \Carbon\Carbon::createFromFormat('H:i:s', $startTime)
                 ->addHours(8)
-                ->minute((\Carbon\Carbon::parse($startTime)->minute >= 30) ? 30 : 0)
+                ->minute(($faker->randomElement([0, 30]) >= 30) ? 30 : 0) // Changed this line for consistency
                 ->second(0)
                 ->format('H:i:s'),
-            'weekdays' => $this->faker->randomElements(Shift::$weekdays, $this->faker->numberBetween(3, 5)),
+            'weekdays' => $faker->randomElements(Shift::$weekdays, $faker->numberBetween(3, 5)),
         ];
     }
 }

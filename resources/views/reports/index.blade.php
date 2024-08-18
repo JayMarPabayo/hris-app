@@ -20,6 +20,11 @@
                    class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
                    Department & Designation
                 </a>
+                <a href="#" @click.prevent="openTab = 'schedules'" 
+                   :class="{'bg-slate-500 text-white': openTab === 'schedules', 'text-gray-700': openTab !== 'schedules'}"
+                   class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
+                   Schedules
+                </a>
             </nav>
         </div>
         
@@ -36,6 +41,10 @@
             <div x-cloak x-show="openTab === 'designation'" class="p-4 bg-white/30 shadow rounded h-full">
                 <!-- Department & Designation Table Container -->
                 @livewire('show-employees', ['withDesignation' => true])
+            </div>
+            <div x-cloak x-show="openTab === 'schedules'" class="p-4 bg-white/30 shadow rounded h-full">
+                <!-- Schedules Table Container -->
+                @livewire('show-shifts')
             </div>
         </div>
     </div>

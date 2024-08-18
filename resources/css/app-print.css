@@ -7,6 +7,10 @@ main {
 }
 
 @media print {
+    @page {
+        size: legal;
+    }
+
     body * {
         visibility: hidden;
     }

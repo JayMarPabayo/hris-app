@@ -29,7 +29,13 @@ class DatabaseSeeder extends Seeder
         Children::factory(20)->create();
         Eligibilities::factory(40)->create();
         WorkExperience::factory(30)->create();
-        Shift::factory(4)->create();
+
+
+        foreach (Shift::$shiftnames as $shiftname) {
+            Shift::factory()->create([
+                'name' => $shiftname
+            ]);
+        }
 
         // Create unique schedules for each employee
         $employees = Employee::all()->take(20);

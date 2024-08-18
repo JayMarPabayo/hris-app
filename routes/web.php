@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employee;
 use App\Models\Department;
+use App\Models\Shift;
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Validation\Rule;
 
@@ -112,6 +114,20 @@ Route::middleware('auth')->group(function () {
 
         return view('reports.export', ['data' => $data]);
     })->name('reports.export');
+
+    Route::get('export/{shift:slug}', function ($slug) {
+        $shift = null;
+        $schedules = [];
+
+        if ($slug === 'all-shifts') {
+            $schedules = Schedule::all();
+        } else {
+            $shift = Shift::where('slug', $slug)->firstOrFail();
+            $schedules = $shift->schedules;
+        }
+
+        return view('reports.schedules', ['shift' => $shift, 'schedules' => $schedules]);
+    })->name('reports.schedules');
 
     Route::get('administration', function () {
         return view('administration.index', ['departments' => Department::withCount('employees')->get()]);

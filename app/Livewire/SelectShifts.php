@@ -5,11 +5,16 @@ namespace App\Livewire;
 use App\Models\Shift;
 use Livewire\Component;
 
+use function Laravel\Prompts\select;
+
 class SelectShifts extends Component
 {
+
     public $selectedShift = 0;
     public $shift = null;
     public $shifts = [];
+
+
     public function render()
     {
         return view('livewire.select-shifts');

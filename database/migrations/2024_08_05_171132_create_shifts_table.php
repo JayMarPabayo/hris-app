@@ -17,6 +17,7 @@ return new class extends Migration
             $table->json('weekdays');
             $table->time('start_time');
             $table->time('end_time');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
