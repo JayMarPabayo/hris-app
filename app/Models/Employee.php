@@ -133,4 +133,14 @@ class Employee extends Model
     {
         return $query->where('designation', '=', $designation);
     }
+
+    public function scopeByMonth(Builder $query, string $month): Builder
+    {
+        [$year, $month] = explode('-', $month);
+
+        return $query->whereHas('evaluations', function ($query) use ($year, $month) {
+            $query->whereYear('date', $year)
+                ->whereMonth('date', $month);
+        })->withAvg('evaluations', 'rating');
+    }
 }

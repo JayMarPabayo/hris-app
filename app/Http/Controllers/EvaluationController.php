@@ -17,9 +17,14 @@ class EvaluationController extends Controller
         $searchKey = $request->input('search');
         $sortOrder = $request->input('sort', 'desc');
 
+        $date = $request->input('date') ?? now()->timezone('Asia/Manila')->format('Y-m-d');
+
         $evaluations = Evaluation::when($searchKey, function ($query, $searchKey) {
             return $query->search($searchKey);
-        })->orderBy('rating', $sortOrder)->paginate(10);
+        })
+            ->whereDate('date', $date)
+            ->orderBy('rating', $sortOrder)
+            ->paginate(10);
 
         return view('evaluations.index', ['evaluations' => $evaluations]);
     }
@@ -30,8 +35,13 @@ class EvaluationController extends Controller
     public function create(Request $request)
     {
         $searchKey = $request->input('search');
-        $employees = Employee::when($searchKey, fn ($query, $searchKey) => $query->search($searchKey))
-            ->whereDoesntHave('evaluations')
+
+        $date = $request->input('date') ?? now()->timezone('Asia/Manila')->format('Y-m-d');
+
+        $employees = Employee::when($searchKey, fn($query, $searchKey) => $query->search($searchKey))
+            ->whereDoesntHave('evaluations', function ($query) use ($date) {
+                $query->whereDate('date', $date);
+            })
             ->orderBy('lastname')
             ->paginate(10);
 
@@ -39,7 +49,6 @@ class EvaluationController extends Controller
             'employees' => $employees
         ]);
     }
-
     /**
      * Store a newly created resource in storage.
      */

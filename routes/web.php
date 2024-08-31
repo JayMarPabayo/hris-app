@@ -13,6 +13,7 @@ use App\Models\Department;
 use App\Models\Shift;
 use App\Models\Schedule;
 use App\Models\User;
+
 use Illuminate\Validation\Rule;
 
 // -- GUEST
@@ -78,6 +79,17 @@ Route::middleware('auth')->group(function () {
     Route::resource('shifts', ShiftController::class);
     Route::resource('schedules', ScheduleController::class);
     Route::resource('evaluations', EvaluationController::class);
+
+    Route::get('monthly-evaluations', function (Illuminate\Http\Request $request) {
+        $month = $request->input('month') ?? now()->timezone('Asia/Manila')->format('Y-m');
+
+        $employees = Employee::when($month, function ($query, $month) {
+            return $query->byMonth($month);
+        })->orderBy('lastname')->paginate(10)
+            ->appends(['month' => $month]);
+
+        return view('evaluations.monthly', ['employees' => $employees]);
+    })->name('evaluations.monthly.index');
 
     Route::get('reports', function () {
         return view('reports.index');

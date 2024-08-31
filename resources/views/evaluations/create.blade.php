@@ -1,8 +1,16 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Add Review</h3>
-
+    <div class="flex justify-between gap-3 items-center mb-3">
+        <h3 class="text-base font-semibold">Add Review</h3>
+        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+            <x-carbon-calendar-heat-map class="h-5" />
+            <a href="{{ route('evaluations.index') }}" class="border-none bg-none underline">
+                Daily records
+            </a>
+        </div>
+    </div>
     <form method="GET" action="{{ route('evaluations.create') }}" class="flex items-center gap-2 mb-4">
         <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
+        <input type="date" name="date" value="{{ request('date') ?? now()->timezone('Asia/Manila')->format('Y-m-d') }}" class="w-32 btn">
         <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
     </form>
     <table>
@@ -39,7 +47,7 @@
                             <div x-cloak x-show="openAddSchedule" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                 <div class="w-96 bg-white pt-4 px-6 pb-3 rounded-lg">
                                     <form
-                                    id="add-evaluation-form"
+                                    id="add-evaluation-form-{{ $employee->id }}"
                                     action="{{ route('evaluations.store') }}"
                                     method="POST"
                                     >
@@ -60,7 +68,7 @@
                                         </div>
 
                                         <input type="hidden" name="employee_id" value="{{ $employee->id }}">
-
+                                        <input type="hidden" name="date" value="{{ request('date') ?? now()->timezone('Asia/Manila')->format('Y-m-d') }}" class="w-32 btn">
                                         <label for="rating">Rating</label>
                                         <select name="rating" class="mb-5">
                                             @for ($i = 1; $i <= 20; $i++)
@@ -78,7 +86,7 @@
                                             <button
                                             type="submit"
                                             class="btn"
-                                            x-on:click="submitting=true; document.getElementById('add-evaluation-form').submit();"
+                                            x-on:click="submitting=true; document.getElementById('add-evaluation-form-{{ $employee->id }}').submit();"
                                             >
                                                 Submit
                                             </button>
@@ -106,7 +114,4 @@
             {{ $employees->links()}}
         </div>
     @endif
-    <div class="flex justify-end gap-3 items-center pt-3">
-        <a href="{{ route('evaluations.index') }}" class="btn"><span class="mx-4">Go back</span></a>
-    </div>
 </x-layout>

@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
                 'employee_id' => $employee->id,
             ]);
 
-            Evaluation::factory()->create([
+            Evaluation::factory(20)->create([
                 'employee_id' => $employee->id,
             ]);
         }

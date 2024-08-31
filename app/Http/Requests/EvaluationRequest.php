@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class EvaluationRequest extends FormRequest
 {
@@ -22,14 +21,10 @@ class EvaluationRequest extends FormRequest
      */
     public function rules(): array
     {
-        $evaluationId = $this->evaluation ? $this->evaluation->id : null;
 
         return [
-            'employee_id' => [
-                'required',
-                'exists:employees,id',
-                Rule::unique('evaluations')->ignore($evaluationId),
-            ],
+            'employee_id' => 'required',
+            'date' => 'nullable|date',
             'rating' => 'required|numeric|min:1|max:10',
             'review' => 'required'
         ];

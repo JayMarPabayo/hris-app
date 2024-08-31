@@ -15,6 +15,7 @@ class Evaluation extends Model
     protected $fillable = [
         'rating',
         'review',
+        'date',
         'employee_id',
     ];
 

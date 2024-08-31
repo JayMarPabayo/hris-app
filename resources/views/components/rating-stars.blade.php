@@ -6,7 +6,7 @@
 
 <div class="flex items-center">
     
-    <span class="w-10 shadow-sm text-base text-center py-1 px-2 bg-slate-700/50 rounded-md text-slate-100 me-2">{{ $rating }}</span>
+    <span class="min-w-10 shadow-sm text-base text-center py-1 px-2 bg-slate-700/50 rounded-md text-slate-100 me-2">{{ $rating }}</span>
 
     @for ($i = 0; $i < $fullStars; $i++)
         <svg class="w-6 h-6 text-amber-400/80 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

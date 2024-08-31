@@ -1,9 +1,19 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Evaluations</h3>
+    <div class="flex gap-x-2 justify-between items-center mb-5">
+        <h3 class="text-base font-semibold">Evaluations</h3>
+        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+            <x-carbon-calendar class="h-5" />
+        <a href="{{ route('evaluations.monthly.index') }}" class="border-none bg-none underline">
+            Monthly Results
+        </a>
+        </div>
+        
+    </div>
 
     <form method="GET" action="{{ route('evaluations.index') }}" class="flex items-center gap-2 mb-4">
         <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
         <input type="hidden" name="sort" value="{{ request('sort') === 'desc' ? 'asc' : 'desc' }}">
+        <input type="date" name="date" value="{{ request('date') ?? now()->timezone('Asia/Manila')->format('Y-m-d') }}" class="w-32 btn">
         <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
         <a href="{{ route('evaluations.create') }}" class="btn w-32">Add New ✚</a>
     </form>
@@ -17,6 +27,7 @@
                         <span>Rating</span>
                         <form action="{{ route('evaluations.index') }}" method="GET">
                             <input type="hidden" name="search" value="{{ request('search') }}">
+                            <input type="hidden" name="date" value="{{ request('date') }}">
                             <input type="hidden" name="sort" value="{{ request('sort') === 'desc' ? 'asc' : 'desc' }}">
                             <button type="submit" class="flex flex-col me-2" style="font-size: 0.6rem;">
                                 <span class="cursor-pointer {{ request('sort') === 'desc' ? 'text-cyan-600' : '' }}">▲</span>
