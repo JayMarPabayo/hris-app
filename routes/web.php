@@ -82,13 +82,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('monthly-evaluations', function (Illuminate\Http\Request $request) {
         $month = $request->input('month') ?? now()->timezone('Asia/Manila')->format('Y-m');
+        $department = $request->input('department') ?? '';
+        $sort = $request->input('sort') ?? 'lastname';
 
         $employees = Employee::when($month, function ($query, $month) {
             return $query->byMonth($month);
-        })->orderBy('lastname')->paginate(10)
-            ->appends(['month' => $month]);
+        })->when($department, function ($query, $department) {
+            return $query->where('department_id', $department);
+        })
+            ->orderBy($sort, $sort === 'evaluations_avg_rating' ? 'desc' : 'asc')->paginate(10)
+            ->appends(['month' => $month, 'department' => $department, 'sort' => $sort]);
 
-        return view('evaluations.monthly', ['employees' => $employees]);
+        $departments = Department::all();
+
+        return view('evaluations.monthly', ['employees' => $employees, 'departments' => $departments]);
     })->name('evaluations.monthly.index');
 
     Route::get('reports', function () {

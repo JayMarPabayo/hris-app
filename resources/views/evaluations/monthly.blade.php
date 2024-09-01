@@ -12,6 +12,19 @@
 
     <form method="GET" action="{{ route('evaluations.monthly.index') }}" class="flex items-center gap-2 mb-4">
         <input type="month" name="month" value="{{ request('month') ?? now()->timezone('Asia/Manila')->format('Y-m') }}" class="w-40">
+        <select class="w-52" name="department">
+            @foreach ($departments as $department)
+                <option value="{{ $department->id }}" @selected(request('department') === strval($department->id))>
+                    {{ $department->name }}
+                </option>
+            @endforeach
+        </select>
+        <x-carbon-sort-ascending class="h-5" />
+        <select class="w-32" name="sort">
+            <option value="lastname" @selected(request('sort') === "lastname")>Name</option>
+            <option value="evaluations_avg_rating" @selected(request('sort') === "evaluations_avg_rating")>Ranking</option>
+            <option value="id" @selected(request('sort') === "id")>ID</option>
+        </select>
         <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
     </form>
 
