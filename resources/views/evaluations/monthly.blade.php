@@ -7,24 +7,31 @@
                 Daily records
             </a>
         </div>
-        
     </div>
 
-    <form method="GET" action="{{ route('evaluations.monthly.index') }}" class="flex items-center gap-2 mb-4">
+    <form method="GET"
+    action="{{ route('evaluations.monthly.index') }}"
+    class="flex items-center gap-2 mb-4"
+    x-data="{ isAscending: {{ request('order') === 'asc' ? 'true' : 'false' }} }">
         <input type="month" name="month" value="{{ request('month') ?? now()->timezone('Asia/Manila')->format('Y-m') }}" class="w-40">
         <select class="w-52" name="department">
+            <option value="" @selected(request('department') === "")>All</option>
             @foreach ($departments as $department)
                 <option value="{{ $department->id }}" @selected(request('department') === strval($department->id))>
                     {{ $department->name }}
                 </option>
             @endforeach
         </select>
-        <x-carbon-sort-ascending class="h-5" />
         <select class="w-32" name="sort">
             <option value="lastname" @selected(request('sort') === "lastname")>Name</option>
             <option value="evaluations_avg_rating" @selected(request('sort') === "evaluations_avg_rating")>Ranking</option>
             <option value="id" @selected(request('sort') === "id")>ID</option>
         </select>
+        <input type="hidden" name="order" x-bind:value="isAscending ? 'asc' : 'desc'">
+        <button type="button" @click="isAscending = !isAscending">
+            <x-carbon-sort-ascending title="Ascending" class="h-5 text-teal-600" x-cloak x-show="isAscending" />
+            <x-carbon-sort-descending title="Descending" class="h-5 text-lime-700" x-cloak x-show="!isAscending" />
+        </button>
         <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
     </form>
 

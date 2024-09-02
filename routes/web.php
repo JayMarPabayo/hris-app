@@ -84,13 +84,14 @@ Route::middleware('auth')->group(function () {
         $month = $request->input('month') ?? now()->timezone('Asia/Manila')->format('Y-m');
         $department = $request->input('department') ?? '';
         $sort = $request->input('sort') ?? 'lastname';
+        $order = $request->input('order') ?? 'asc';
 
         $employees = Employee::when($month, function ($query, $month) {
             return $query->byMonth($month);
         })->when($department, function ($query, $department) {
             return $query->where('department_id', $department);
         })
-            ->orderBy($sort, $sort === 'evaluations_avg_rating' ? 'desc' : 'asc')->paginate(10)
+            ->orderBy($sort, $order)->paginate(10)
             ->appends(['month' => $month, 'department' => $department, 'sort' => $sort]);
 
         $departments = Department::all();

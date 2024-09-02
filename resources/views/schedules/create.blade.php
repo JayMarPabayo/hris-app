@@ -1,6 +1,13 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Add Schedules</h3>
-
+    <div class="flex gap-x-2 justify-between items-center mb-5">
+        <h3 class="text-base font-semibold">Add Schedules</h3>
+        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+            <x-carbon-event-schedule class="h-5" />
+            <a href="{{ route('schedules.index') }}" class="border-none bg-none underline">
+                Schedules
+            </a>
+        </div>
+    </div>
     <form method="GET" action="{{ route('schedules.create') }}" class="flex items-center gap-2 mb-4">
         <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
         <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
@@ -39,7 +46,7 @@
                             <div x-cloak x-show="openAddSchedule" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                 <div class="w-96 bg-white pt-4 px-6 pb-3 rounded-lg">
                                     <form
-                                    id="add-schedule-form"
+                                    id="add-schedule-form-{{ $index }}"
                                     action="{{ route('schedules.store') }}"
                                     method="POST"
                                     >
@@ -70,7 +77,7 @@
                                             <button
                                             type="submit"
                                             class="btn"
-                                            x-on:click="submitting=true; document.getElementById('add-schedule-form').submit();"
+                                            x-on:click="submitting=true; document.getElementById('add-schedule-form-{{ $index }}').submit();"
                                             >
                                                 Submit
                                             </button>
@@ -98,7 +105,4 @@
             {{ $employees->links()}}
         </div>
     @endif
-    <div class="flex justify-end gap-3 items-center pt-3">
-        <a href="{{ route('schedules.index') }}" class="btn"><span class="mx-4">Go back</span></a>
-    </div>
 </x-layout>
