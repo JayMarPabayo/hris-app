@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class EmployeeController extends Controller
 {
@@ -15,7 +18,7 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $searchKey = $request->input('search');
-        $employees = Employee::when($searchKey, fn ($query, $searchKey) => $query->search($searchKey))
+        $employees = Employee::when($searchKey, fn($query, $searchKey) => $query->search($searchKey))
             ->orderBy('lastname')
             ->paginate(15);
         return view('employee.index', ['employees' => $employees]);
@@ -70,6 +73,15 @@ class EmployeeController extends Controller
             }
         }
 
+        $username = strtolower(preg_replace('/\s+/', '', "$employee->firstname $employee->lastname"));
+        User::create([
+            'name' => "{$employee->firstname} {$employee->lastname}",
+            'username' => $username,
+            'role' => 'Employee',
+            'password' => Hash::make('password'),
+            'employee_id' => $employee->id,
+            'remember_token' => Str::random(10),
+        ]);
 
         return redirect()->route('employees.show', $employee)->with('success', 'Employee successfully created.');
     }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Employee extends Model
 {
@@ -76,6 +77,10 @@ class Employee extends Model
     public static array $suffixes = ['None', 'Sr.', 'Jr.', 'III', 'IV', 'V'];
     public static array $citizenships = ['Filipino', 'Japanese', 'American', 'Chinese', 'Korean'];
 
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class);
+    }
 
     public function department(): BelongsTo
     {

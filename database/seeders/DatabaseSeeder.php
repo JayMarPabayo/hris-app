@@ -14,6 +14,7 @@ use App\Models\Shift;
 use App\Models\WorkExperience;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,11 +25,11 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create(['name' => 'Kentjohn A. Branzuela', 'username' => 'admin', 'role' => 'Administrator']);
         Department::factory(6)->create();
-        Employee::factory(30)->create();
-        Education::factory(20)->create();
-        Children::factory(20)->create();
-        Eligibilities::factory(40)->create();
-        WorkExperience::factory(30)->create();
+        Employee::factory(10)->create();
+        Education::factory(12)->create();
+        Children::factory(10)->create();
+        Eligibilities::factory(10)->create();
+        WorkExperience::factory(10)->create();
 
 
         foreach (Shift::$shiftnames as $shiftname) {
@@ -38,9 +39,19 @@ class DatabaseSeeder extends Seeder
         }
 
         // Create unique schedules for each employee
-        $employees = Employee::all()->take(20);
+        $employees = Employee::take(10)->get();
 
         foreach ($employees as $employee) {
+
+            User::factory()->create([
+                'name' => "$employee->firstname $employee->lastname",
+                'username' => strtolower("$employee->firstname$employee->lastname"),
+                'role' => 'Employee',
+                'password' => Hash::make('password'),
+                'employee_id' => $employee->id,
+            ]);
+
+
             Schedule::factory()->create([
                 'employee_id' => $employee->id,
             ]);
