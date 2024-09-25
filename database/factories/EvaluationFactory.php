@@ -19,9 +19,15 @@ class EvaluationFactory extends Factory
     {
 
         $employeeId = Employee::inRandomOrder()->first()->id;
-        $lastMonth = now()->timezone('Asia/Manila')->subMonth()->month;
-        $randomDay = $this->faker->numberBetween(1, now()->timezone('Asia/Manila')->subMonth()->endOfMonth()->day);
 
+        // Get the current week number
+        $currentWeek = date('W');
+
+        // Calculate the last week number
+        $lastWeek = $currentWeek - 1;
+
+        // Format the week as "2024-W37"
+        $formattedWeek = sprintf("%d-W%02d", date('Y'), $lastWeek);
         return [
             'rating' => $this->faker->randomElement([
                 5.00,
@@ -36,7 +42,7 @@ class EvaluationFactory extends Factory
                 9.50,
                 10.00
             ]),
-            'date' => now()->month($lastMonth)->day($randomDay),
+            'week' => $formattedWeek,
             'review' => $this->faker->paragraphs(3, true),
             'employee_id' => $employeeId,
         ];

@@ -4,7 +4,7 @@
         <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-calendar-heat-map class="h-5" />
             <a href="{{ route('evaluations.index') }}" class="border-none bg-none underline">
-                Daily records
+                Weekly records
             </a>
         </div>
     </div>

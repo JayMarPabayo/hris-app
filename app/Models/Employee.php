@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Carbon\Carbon;
 
 class Employee extends Model
 {
@@ -141,11 +142,22 @@ class Employee extends Model
 
     public function scopeByMonth(Builder $query, string $month): Builder
     {
+        // Extract the year and month
         [$year, $month] = explode('-', $month);
 
-        return $query->whereHas('evaluations', function ($query) use ($year, $month) {
-            $query->whereYear('date', $year)
-                ->whereMonth('date', $month);
+        // Calculate the first day of the given month
+        $firstDayOfMonth = Carbon::createFromDate($year, $month, 1);
+
+
+        $lastDayOfMonth = $firstDayOfMonth->copy()->endOfMonth();
+
+        // Get the ISO week format for the start and end of the month
+        $startWeek = $firstDayOfMonth->isoFormat('YYYY-[W]WW');
+        $endWeek = $lastDayOfMonth->isoFormat('YYYY-[W]WW');
+
+        // Filter the evaluations within the start and end weeks
+        return $query->whereHas('evaluations', function ($query) use ($startWeek, $endWeek) {
+            $query->whereBetween('week', [$startWeek, $endWeek]);
         })->withAvg('evaluations', 'rating');
     }
 }

@@ -17,18 +17,29 @@ class EvaluationController extends Controller
         $searchKey = $request->input('search');
         $sortOrder = $request->input('sort', 'desc');
 
-        $date = $request->input('date') ?? now()->timezone('Asia/Manila')->format('Y-m-d');
+        $currentWeek = date('W');
+
+        $formattedWeek = sprintf("%d-W%02d", date('Y'), $currentWeek);
+
+        $week = $request->input('week');
+
+        if ($week) {
+            $formattedWeek = $week;
+        }
+
 
         $evaluations = Evaluation::when($searchKey, function ($query, $searchKey) {
             return $query->search($searchKey);
         })
-            ->whereDate('date', $date)
+            ->where('week', $formattedWeek)
             ->orderBy('rating', $sortOrder)
             ->paginate(10);
 
-        return view('evaluations.index', ['evaluations' => $evaluations]);
+        return view('evaluations.index', [
+            'evaluations' => $evaluations,
+            'currentWeek' => $formattedWeek
+        ]);
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -36,17 +47,22 @@ class EvaluationController extends Controller
     {
         $searchKey = $request->input('search');
 
-        $date = $request->input('date') ?? now()->timezone('Asia/Manila')->format('Y-m-d');
+        $currentWeek = date('W');
+
+        $formattedWeek = sprintf("%d-W%02d", date('Y'), $currentWeek);
+
+        $week = $request->input('week') ?? $formattedWeek;
 
         $employees = Employee::when($searchKey, fn($query, $searchKey) => $query->search($searchKey))
-            ->whereDoesntHave('evaluations', function ($query) use ($date) {
-                $query->whereDate('date', $date);
+            ->whereDoesntHave('evaluations', function ($query) use ($week) {
+                $query->where('week', $week);
             })
             ->orderBy('lastname')
             ->paginate(10);
 
         return view('evaluations.create', [
-            'employees' => $employees
+            'employees' => $employees,
+            'week' => $week
         ]);
     }
     /**

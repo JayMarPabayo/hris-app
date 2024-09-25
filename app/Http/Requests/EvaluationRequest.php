@@ -24,7 +24,7 @@ class EvaluationRequest extends FormRequest
 
         return [
             'employee_id' => 'required',
-            'date' => 'nullable|date',
+            'week' => 'nullable|string',
             'rating' => 'required|numeric|min:1|max:10',
             'review' => 'required'
         ];
