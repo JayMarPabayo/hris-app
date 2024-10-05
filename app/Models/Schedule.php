@@ -14,7 +14,13 @@ class Schedule extends Model
     protected $fillable = [
         'shift_id',
         'employee_id',
+        'dayoffs'
     ];
+
+    protected $casts = [
+        'dayoffs' => 'array',
+    ];
+
 
     public function employee(): BelongsTo
     {

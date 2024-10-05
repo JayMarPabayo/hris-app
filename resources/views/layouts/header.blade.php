@@ -53,13 +53,14 @@
                     <div class="relative">
                         <button type="button" @click.prevent="openMenu = !openMenu" class="bg-none hover:scale-105 active:scale-95">•••</button>
                         <div x-cloak x-show="openMenu" @click.outside="openMenu = false" class="absolute top-[100%] right-0 bg-slate-100 w-40 rounded-sm">
-                            <div class="flex flex-col gap-y-1 font-medium">
+                            <div class="flex flex-col gap-y-1 font-medium ">
                                 <div x-data="{ openAccount: false }">
                                     <button @click.prevent="openAccount = true" class="bg-none w-full text-slate-600 text-start px-3 py-1 rounded-sm hover:bg-slate-200 duration-300">
                                         Account
                                     </button>
                                     <div x-cloak x-show="openAccount" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                        <div class="w-80 bg-white pt-4 px-6 pb-3 rounded-lg text-slate-600">
+                                        <div class="w-2/5 bg-slate-100z`                                       
+                                         pt-4 px-6 pb-3 rounded-lg text-slate-600">
                                             <form
                                             id="update-user-form"
                                             action="{{ route('auth.update', auth()->user()->id) }}"
@@ -67,39 +68,58 @@
                                             >
                                                 @csrf
                                                 @method('PUT')
+                                
+                                                <h3 class="text-base font-semibold mb-3">Account</h3>
 
-                                                <h5 class="text-sm mb-4">Account</h5>
-
+                                                <div class="h-1 border-t border-slate-600/50 mb-3"></div>
+                                
                                                 <label for="name">Full Name</label>
                                                 <input type="text" name="name"
                                                 placeholder="Name"
                                                 value="{{ auth()->user()->name }}"
                                                 class="mb-4"/>
-
+                                
                                                 <label for="username">Username</label>
                                                 <input type="text" name="username"
                                                 placeholder="Username"
                                                 value="{{ auth()->user()->username }}"
                                                 class="mb-4"/>
-
+                                
+                                                <!-- Add Current Password -->
+                                                <label for="current_password">Current Password</label>
+                                                <input type="password" name="current_password"
+                                                placeholder="Current Password"
+                                                autocomplete="off"
+                                                class="mb-4"
+                                                value="{{ old('current_password') }}"/>
+                                
+                                                <!-- New Password -->
                                                 <label for="password">New Password</label>
                                                 <input type="password" name="password"
                                                 placeholder="New Password"
                                                 autocomplete="off"
-                                                value=""
-                                                class="mb-4"/>
-
+                                                class="mb-4"
+                                                value="{{ old('password') }}"/>
+                                
+                                                <!-- Confirm New Password -->
+                                                <label for="password_confirmation">Re-enter New Password</label>
+                                                <input type="password" name="password_confirmation"
+                                                placeholder="Re-enter New Password"
+                                                autocomplete="off"
+                                                class="mb-4"
+                                                value="{{ old('password_confirmation') }}"/>
+                                
                                                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                                    <button type="button" @click="openAccount = false" class="btn">
+                                                    <button type="button" @click="openAccount = false" class="btn w-40">
                                                         Cancel
                                                     </button>
                                                     <button
                                                     type="submit"
-                                                    class="btn"
+                                                    class="btn w-40"
                                                     x-on:click="submitting=true; document.getElementById('update-user-form').submit();"
                                                     >
                                                         Update
-                                                    </button>
+                                                    </button>                                                                           
                                                 </div>
                                             </form>
                                         </div>

@@ -42,7 +42,7 @@ class ScheduleController extends Controller
     {
 
         $searchKey = $request->input('search');
-        $employees = Employee::when($searchKey, fn ($query, $searchKey) => $query->search($searchKey))
+        $employees = Employee::when($searchKey, fn($query, $searchKey) => $query->search($searchKey))
             ->whereDoesntHave('schedules')
             ->orderBy('lastname')
             ->paginate(10);
@@ -69,6 +69,7 @@ class ScheduleController extends Controller
      */
     public function update(ScheduleRequest $request, Schedule $schedule)
     {
+
         $validatedData = $request->validated();
         $schedule->update($validatedData);
 

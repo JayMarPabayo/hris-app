@@ -31,6 +31,7 @@ class ScheduleRequest extends FormRequest
                 Rule::unique('schedules')->ignore($scheduleId),
             ],
             'shift_id' => 'required|exists:shifts,id',
+            'dayoffs' => 'nullable|array',
         ];
     }
 }

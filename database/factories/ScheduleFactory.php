@@ -25,6 +25,7 @@ class ScheduleFactory extends Factory
         return [
             'employee_id' => $employeeId,
             'shift_id' => $shiftId,
+            'dayoffs' => [],
         ];
     }
 }

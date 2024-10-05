@@ -88,7 +88,7 @@
                     </td>
                     @foreach ($weekdays as $day)
                         <td class="text-center">
-                            @if (in_array($day, $schedule->shift->weekdays))
+                            @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs))
                                 <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
                                     {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
                                 </span>
@@ -129,6 +129,20 @@
                                         
                                         @livewire('select-shifts', ['shiftId' => $schedule->shift_id])
         
+                                        {{-- Add Dayoffs field --}}
+                                        <div class="mt-4">
+                                            <label for="dayoffs">Day Offs</label>
+                                            <select name="dayoffs[]" id="dayoffs" class="form-multiselect block w-full" multiple>
+                                                <option value="Monday" {{ in_array('Monday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Monday</option>
+                                                <option value="Tuesday" {{ in_array('Tuesday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Tuesday</option>
+                                                <option value="Wednesday" {{ in_array('Wednesday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Wednesday</option>
+                                                <option value="Thursday" {{ in_array('Thursday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Thursday</option>
+                                                <option value="Friday" {{ in_array('Friday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Friday</option>
+                                                <option value="Saturday" {{ in_array('Saturday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Saturday</option>
+                                                <option value="Sunday" {{ in_array('Sunday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Sunday</option>
+                                            </select>
+                                        </div>
+
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                                             <button type="button" @click="openEdit = false" class="btn">
                                                 Cancel
