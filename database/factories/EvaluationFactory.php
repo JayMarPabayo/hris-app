@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Employee;
+use App\Models\Evaluation;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Evaluation>
@@ -20,14 +22,7 @@ class EvaluationFactory extends Factory
 
         $employeeId = Employee::inRandomOrder()->first()->id;
 
-        // Get the current week number
-        $currentWeek = date('W');
 
-        // Calculate the last week number
-        $lastWeek = $currentWeek - 1;
-
-        // Format the week as "2024-W37"
-        $formattedWeek = sprintf("%d-W%02d", date('Y'), $lastWeek);
         return [
             'rating' => $this->faker->randomElement([
                 5.00,
@@ -42,7 +37,7 @@ class EvaluationFactory extends Factory
                 9.50,
                 10.00
             ]),
-            'week' => $formattedWeek,
+            'week' => Carbon::now()->startOfWeek(),
             'review' => $this->faker->paragraphs(3, true),
             'employee_id' => $employeeId,
         ];

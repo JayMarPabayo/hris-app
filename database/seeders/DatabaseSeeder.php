@@ -16,6 +16,8 @@ use App\Models\WorkExperience;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+use Carbon\Carbon;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -56,9 +58,28 @@ class DatabaseSeeder extends Seeder
                 'employee_id' => $employee->id,
             ]);
 
-            Evaluation::factory(20)->create([
-                'employee_id' => $employee->id,
-            ]);
+            // Create 10 evaluations for each employee
+            for ($i = 0; $i < 2; $i++) {
+                // Find the next available week
+                $currentWeek = Carbon::now()->addWeeks($i); // Start from the current week and add weeks
+                $formattedWeek = $currentWeek->format('Y-\WW');
+
+                // Check for existing evaluation for this employee in the same week
+                $existingEvaluation = Evaluation::where('employee_id', $employee->id)
+                    ->where('week', $formattedWeek)
+                    ->exists();
+
+                // If evaluation exists for the current week, continue to the next week
+                if ($existingEvaluation) {
+                    continue;
+                }
+
+                // Create the evaluation
+                Evaluation::factory()->create([
+                    'employee_id' => $employee->id,
+                    'week' => $formattedWeek
+                ]);
+            }
         }
     }
 }

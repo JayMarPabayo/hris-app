@@ -12,8 +12,9 @@
     </head>
     <body class="h-screen text-slate-700 text-xs" x-data="{ submitting: false }">
             <div class="h-fit min-h-screen pb-4 bg-gradient-to-r from-slate-500/80 from-65%% to-slate-300">
-          
+            
             @include('layouts.header')
+            
             <div x-data="{ flash:true }" class="mt-5">
                 @if (session()->has('success'))
                     <div x-show="flash" role="alert" class="relative mx-auto max-w-7xl bg-green-400/70 text-green-800 border border-green-800/30 tracking-wide text-sm py-2 px-5 rounded-md shadow-md mb-4">

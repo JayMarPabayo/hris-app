@@ -3,9 +3,9 @@
         <h3 class="text-base font-semibold">Evaluations</h3>
         <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-calendar class="h-5" />
-        <a href="{{ route('evaluations.monthly.index') }}" class="border-none bg-none underline">
-            Monthly Results
-        </a>
+            <a href="{{ route('evaluations.monthly.index') }}" class="border-none bg-none underline">
+                Monthly Results
+            </a>
         </div>
         
     </div>

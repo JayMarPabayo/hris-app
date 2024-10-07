@@ -19,6 +19,14 @@ td {
     @apply pl-3 py-2 text-left;
 }
 
+.option-label {
+    @apply flex justify-start gap-x-3 items-center py-1 px-3 bg-emerald-500/70 hover:bg-emerald-500/30 duration-300 rounded-md shadow-sm cursor-pointer;
+}
+
+.option-label input {
+    @apply cursor-pointer;
+}
+
 .data-row {
     @apply border-b border-neutral-300 text-slate-600 font-medium hover:bg-slate-100/40 whitespace-nowrap transition-all duration-300;
 }

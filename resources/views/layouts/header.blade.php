@@ -10,33 +10,39 @@
             </div>
             @auth
                 {{-- Menu Items --}}
-                <nav class="flex space-x-4">
-                    <a href="{{ route('employees.index') }}"
-                    class="hover:text-slate-400 duration-200
-                    {{ request()->routeIs('employees.*') ? 'text-slate-400' : '' }}">
-                        Employees
-                    </a>
-                    <a href="{{ route('schedules.index') }}"
-                    class="hover:text-slate-400 duration-200
-                    {{ request()->routeIs('schedules.*') ? 'text-slate-400' : '' }}">
-                        Schedules
-                    </a>
-                    <a href="{{ route('evaluations.index') }}"
-                    class="hover:text-slate-400 duration-200
-                    {{ request()->routeIs('evaluations.*') ? 'text-slate-400' : '' }}">
-                        Evaluations
-                    </a>
-                    <a href="{{ route('reports.index') }}"
-                    class="hover:text-slate-400 duration-200
-                    {{ request()->routeIs('reports.*') ? 'text-slate-400' : '' }}">
-                        Reports
-                    </a>
-                    <a href="{{ route('administration.index') }}"
-                    class="hover:text-slate-400 duration-200
-                    {{ request()->routeIs('administration.*') ? 'text-slate-400' : '' }}">
-                        Administration
-                    </a>
-                </nav>
+
+                @if (Auth::check() && Auth::user()->role === 'Administrator')
+                    <nav class="flex space-x-4">
+                        <a href="{{ route('employees.index') }}"
+                        class="hover:text-slate-400 duration-200
+                        {{ request()->routeIs('employees.*') ? 'text-slate-400' : '' }}">
+                            Employees
+                        </a>
+                        <a href="{{ route('schedules.index') }}"
+                        class="hover:text-slate-400 duration-200
+                        {{ request()->routeIs('schedules.*') ? 'text-slate-400' : '' }}">
+                            Schedules
+                        </a>
+                        <a href="{{ route('evaluations.index') }}"
+                        class="hover:text-slate-400 duration-200
+                        {{ request()->routeIs('evaluations.*') ? 'text-slate-400' : '' }}">
+                            Evaluations
+                        </a>
+                        <a href="{{ route('reports.index') }}"
+                        class="hover:text-slate-400 duration-200
+                        {{ request()->routeIs('reports.*') ? 'text-slate-400' : '' }}">
+                            Reports
+                        </a>
+                        <a href="{{ route('administration.index') }}"
+                        class="hover:text-slate-400 duration-200
+                        {{ request()->routeIs('administration.*') ? 'text-slate-400' : '' }}">
+                            Administration
+                        </a>
+                    </nav>
+                @else
+                    <h2>Human Resource Information System</h2>
+                @endif
+                
             @endauth
             @if (!auth()->user())
                 <h2>Human Resource Information System</h2>
@@ -59,8 +65,7 @@
                                         Account
                                     </button>
                                     <div x-cloak x-show="openAccount" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                        <div class="w-2/5 bg-slate-100z`                                       
-                                         pt-4 px-6 pb-3 rounded-lg text-slate-600">
+                                        <div class="w-2/5 bg-slate-100 pt-4 px-6 pb-3 rounded-lg text-slate-600">
                                             <form
                                             id="update-user-form"
                                             action="{{ route('auth.update', auth()->user()->id) }}"
