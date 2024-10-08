@@ -134,8 +134,6 @@ Route::middleware('auth')->group(function () {
             ]);
         })->name('profile.leave');
 
-
-
         Route::post('profile/leave-request', function (LeaveRequestRequest $request) {
 
             LeaveRequest::create($request->validated());
@@ -228,6 +226,16 @@ Route::middleware('auth')->group(function () {
         Route::get('administration', function () {
             return view('administration.index', ['departments' => Department::withCount('employees')->get()]);
         })->name('administration.index');
+
+        Route::get('requests', function () {
+            $leaveRequests = LeaveRequest::all();
+            return view('requests.index', ['leaveRequests' => $leaveRequests]);
+        })->name('requests.index');
+
+        Route::delete('requests/{request}', function (LeaveRequest $request) {
+            $request->update(['status' => 'rejected']);
+            return redirect()->route('requests.index')->with('success', 'Leave request rejected successfully.');
+        })->name('requests.destroy');
     });
 
     // For both employee and administrator
