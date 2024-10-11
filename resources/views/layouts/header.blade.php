@@ -31,7 +31,7 @@
                         <a href="{{ route('requests.index') }}"
                         class="hover:text-slate-400 duration-200
                         {{ request()->routeIs('requests.*') ? 'text-slate-400' : '' }}">
-                            Requests
+                            Leave Requests
                         </a>
                         <a href="{{ route('reports.index') }}"
                         class="hover:text-slate-400 duration-200

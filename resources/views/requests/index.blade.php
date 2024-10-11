@@ -53,58 +53,60 @@
                         </span>
                     </td>
                     <td class="flex items-center justify-center gap-x-2">
-                        <div x-data="{ open: false }">
-                            <button @click.prevent="open = true" title="Reject" class="btn">
-                                <x-carbon-close-filled class="w-4 mx-auto"/>
-                            </button>
-                            <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                    <p class="mb-4">Rejection Confirmation</p>
-                                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                        <button type="button" @click="open = false" class="btn">No</button>
-                                        <form
-                                        id="reject-request-form-{{ $index }}"
-                                        action="{{ route('requests.destroy', $request) }}"
-                                        method="POST"
-                                        >
-                                            @csrf
-                                            @method('DELETE')
-                                            <button
-                                            type="submit"
-                                            class="btn"
-                                            x-on:click="submitting=true; document.getElementById('reject-request-form-{{ $index }}').submit();"
-                                            >Yes</button>
-                                        </form>
+                        @if ($request->status !== "rejected")
+                            <div x-data="{ open: false }">
+                                <button @click.prevent="open = true" title="Reject" class="btn">
+                                    <x-carbon-close-filled class="w-4 mx-auto"/>
+                                </button>
+                                <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+                                    <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
+                                        <p class="mb-4">Rejection Confirmation</p>
+                                        <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                                            <button type="button" @click="open = false" class="btn">No</button>
+                                            <form
+                                            id="reject-request-form-{{ $index }}"
+                                            action="{{ route('requests.destroy', $request) }}"
+                                            method="POST"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button
+                                                type="submit"
+                                                class="btn"
+                                                x-on:click="submitting=true; document.getElementById('reject-request-form-{{ $index }}').submit();"
+                                                >Yes</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div x-data="{ open: false }">
-                            <button @click.prevent="open = true" title="Approve" class="btn">
-                                <x-carbon-checkmark-filled class="w-4 mx-auto fill-emerald-500"/>
-                            </button>
-                            <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                    <p class="mb-4">Approval Confirmation</p>
-                                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                        <button type="button" @click="open = false" class="btn">No</button>
-                                        <form
-                                        id="approve-request-form-{{ $index }}"
-                                        action="{{ route('requests.destroy', $request) }}"
-                                        method="POST"
-                                        >
-                                            @csrf
-                                            @method('DELETE')
-                                            <button
-                                            type="submit"
-                                            class="btn"
-                                            x-on:click="submitting=true; document.getElementById('approve-request-form-{{ $index }}').submit();"
-                                            >Yes</button>
-                                        </form>
+                            <div x-data="{ open: false }">
+                                <button @click.prevent="open = true" title="Approve" class="btn">
+                                    <x-carbon-checkmark-filled class="w-4 mx-auto fill-emerald-500"/>
+                                </button>
+                                <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+                                    <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
+                                        <p class="mb-4">Approval Confirmation</p>
+                                        <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                                            <button type="button" @click="open = false" class="btn">No</button>
+                                            <form
+                                            id="approve-request-form-{{ $index }}"
+                                            action="{{ route('requests.destroy', $request) }}"
+                                            method="POST"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button
+                                                type="submit"
+                                                class="btn"
+                                                x-on:click="submitting=true; document.getElementById('approve-request-form-{{ $index }}').submit();"
+                                                >Yes</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     </td>
                 </tr>
             @empty

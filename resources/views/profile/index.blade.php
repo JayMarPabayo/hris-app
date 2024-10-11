@@ -49,7 +49,7 @@
             </tr>
         </tbody>
     </table>
-
+{{-- 
     <h3 class="text-sm mb-2">Performance</h3>
     <hr class="border-t border-slate-500/50 mb-4">
 
@@ -136,5 +136,5 @@
     <div class="text-xs mt-4">
         {{ $employee->evaluations->links()}}
     </div>
-@endif
+@endif --}}
 </x-layout>

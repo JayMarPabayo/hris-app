@@ -22,7 +22,6 @@ use App\Models\Schedule;
 use App\Models\User;
 
 use Illuminate\Validation\Rule;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 // -- GUEST
 
@@ -73,55 +72,10 @@ Route::middleware('auth')->group(function () {
             $employee = Employee::findOrFail($employeeId);
             $schedule = Schedule::where('employee_id', $employee->id)->first();
 
-            // Filter by month if provided
-            $selectedMonth = $request->input('month', null);
-
-            // Get sorting parameters
-            $sortBy = $request->input('sort_by', 'week'); // Default to week
-            $sortOrder = $request->input('sort_order', 'asc'); // Default to ascending
-
-            $employee->evaluations = $employee->evaluations->sortBy(function ($evaluation) use ($sortBy, $sortOrder) {
-                if ($sortBy === 'week') {
-                    return intval(substr($evaluation->week, 6));
-                } elseif ($sortBy === 'rating') {
-                    return $evaluation->rating;
-                }
-            }, SORT_REGULAR, $sortOrder === 'desc');
-
-
-            if ($selectedMonth) {
-                $employee->evaluations = $employee->evaluations->filter(function ($evaluation) use ($selectedMonth) {
-                    $yearAndWeek = explode('-W', $evaluation->week);
-                    $year = $yearAndWeek[0];
-                    $week = $yearAndWeek[1];
-                    $date = Carbon\Carbon::now()->setISODate($year, $week);
-                    return $date->format('F') === $selectedMonth;
-                });
-            }
-
-            $months = $employee->evaluations->map(function ($evaluation) {
-                $yearAndWeek = explode('-W', $evaluation->week);
-                $year = $yearAndWeek[0];
-                $week = $yearAndWeek[1];
-                $date = Carbon\Carbon::now()->setISODate($year, $week);
-                return $date->format('F');
-            })->unique()->values();
-
-            $employee->evaluations = $employee->evaluations()->paginate(5)
-                ->appends([
-                    'month' => $selectedMonth,
-                    'sort_by' => $sortBy,
-                    'sort_order' => $sortOrder,
-                ]);
-
             return view('profile.index', [
                 'employee' => $employee,
                 'schedule' => $schedule,
                 'weekdays' => Shift::$weekdays,
-                'months' => $months,
-                'selectedMonth' => $selectedMonth,
-                'sortBy' => $sortBy,
-                'sortOrder' => $sortOrder
             ]);
         })->name('profile.index');
 
@@ -227,12 +181,12 @@ Route::middleware('auth')->group(function () {
             return view('administration.index', ['departments' => Department::withCount('employees')->get()]);
         })->name('administration.index');
 
-        Route::get('requests', function () {
+        Route::get('leave-requests', function () {
             $leaveRequests = LeaveRequest::all();
             return view('requests.index', ['leaveRequests' => $leaveRequests]);
         })->name('requests.index');
 
-        Route::delete('requests/{request}', function (LeaveRequest $request) {
+        Route::delete('leave-requests/{request}', function (LeaveRequest $request) {
             $request->update(['status' => 'rejected']);
             return redirect()->route('requests.index')->with('success', 'Leave request rejected successfully.');
         })->name('requests.destroy');
