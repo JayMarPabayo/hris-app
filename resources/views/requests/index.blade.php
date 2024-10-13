@@ -91,11 +91,11 @@
                                             <button type="button" @click="open = false" class="btn">No</button>
                                             <form
                                             id="approve-request-form-{{ $index }}"
-                                            action="{{ route('requests.destroy', $request) }}"
+                                            action="{{ route('requests.update', $request) }}"
                                             method="POST"
                                             >
                                                 @csrf
-                                                @method('DELETE')
+                                                @method('PUT')
                                                 <button
                                                 type="submit"
                                                 class="btn"

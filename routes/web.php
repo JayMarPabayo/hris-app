@@ -190,6 +190,11 @@ Route::middleware('auth')->group(function () {
             $request->update(['status' => 'rejected']);
             return redirect()->route('requests.index')->with('success', 'Leave request rejected successfully.');
         })->name('requests.destroy');
+
+        Route::put('leave-requests/{request}', function (LeaveRequest $request) {
+            $request->update(['status' => 'approved']);
+            return redirect()->route('requests.index')->with('success', 'Leave request approved successfully.');
+        })->name('requests.update');
     });
 
     // For both employee and administrator
