@@ -53,7 +53,7 @@
                         </span>
                     </td>
                     <td class="flex items-center justify-center gap-x-2">
-                        @if ($request->status !== "rejected")
+                        @if ($request->status !== "rejected" || $request->status !== "approved")
                             <div x-data="{ open: false }">
                                 <button @click.prevent="open = true" title="Reject" class="btn">
                                     <x-carbon-close-filled class="w-4 mx-auto"/>
