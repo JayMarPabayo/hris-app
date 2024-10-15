@@ -15,7 +15,8 @@
     <h3 class="text-sm mb-2">Schedule</h3>
     <hr class="border-t border-slate-500/50 mb-4">
     
-    <div class="mb-4 flex  text-sm items-center gap-x-2">
+@if ($schedule)
+    <div class="mb-4 flex text-sm items-center gap-x-2">
         <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
         <span class="font-medium rounded-sm text-teal-700/80">
             {{ $schedule->shift->name }}
@@ -49,6 +50,14 @@
             </tr>
         </tbody>
     </table>
+@else
+<div class="mb-4 flex text-sm items-center gap-x-2">
+    <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
+    <span class="font-medium rounded-sm text-teal-700/80">
+       No Schedule Yet
+    </span>
+</div>
+@endif
 {{-- 
     <h3 class="text-sm mb-2">Performance</h3>
     <hr class="border-t border-slate-500/50 mb-4">
