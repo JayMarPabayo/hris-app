@@ -88,7 +88,7 @@
                     </td>
                     @foreach ($weekdays as $day)
                         <td class="text-center">
-                            @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs))
+                            @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
                                 <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
                                     {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
                                 </span>
