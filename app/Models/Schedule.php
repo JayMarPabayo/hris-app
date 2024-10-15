@@ -32,6 +32,17 @@ class Schedule extends Model
         return $this->belongsTo(Shift::class);
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($schedule) {
+            if (empty($schedule->dayoffs)) {
+                $schedule->dayoffs = [];
+            }
+        });
+    }
+
     public function scopeSearch(Builder $query, string $keyword): Builder
     {
         return $query->where(function ($query) use ($keyword) {

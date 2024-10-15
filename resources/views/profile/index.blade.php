@@ -51,12 +51,12 @@
         </tbody>
     </table>
 @else
-<div class="mb-4 flex text-sm items-center gap-x-2">
-    <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
-    <span class="font-medium rounded-sm text-teal-700/80">
-       No Schedule Yet
-    </span>
-</div>
+    <div class="mb-4 flex text-sm items-center gap-x-2">
+        <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
+        <span class="font-medium rounded-sm text-teal-700/80">
+        No Schedule Yet
+        </span>
+    </div>
 @endif
 {{-- 
     <h3 class="text-sm mb-2">Performance</h3>
