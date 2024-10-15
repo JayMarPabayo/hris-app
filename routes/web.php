@@ -27,6 +27,10 @@ use Illuminate\Validation\Rule;
 
 Route::middleware('guest')->group(function () {
 
+    Route::get('/', function () {
+        return redirect()->route('login');
+    });
+
     Route::get('login', fn() => to_route('auth.login'))->name('login');
 
     Route::get('auth/login', function () {
@@ -67,6 +71,7 @@ Route::middleware('auth')->group(function () {
 
     // For Employee
     Route::middleware('role:Employee')->group(function () {
+
         Route::get('profile', function (RequestRequest $request) {
             $employeeId = Auth::user()->employee_id;
             $employee = Employee::findOrFail($employeeId);
