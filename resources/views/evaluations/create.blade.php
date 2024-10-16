@@ -71,8 +71,10 @@
                                         <input type="hidden" name="week" value="{{ request('week') ?? $week }}" class="w-32 btn">
                                         <label for="rating">Rating</label>
                                         <select name="rating" class="mb-5">
-                                            @for ($i = 1; $i <= 20; $i++)
-                                                <option value="{{ number_format($i / 2, 2) }}" {{ $i == 4 ? 'selected' : '' }}>{{ number_format($i / 2, 2) }}</option>
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <option value="{{ number_format($i, 2) }}" {{ $i == 4 ? 'selected' : '' }}>
+                                                    {{ number_format($i, 2) }}
+                                                </option>
                                             @endfor
                                         </select>
 

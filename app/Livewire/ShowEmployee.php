@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class ShowEmployee extends Component
 {
-    public $id = null;
+    public $search = '';
     public $employee = null;
 
     public function render()
@@ -17,9 +17,13 @@ class ShowEmployee extends Component
 
     public function searchEmployee()
     {
-
-        if ($this->id) {
-            $this->employee = Employee::find($this->id);
+        if ($this->search) {
+            if (is_numeric($this->search)) {
+                $this->employee = Employee::where('id', $this->search)->first();
+            } else {
+                $this->employee = Employee::when($this->search, fn($query, $searchKey) => $query->search($searchKey))
+                    ->first();
+            }
         } else {
             $this->employee = null;
         }

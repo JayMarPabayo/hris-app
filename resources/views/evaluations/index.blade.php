@@ -56,6 +56,7 @@
                             <x-rating-stars rating="{{ $evaluation->rating }}" />
                         </td>
                         <td class="max-w-sm pe-5">
+                            <x-rating-remarks rating="{{ $evaluation->rating }}" />
                             <p style="word-wrap: break-word; word-break: break-word; white-space: normal;">
                                 {!! nl2br(e($evaluation->review)) !!}
                             </p>
@@ -92,9 +93,9 @@
     
                                             <label for="rating">Rating</label>
                                             <select name="rating" class="mb-5">
-                                                @for ($i = 1; $i <= 20; $i++)
-                                                    <option value="{{ number_format($i / 2, 2) }}" @selected($evaluation->rating == number_format($i / 2, 2))>
-                                                        {{ number_format($i / 2, 2) }}
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <option value="{{ number_format($i, 2) }}" @selected($evaluation->rating == number_format($i, 2))>
+                                                        {{ number_format($i, 2) }}
                                                     </option>
                                                 @endfor
                                             </select>

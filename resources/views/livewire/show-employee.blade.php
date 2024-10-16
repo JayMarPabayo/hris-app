@@ -1,6 +1,6 @@
 <div>
     <div class="flex gap-x-2 items-center w-full">
-        <input type="number" name="employee" placeholder="Employee ID No." wire:model="id" wire:loading.attr="disabled" class="w-1/2"/>
+        <input type="search" name="employee" placeholder="Employee Search" wire:model="search" wire:loading.attr="disabled" class="w-1/2"/>
         <button type="button" class="btn" wire:loading.attr="disabled" wire:click.prevent="searchEmployee">
             Search
         </button>
@@ -8,7 +8,7 @@
             <x-carbon-awake class="w-5 text-slate-500 animate-spin" />
         </div>
 
-        @if (!$employee && !is_null($id) && $id !== '')
+        @if (!$employee && !is_null($search) && $search !== '')
             <div wire:loading.remove>
                 <x-empty-alert />
             </div>
@@ -16,7 +16,7 @@
         
         @if ($employee)
             <a
-            href="{{ route('reports.export', ['employee' => $this->id] ) }}"
+            href="{{ route('reports.export', ['employee' => $this->employee->id] ) }}"
             class="btn ml-auto"
             target="_blank"
             >

@@ -160,4 +160,26 @@ class Employee extends Model
             $query->whereBetween('week', [$startWeek, $endWeek]);
         })->withAvg('evaluations', 'rating');
     }
+
+    public function leaveRequests()
+    {
+        $user = User::where('employee_id', $this->id)->first();
+
+        if ($user) {
+            return LeaveRequest::where('user_id', $user->id)->count();
+        }
+
+        return 0;
+    }
+
+
+    public function getRemainingCredits()
+    {
+        $config = SystemConfig::first();
+        $maxCredits = $config->maxCredits;
+
+        $totalLeaveDays = $this->leaveRequests();
+
+        return $maxCredits - $totalLeaveDays;
+    }
 }

@@ -1,7 +1,7 @@
 @php
     $fullStars = floor($rating);
     $halfStar = $rating - $fullStars >= 0.5 ? true : false;
-    $emptyStars = 10 - $fullStars - ($halfStar ? 1 : 0);
+    $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
 @endphp
 
 <div class="flex items-center">

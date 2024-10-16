@@ -15,6 +15,7 @@
                 <th>Department</th>
                 <th>Designation</th>
                 <th>Contact Details</th>
+                <th>Leave Credits</th>
                 <th class="text-center">Action</th>
             </tr>
         </thead>
@@ -26,6 +27,7 @@
                     <td>{{ $employee->department->name }}</td>
                     <td>{{ $employee->designation }}</td>
                     <td>{{ $employee->email ? "⎙ {$employee->email}" : ($employee->mobile ? "✆ {$employee->mobile}" : "") }}</td>
+                    <td>{{ $employee->getRemainingCredits() }}</td>
                     <td class="flex justify-center items-center w-fit mx-auto p-1 gap-1">
                         <a title="View" href="{{ route('employees.show', $employee) }}" class="btn flex-grow p-0">
                             <x-carbon-view class="w-4 mx-auto"/>
