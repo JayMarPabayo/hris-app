@@ -17,10 +17,13 @@
 
                 @php
                     $appliedTime = new DateTime($request->created_at);
+                    $lastname = $request->user->employee->lastname ?? '';
+                    $firstname = $request->user->employee->firstname ?? '';
+                    $middlename = $request->user->employee->middlename ? strtoupper(substr($request->user->employee->middlename, 0, 1)) : '';
                 @endphp
 
                 <tr class="data-row">
-                    <td class="align-top">{{ "{$request->user->employee->lastname}, {$request->user->employee->firstname} " . strtoupper(substr($request->user->employee->middlename, 0, 1)) . "." }}</td>
+                    <td class="align-top">{{ "{$lastname}, {$firstname} {$middlename}." }}</td>
                     <td class="align-top">{{ $appliedTime->format('F j, Y ⌚ g:i A') }}</td>
                     <td class="align-top flex flex-col">
                         <span>{{ $request->reason }}</span>
