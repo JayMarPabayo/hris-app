@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\SystemConfig;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,6 +24,8 @@ class LeaveRequestRequest extends FormRequest
     public function rules(): array
     {
 
+        $config = SystemConfig::first();
+
 
         return [
             'user_id' => [
@@ -32,7 +35,20 @@ class LeaveRequestRequest extends FormRequest
             'reason' => 'required|string|in:Vacation Leave,Sick Leave,Leave with Pay,Maternity Leave,Paternity Leave,Others',
             'custom_reason' => 'nullable|string|max:255',
             'start' => 'required|date|after_or_equal:today',
-            'end' => 'required|date|after_or_equal:start_date',
+            'end' => [
+                'required',
+                'date',
+                'after_or_equal:start',
+                function ($attribute, $value, $fail) use ($config) {
+                    $start = $this->input('start');
+                    $end = $value;
+                    $maxDays = $config->maxDays;
+                    $diffInDays = \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1;
+                    if ($diffInDays > ($maxDays)) {
+                        $fail("The leave duration cannot exceed {$maxDays} days.");
+                    }
+                }
+            ],
             'status' => 'string',
         ];
     }

@@ -40,7 +40,7 @@
                         </a>
                         <a href="{{ route('administration.index') }}"
                         class="hover:text-slate-400 duration-200
-                        {{ request()->routeIs('administration.*') ? 'text-slate-400' : '' }}">
+                        {{ request()->routeIs('administration*') || request()->routeIs('shifts.index') ? 'text-slate-400' : '' }}">
                             Administration
                         </a>
                         

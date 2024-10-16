@@ -1,7 +1,7 @@
 <x-layout>
     
 
-    <div class="flex gap-x-2 justify-between items-center mb-5">
+    <div class="flex gap-x-2 justify-between items-center">
         <h3 class="text-base font-semibold mb-5">Application for Leave of Abscence</h3>
         <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-user-profile class="h-5" />
@@ -9,6 +9,11 @@
                 Profile
             </a>
         </div>
+    </div>
+
+    <div class="flex items-center rounded-md px-3 py-1 text-base font-semibold bg-slate-700 w-fit text-white gap-x-3  mb-5">
+        <p>Leave Credits : </p>
+        <p class="text-lg">{{ $remainingCredits ?? 'N/A' }}</p>
     </div>
 
 

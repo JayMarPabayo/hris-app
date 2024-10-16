@@ -3,6 +3,7 @@
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ShiftController;
 
@@ -19,6 +20,7 @@ use App\Models\Department;
 use App\Models\LeaveRequest;
 use App\Models\Shift;
 use App\Models\Schedule;
+use App\Models\SystemConfig;
 use App\Models\User;
 
 use Illuminate\Validation\Rule;
@@ -88,12 +90,24 @@ Route::middleware('auth')->group(function () {
 
             $userId = Auth::user()->id;
             $leaveRequests = LeaveRequest::where('user_id', $userId)->get();
+
+            $config = SystemConfig::first();
+            $remainingCredits = $config->getRemainingCreditsForEmployee($userId);
             return view('profile.leave', [
-                'leaveRequests' => $leaveRequests
+                'leaveRequests' => $leaveRequests,
+                'remainingCredits' => $remainingCredits
             ]);
         })->name('profile.leave');
 
         Route::post('profile/leave-request', function (LeaveRequestRequest $request) {
+            $userId = Auth::user()->id;
+            $config = SystemConfig::first();
+            $remainingCredits = $config->getRemainingCreditsForEmployee($userId);
+
+            if ($remainingCredits <= 0) {
+                return redirect()->route('profile.leave')
+                    ->with('error', "Not enough leave credits.");
+            }
 
             LeaveRequest::create($request->validated());
 
@@ -108,8 +122,8 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::resource('employees', EmployeeController::class);
-        Route::resource('departments', DepartmentController::class);
-        Route::resource('shifts', ShiftController::class);
+        Route::resource('administration/departments', DepartmentController::class);
+        Route::resource('administration/shifts', ShiftController::class);
         Route::resource('schedules', ScheduleController::class);
         Route::resource('evaluations', EvaluationController::class);
 
@@ -182,9 +196,18 @@ Route::middleware('auth')->group(function () {
             return view('reports.schedules', ['shift' => $shift, 'schedules' => $schedules]);
         })->name('reports.schedules');
 
-        Route::get('administration', function () {
+        Route::get('administration/departments', function () {
             return view('administration.index', ['departments' => Department::withCount('employees')->get()]);
         })->name('administration.index');
+
+        Route::get('administration/leave-request', function () {
+            $config = SystemConfig::first();
+            return view('administration.leave-request', ['config' => $config]);
+        })->name('administration.leave-request.index');
+
+        Route::put('administration/leave-request/max-credits', [LeaveRequestController::class, 'updateMaxCredits'])->name('leave-request.updateMaxCredits');
+        Route::put('administration/leave-request/max-days', [LeaveRequestController::class, 'updateMaxDays'])->name('leave-request.updateMaxDays');
+
 
         Route::get('leave-requests', function () {
             $leaveRequests = LeaveRequest::all();

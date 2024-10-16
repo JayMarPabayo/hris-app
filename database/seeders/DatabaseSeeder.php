@@ -11,6 +11,7 @@ use App\Models\Eligibilities;
 use App\Models\Evaluation;
 use App\Models\Schedule;
 use App\Models\Shift;
+use App\Models\SystemConfig;
 use App\Models\WorkExperience;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -32,6 +33,10 @@ class DatabaseSeeder extends Seeder
         Children::factory(10)->create();
         Eligibilities::factory(10)->create();
         WorkExperience::factory(10)->create();
+        SystemConfig::factory()->create([
+            'maxCredits' => 5,
+            'maxDays' => 5,
+        ]);
 
 
         foreach (Shift::$shiftnames as $shiftname) {
