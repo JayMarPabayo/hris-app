@@ -40,8 +40,8 @@ return new class extends Migration
             $table->string('permanent_province', 100)->nullable();
             $table->string('permanent_region', 100)->nullable();
             $table->string('permanent_zipcode', 10)->nullable();
-            $table->float('height');
-            $table->float('weight');
+            $table->float('height')->nullable();
+            $table->float('weight')->nullable();
             $table->enum('bloodtype', Employee::$bloodtype);
             $table->string('gsis', 20)->nullable();
             $table->string('pagibig', 20)->nullable();

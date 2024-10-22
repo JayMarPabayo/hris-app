@@ -166,7 +166,7 @@ class Employee extends Model
         $user = User::where('employee_id', $this->id)->first();
 
         if ($user) {
-            return LeaveRequest::where('user_id', $user->id)->count();
+            return LeaveRequest::where('user_id', $user->id)->where('status', '!=', 'rejected')->count();
         }
 
         return 0;

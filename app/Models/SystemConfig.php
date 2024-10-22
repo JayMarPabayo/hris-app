@@ -17,7 +17,9 @@ class SystemConfig extends Model
 
     public function getRemainingCreditsForEmployee($userId)
     {
-        $totalLeaveRequests = LeaveRequest::where('user_id', $userId)->count();
+        $totalLeaveRequests = LeaveRequest::where('user_id', $userId)
+            ->where('status', '!=', 'rejected')
+            ->count();
 
         return $this->maxCredits - $totalLeaveRequests;
     }

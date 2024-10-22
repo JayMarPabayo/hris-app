@@ -225,11 +225,10 @@ Route::middleware('auth')->group(function () {
         })->name('requests.update');
     });
 
-    // For both employee and administrator
     Route::delete('logout', fn() => to_route('auth.logout'))->name('logout');
 
     Route::put('auth/login/{user}', function (Illuminate\Http\Request $request, User $user) {
-        // Validation for name and username, password fields are nullable
+
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'username' => [
@@ -238,22 +237,18 @@ Route::middleware('auth')->group(function () {
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'password' => 'nullable', // New password is optional and must match confirmation
-            'current_password' => 'required_with:password', // Require current password only if a new password is provided
+            'password' => 'nullable',
+            'current_password' => 'required_with:password',
         ]);
 
-        // Check if the user is trying to change their password
         if ($request->filled('password')) {
-            // Verify that the current password matches
             if (!Hash::check($request->current_password, $user->password)) {
                 return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect.']);
             }
 
-            // Hash and set the new password
             $user->password = Hash::make($validatedData['password']);
         }
 
-        // Update name and username without requiring the current password
         $user->name = $validatedData['name'];
         $user->username = $validatedData['username'];
 
