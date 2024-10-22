@@ -20,7 +20,21 @@
             <tr class="bg-slate-300">
                 <th>Employee</th>
                 @foreach ($weekdays as $day)
-                    <th class="text-center">{{ $day }}</th>
+                <th class="text-center">
+                    @php
+                        $dayUrl = ($selectedDay === $day) 
+                                    ? route('schedules.index', array_merge(request()->query(), ['day' => null])) 
+                                    : route('schedules.index', array_merge(request()->query(), ['day' => $day]));
+                    @endphp
+                    <a href="{{ $dayUrl }}" class="hover:tracking-wider active:tracking-tighter duration-300 {{ $selectedDay == $day ? 'text-sky-800 tracking-widest' : '' }}">
+                        {{ $day }}
+                    </a>
+                </th>
+                {{-- <th class="text-center">
+                    <a href="{{ route('schedules.index', array_merge(request()->query(), ['day' => $day])) }}" class="hover:tracking-wider active:tracking-tighter duration-300 {{ $selectedDay == $day ? 'text-sky-800 tracking-wider' : '' }}">
+                        {{ $day }}
+                    </a> --}}
+                </th>
                 @endforeach
                 <th class="text-center">Action</th>
             </tr>

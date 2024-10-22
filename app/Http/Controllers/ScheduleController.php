@@ -18,12 +18,21 @@ class ScheduleController extends Controller
     {
         $searchKey = $request->input('search');
         $shiftId = $request->input('shift');
+        $selectedDay = $request->input('day');
 
         $schedules = Schedule::when($shiftId, function ($query, $shiftId) {
             return $query->where('shift_id', '=', $shiftId);
-        })->when($searchKey, function ($query, $searchKey) {
-            return $query->search($searchKey);
         })
+            ->when($searchKey, function ($query, $searchKey) {
+                return $query->search($searchKey);
+            })
+            ->when($selectedDay, function ($query, $selectedDay) {
+                if ($selectedDay) {
+                    return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
+                        $shiftQuery->whereJsonContains('weekdays', $selectedDay);
+                    });
+                }
+            })
             ->join('employees', 'schedules.employee_id', '=', 'employees.id')
             ->orderBy('employees.lastname', 'asc')
             ->paginate(10);
@@ -31,7 +40,8 @@ class ScheduleController extends Controller
         return view('schedules.index', [
             'schedules' => $schedules,
             'shifts' => Shift::all(),
-            'weekdays' => Shift::$weekdays
+            'weekdays' => Shift::$weekdays,
+            'selectedDay' => $selectedDay
         ]);
     }
 
