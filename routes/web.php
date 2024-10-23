@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\VotingController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ShiftController;
@@ -125,26 +125,18 @@ Route::middleware('auth')->group(function () {
         Route::resource('administration/departments', DepartmentController::class);
         Route::resource('administration/shifts', ShiftController::class);
         Route::resource('schedules', ScheduleController::class);
-        Route::resource('evaluations', EvaluationController::class);
+        Route::resource('employee-of-the-month', VotingController::class);
 
-        Route::get('monthly-evaluations', function (Illuminate\Http\Request $request) {
+        Route::get('monthly-employee-of-the-month', function (Illuminate\Http\Request $request) {
             $month = $request->input('month') ?? now()->timezone('Asia/Manila')->format('Y-m');
             $department = $request->input('department') ?? '';
             $sort = $request->input('sort') ?? 'lastname';
             $order = $request->input('order') ?? 'asc';
 
-            $employees = Employee::when($month, function ($query, $month) {
-                return $query->byMonth($month);
-            })->when($department, function ($query, $department) {
-                return $query->where('department_id', $department);
-            })
-                ->orderBy($sort, $order)->paginate(10)
-                ->appends(['month' => $month, 'department' => $department, 'sort' => $sort]);
-
             $departments = Department::all();
 
-            return view('evaluations.monthly', ['employees' => $employees, 'departments' => $departments]);
-        })->name('evaluations.monthly.index');
+            return view('eom-results.monthly', ['departments' => $departments]);
+        })->name('employee-of-the-month.monthly');
 
         Route::get('reports', function () {
             return view('reports.index');

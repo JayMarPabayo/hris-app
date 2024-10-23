@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EvaluationRequest extends FormRequest
+class VotingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +23,9 @@ class EvaluationRequest extends FormRequest
     {
 
         return [
-            'employee_id' => 'required',
-            'week' => 'nullable|string',
-            'rating' => 'required|numeric|min:1|max:10',
-            'review' => 'required'
+            'employee_id' => 'required|exists:employees,id',
+            'month' => 'required|date_format:Y-m',
+            'remarks' => 'nullable|string',
         ];
     }
 }

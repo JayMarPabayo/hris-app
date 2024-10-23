@@ -112,9 +112,9 @@ class Employee extends Model
         return $this->hasMany(Schedule::class);
     }
 
-    public function evaluations(): HasMany
+    public function votings(): HasMany
     {
-        return $this->hasMany(Evaluation::class);
+        return $this->hasMany(Voting::class);
     }
 
     public function scopeSearch(Builder $query, string $keyword): Builder
@@ -140,26 +140,26 @@ class Employee extends Model
         return $query->where('designation', '=', $designation);
     }
 
-    public function scopeByMonth(Builder $query, string $month): Builder
-    {
-        // Extract the year and month
-        [$year, $month] = explode('-', $month);
+    // public function scopeByMonth(Builder $query, string $month): Builder
+    // {
+    //     // Extract the year and month
+    //     [$year, $month] = explode('-', $month);
 
-        // Calculate the first day of the given month
-        $firstDayOfMonth = Carbon::createFromDate($year, $month, 1);
+    //     // Calculate the first day of the given month
+    //     $firstDayOfMonth = Carbon::createFromDate($year, $month, 1);
 
 
-        $lastDayOfMonth = $firstDayOfMonth->copy()->endOfMonth();
+    //     $lastDayOfMonth = $firstDayOfMonth->copy()->endOfMonth();
 
-        // Get the ISO week format for the start and end of the month
-        $startWeek = $firstDayOfMonth->isoFormat('YYYY-[W]WW');
-        $endWeek = $lastDayOfMonth->isoFormat('YYYY-[W]WW');
+    //     // Get the ISO week format for the start and end of the month
+    //     $startWeek = $firstDayOfMonth->isoFormat('YYYY-[W]WW');
+    //     $endWeek = $lastDayOfMonth->isoFormat('YYYY-[W]WW');
 
-        // Filter the evaluations within the start and end weeks
-        return $query->whereHas('evaluations', function ($query) use ($startWeek, $endWeek) {
-            $query->whereBetween('week', [$startWeek, $endWeek]);
-        })->withAvg('evaluations', 'rating');
-    }
+    //     // Filter the evaluations within the start and end weeks
+    //     return $query->whereHas('evaluations', function ($query) use ($startWeek, $endWeek) {
+    //         $query->whereBetween('week', [$startWeek, $endWeek]);
+    //     })->withAvg('evaluations', 'rating');
+    // }
 
     public function leaveRequests()
     {

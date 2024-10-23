@@ -23,10 +23,10 @@
                         {{ request()->routeIs('schedules.*') ? 'text-slate-400' : '' }}">
                             Schedules
                         </a>
-                        <a href="{{ route('evaluations.index') }}"
+                        <a href="{{ route('employee-of-the-month.index') }}"
                         class="hover:text-slate-400 duration-200
-                        {{ request()->routeIs('evaluations.*') ? 'text-slate-400' : '' }}">
-                            Evaluations
+                        {{ request()->routeIs('employee-of-the-month.*') ? 'text-slate-400' : '' }}">
+                            Employee of the Month
                         </a>
                         <a href="{{ route('requests.index') }}"
                         class="hover:text-slate-400 duration-200

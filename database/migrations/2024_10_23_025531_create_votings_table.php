@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('evaluations', function (Blueprint $table) {
+        Schema::create('votings', function (Blueprint $table) {
             $table->id();
-            $table->string('week')->default("");
-            $table->float('rating');
-            $table->text('review');
-            $table->timestamps();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->string('month', 7); // Storing in 'YYYY-MM' format (year-month)
+            $table->text('remarks');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('evaluations');
+        Schema::dropIfExists('votings');
     }
 };

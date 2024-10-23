@@ -8,7 +8,6 @@ use App\Models\Employee;
 use App\Models\Department;
 use App\Models\Education;
 use App\Models\Eligibilities;
-use App\Models\Evaluation;
 use App\Models\Schedule;
 use App\Models\Shift;
 use App\Models\SystemConfig;
@@ -62,29 +61,6 @@ class DatabaseSeeder extends Seeder
             Schedule::factory()->create([
                 'employee_id' => $employee->id,
             ]);
-
-            // Create 10 evaluations for each employee
-            for ($i = 0; $i < 2; $i++) {
-                // Find the next available week
-                $currentWeek = Carbon::now()->addWeeks($i); // Start from the current week and add weeks
-                $formattedWeek = $currentWeek->format('Y-\WW');
-
-                // Check for existing evaluation for this employee in the same week
-                $existingEvaluation = Evaluation::where('employee_id', $employee->id)
-                    ->where('week', $formattedWeek)
-                    ->exists();
-
-                // If evaluation exists for the current week, continue to the next week
-                if ($existingEvaluation) {
-                    continue;
-                }
-
-                // Create the evaluation
-                Evaluation::factory()->create([
-                    'employee_id' => $employee->id,
-                    'week' => $formattedWeek
-                ]);
-            }
         }
     }
 }
