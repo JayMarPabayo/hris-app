@@ -28,11 +28,6 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create(['name' => 'Kentjohn A. Branzuela', 'username' => 'admin', 'role' => 'Administrator']);
         Department::factory(6)->create();
-        // Employee::factory(10)->create();
-        // Education::factory(12)->create();
-        // Children::factory(10)->create();
-        // Eligibilities::factory(10)->create();
-        // WorkExperience::factory(10)->create();
         SystemConfig::factory()->create([
             'maxCredits' => 5,
             'maxDays' => 5,
@@ -45,46 +40,51 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Create unique schedules for each employee
-        // $employees = Employee::take(10)->get();
+        Employee::factory(10)->create();
+        Education::factory(12)->create();
+        Children::factory(10)->create();
+        Eligibilities::factory(10)->create();
+        WorkExperience::factory(10)->create();
 
-        // foreach ($employees as $employee) {
+        $employees = Employee::take(10)->get();
 
-        //     User::factory()->create([
-        //         'name' => "$employee->firstname $employee->lastname",
-        //         'username' => strtolower("$employee->firstname$employee->lastname"),
-        //         'role' => 'Employee',
-        //         'password' => Hash::make('password'),
-        //         'employee_id' => $employee->id,
-        //     ]);
+        foreach ($employees as $employee) {
+
+            User::factory()->create([
+                'name' => "$employee->firstname $employee->lastname",
+                'username' => strtolower("$employee->firstname$employee->lastname"),
+                'role' => 'Employee',
+                'password' => Hash::make('password'),
+                'employee_id' => $employee->id,
+            ]);
 
 
-        //     Schedule::factory()->create([
-        //         'employee_id' => $employee->id,
-        //     ]);
+            Schedule::factory()->create([
+                'employee_id' => $employee->id,
+            ]);
 
-        //     // Create 10 evaluations for each employee
-        //     for ($i = 0; $i < 2; $i++) {
-        //         // Find the next available week
-        //         $currentWeek = Carbon::now()->addWeeks($i); // Start from the current week and add weeks
-        //         $formattedWeek = $currentWeek->format('Y-\WW');
+            // Create 10 evaluations for each employee
+            for ($i = 0; $i < 2; $i++) {
+                // Find the next available week
+                $currentWeek = Carbon::now()->addWeeks($i); // Start from the current week and add weeks
+                $formattedWeek = $currentWeek->format('Y-\WW');
 
-        //         // Check for existing evaluation for this employee in the same week
-        //         $existingEvaluation = Evaluation::where('employee_id', $employee->id)
-        //             ->where('week', $formattedWeek)
-        //             ->exists();
+                // Check for existing evaluation for this employee in the same week
+                $existingEvaluation = Evaluation::where('employee_id', $employee->id)
+                    ->where('week', $formattedWeek)
+                    ->exists();
 
-        //         // If evaluation exists for the current week, continue to the next week
-        //         if ($existingEvaluation) {
-        //             continue;
-        //         }
+                // If evaluation exists for the current week, continue to the next week
+                if ($existingEvaluation) {
+                    continue;
+                }
 
-        //         // Create the evaluation
-        //         Evaluation::factory()->create([
-        //             'employee_id' => $employee->id,
-        //             'week' => $formattedWeek
-        //         ]);
-        //     }
-        // }
+                // Create the evaluation
+                Evaluation::factory()->create([
+                    'employee_id' => $employee->id,
+                    'week' => $formattedWeek
+                ]);
+            }
+        }
     }
 }

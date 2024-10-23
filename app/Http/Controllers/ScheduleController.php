@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ScheduleRequest;
+use App\Models\CustomTime;
 use App\Models\Employee;
 use App\Models\Schedule;
 use App\Models\Shift;
@@ -22,19 +23,17 @@ class ScheduleController extends Controller
 
         $schedules = Schedule::when($shiftId, function ($query, $shiftId) {
             return $query->where('shift_id', '=', $shiftId);
+        })->when($searchKey, function ($query, $searchKey) {
+            return $query->search($searchKey);
         })
-            ->when($searchKey, function ($query, $searchKey) {
-                return $query->search($searchKey);
-            })
             ->when($selectedDay, function ($query, $selectedDay) {
-                if ($selectedDay) {
-                    return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
-                        $shiftQuery->whereJsonContains('weekdays', $selectedDay);
-                    });
-                }
+                return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
+                    $shiftQuery->whereJsonContains('weekdays', $selectedDay);
+                });
             })
-            ->join('employees', 'schedules.employee_id', '=', 'employees.id')
-            ->orderBy('employees.lastname', 'asc')
+            ->join('shifts', 'schedules.shift_id', '=', 'shifts.id')
+            ->orderBy('shifts.start_time', 'asc')
+            ->select('schedules.*', 'shifts.start_time', 'shifts.end_time', 'shifts.weekdays')
             ->paginate(10);
 
         return view('schedules.index', [
@@ -81,7 +80,32 @@ class ScheduleController extends Controller
     {
 
         $validatedData = $request->validated();
+
+        if (!$request->has('dayoffs') || empty($request->dayoffs)) {
+            $validatedData['dayoffs'] = [];
+        }
+
+
         $schedule->update($validatedData);
+
+        $days = $request->input('day', []);
+        $startTimes = $request->input('start_time', []);
+        $endTimes = $request->input('end_time', []);
+
+        foreach ($days as $index => $day) {
+            if (!empty($startTimes[$index]) && !empty($endTimes[$index])) {
+                CustomTime::updateOrCreate(
+                    [
+                        'day' => $day,
+                        'schedule_id' => $schedule->id,
+                    ],
+                    [
+                        'start_time' => $startTimes[$index],
+                        'end_time' => $endTimes[$index],
+                    ]
+                );
+            }
+        }
 
         return redirect()->route('schedules.index')->with('success', 'Schedule successfully updated.');
     }

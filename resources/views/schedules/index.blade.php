@@ -20,20 +20,11 @@
             <tr class="bg-slate-300">
                 <th>Employee</th>
                 @foreach ($weekdays as $day)
+
                 <th class="text-center">
-                    @php
-                        $dayUrl = ($selectedDay === $day) 
-                                    ? route('schedules.index', array_merge(request()->query(), ['day' => null])) 
-                                    : route('schedules.index', array_merge(request()->query(), ['day' => $day]));
-                    @endphp
-                    <a href="{{ $dayUrl }}" class="hover:tracking-wider active:tracking-tighter duration-300 {{ $selectedDay == $day ? 'text-sky-800 tracking-widest' : '' }}">
-                        {{ $day }}
-                    </a>
-                </th>
-                {{-- <th class="text-center">
                     <a href="{{ route('schedules.index', array_merge(request()->query(), ['day' => $day])) }}" class="hover:tracking-wider active:tracking-tighter duration-300 {{ $selectedDay == $day ? 'text-sky-800 tracking-wider' : '' }}">
                         {{ $day }}
-                    </a> --}}
+                    </a>
                 </th>
                 @endforeach
                 <th class="text-center">Action</th>
@@ -101,13 +92,44 @@
                         </span>
                     </td>
                     @foreach ($weekdays as $day)
-                        <td class="text-center">
+                    <td class="text-center">
+                        @if (is_null($selectedDay) || $selectedDay === $day) 
                             @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
+                                @php
+
+                                    $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
+                                                    
+                                    if ($customTime) {
+                                        // -- Use custom time if available
+                                        $startTime = new DateTime($customTime['start_time']);
+                                        $endTime = new DateTime($customTime['end_time']);
+                                    } else {
+                                        // -- Otherwise, use default shift time
+                                        $startTime = new DateTime($schedule->shift->start_time);
+                                        $endTime = new DateTime($schedule->shift->end_time);
+                                    }
+
+                                    $startHour = $startTime->format('H');
+                                    $timePeriod = '';
+                
+                                    if ($startHour >= 3 && $startHour < 11) {
+                                        $timePeriod = 'MORNING';
+                                    } elseif ($startHour >= 11 && $startHour < 15) {
+                                        $timePeriod = 'NOON';
+                                    } elseif ($startHour >= 15 && $startHour < 17) {
+                                        $timePeriod = 'NIGHT';
+                                    } else {
+                                        $timePeriod = 'DAWN';
+                                    }
+                                @endphp
+        
+                                <p class="mb-1 text-slate-700/70">{{ $timePeriod }}</p>
                                 <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
                                     {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
                                 </span>
                             @endif
-                        </td>
+                        @endif
+                    </td>
                     @endforeach
                     <td class="flex justify-center items-center gap-x-1 px-2" style="margin-top: 0.5rem;">
                         {{-- EDIT BUTTON --}}
@@ -116,7 +138,7 @@
                                 <x-carbon-pen class="w-4 mx-auto"/>
                             </button>
                             <div x-cloak x-show="openEdit" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                <div class="min-w-96 max-w-fit bg-white pt-4 px-6 pb-3 rounded-lg">
+                                <div class="bg-white pt-4 px-6 pb-3 rounded-lg">
                                     <form
                                     id="update-schedule-form-{{ $index }}"
                                     action="{{ route('schedules.update', $schedule) }}"
@@ -139,31 +161,71 @@
                                             </span>
                                         </div>
 
-                                        <input type="hidden" name="employee_id" value="{{ $schedule->employee_id }}">
-                                        
-                                        @livewire('select-shifts', ['shiftId' => $schedule->shift_id])
-        
-                                        {{-- Add Dayoffs field --}}
-                                        <div class="mt-4">
-                                            <label for="dayoffs">Day Offs</label>
-                                            <select name="dayoffs[]" id="dayoffs" class="form-multiselect block w-full" multiple>
-                                                <option value="Monday" {{ in_array('Monday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Monday</option>
-                                                <option value="Tuesday" {{ in_array('Tuesday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Tuesday</option>
-                                                <option value="Wednesday" {{ in_array('Wednesday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Wednesday</option>
-                                                <option value="Thursday" {{ in_array('Thursday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Thursday</option>
-                                                <option value="Friday" {{ in_array('Friday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Friday</option>
-                                                <option value="Saturday" {{ in_array('Saturday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Saturday</option>
-                                                <option value="Sunday" {{ in_array('Sunday', $schedule->dayoffs ?? []) ? 'selected' : '' }}>Sunday</option>
-                                            </select>
+                                        <div class="flex gap-x-5">
+                                            <div class="min-w-80 mb-2">
+                                                <input type="hidden" name="employee_id" value="{{ $schedule->employee_id }}">
+                                                
+                                                @livewire('select-shifts', ['shiftId' => $schedule->shift_id])
+                
+                                                {{-- Add Dayoffs field --}}
+                                                <h5 class="text-xs mt-4">Day Offs</h5>
+                                                <div class="border border-slate-200 p-2 grid grid-cols-2 gap-2">
+                                                    @foreach($weekdays as $day)
+                                                        <label class="flex justify-between items-center py-1 px-3 bg-slate-200 rounded-md shadow-sm cursor-pointer">
+                                                            <span class="text-xs font-medium">{{ $day }}</span>
+                                                            <input 
+                                                                type="checkbox" 
+                                                                name="dayoffs[]" 
+                                                                value="{{ $day }}"
+                                                                class="w-fit focus:outline-none cursor-pointer"
+                                                                {{ is_array($schedule->dayoffs) && in_array($day, $schedule->dayoffs) ? 'checked' : '' }}
+                                                            />
+                                                        </label>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="flex flex-col gap-y-2 justify-between py-2 px-4 rounded-md bg-emerald-500/20  mt-4 mb-2 ">
+                                                <h5 class="text-xs">Customize Time</h5>
+                                                @foreach($weekdays as $day)
+                                                @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
+                                                    @php
+                                                        // -- Find custom time for the current day
+                                                        $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
+                                                        
+                                                        // -- Use custom time if available, otherwise use shift time
+                                                        $startTimeValue = $customTime ? $customTime['start_time'] : $schedule->shift->start_time;
+                                                        $endTimeValue = $customTime ? $customTime['end_time'] : $schedule->shift->end_time;
+                                                    @endphp
+                                            
+                                                    <div class="flex items-center justify-between gap-x-3">
+                                                        <div class="font-semibold w-60 text-slate-600/70">{{ $day }}</div>
+                                                        <input type="hidden" name="day[]" value="{{ $day }}" />
+                                                        <input type="hidden" name="schedule_id[]" value="{{ $schedule->id }}" />
+                                            
+                                                        <input 
+                                                            type="time" 
+                                                            name="start_time[]"
+                                                            value="{{ $startTimeValue }}" 
+                                                        />
+                                                        <input 
+                                                            type="time" 
+                                                            name="end_time[]"
+                                                            value="{{ $endTimeValue }}" 
+                                                        />
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                            </div>
                                         </div>
 
-                                        <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                            <button type="button" @click="openEdit = false" class="btn">
+                                        <div class="flex justify-end gap-x-4 pt-3 border-t border-slate-200">
+                                            <button type="button" @click="openEdit = false" class="btn w-52 shadow-md">
                                                 Cancel
                                             </button>
                                             <button
                                             type="submit"
-                                            class="btn"
+                                            class="btn w-52 shadow-md"
                                             x-on:click="submitting=true; document.getElementById('update-schedule-form-{{ $index }}').submit();"
                                             >
                                                 Update
