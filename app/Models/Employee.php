@@ -140,26 +140,19 @@ class Employee extends Model
         return $query->where('designation', '=', $designation);
     }
 
-    // public function scopeByMonth(Builder $query, string $month): Builder
-    // {
-    //     // Extract the year and month
-    //     [$year, $month] = explode('-', $month);
+    public function scopeByMonth(Builder $query, string $month): Builder
+    {
 
-    //     // Calculate the first day of the given month
-    //     $firstDayOfMonth = Carbon::createFromDate($year, $month, 1);
+        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $endOfMonth = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
 
-
-    //     $lastDayOfMonth = $firstDayOfMonth->copy()->endOfMonth();
-
-    //     // Get the ISO week format for the start and end of the month
-    //     $startWeek = $firstDayOfMonth->isoFormat('YYYY-[W]WW');
-    //     $endWeek = $lastDayOfMonth->isoFormat('YYYY-[W]WW');
-
-    //     // Filter the evaluations within the start and end weeks
-    //     return $query->whereHas('evaluations', function ($query) use ($startWeek, $endWeek) {
-    //         $query->whereBetween('week', [$startWeek, $endWeek]);
-    //     })->withAvg('evaluations', 'rating');
-    // }
+        return $query->with(['votings' => function ($query) use ($startOfMonth, $endOfMonth) {
+            $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+        }])
+            ->withCount(['votings as total_votes' => function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+            }]);
+    }
 
     public function leaveRequests()
     {

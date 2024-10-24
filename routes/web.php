@@ -22,7 +22,7 @@ use App\Models\Shift;
 use App\Models\Schedule;
 use App\Models\SystemConfig;
 use App\Models\User;
-
+use App\Models\Voting;
 use Illuminate\Validation\Rule;
 
 // -- GUEST
@@ -74,15 +74,23 @@ Route::middleware('auth')->group(function () {
     // For Employee
     Route::middleware('role:Employee')->group(function () {
 
-        Route::get('profile', function (RequestRequest $request) {
+        Route::get('profile', function () {
             $employeeId = Auth::user()->employee_id;
             $employee = Employee::findOrFail($employeeId);
             $schedule = Schedule::where('employee_id', $employee->id)->first();
+            $systemConfig = SystemConfig::first();
+            $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
+
+            $userVoted = Voting::where('month', date('Y-m'))
+                ->where('user_id', Auth::user()->id)
+                ->first();
 
             return view('profile.index', [
                 'employee' => $employee,
                 'schedule' => $schedule,
+                'userVoted' => !!$userVoted,
                 'weekdays' => Shift::$weekdays,
+                'isVotingOpen' => $isVotingOpen
             ]);
         })->name('profile.index');
 
@@ -113,6 +121,8 @@ Route::middleware('auth')->group(function () {
 
             return redirect()->route('profile.leave')->with('success', 'Leave request submitted successfully.');
         })->name('profile.leave');
+
+        Route::resource('employee-of-the-month', VotingController::class)->only(['create', 'store']);
     });
 
     // For Administrator
@@ -125,17 +135,34 @@ Route::middleware('auth')->group(function () {
         Route::resource('administration/departments', DepartmentController::class);
         Route::resource('administration/shifts', ShiftController::class);
         Route::resource('schedules', ScheduleController::class);
-        Route::resource('employee-of-the-month', VotingController::class);
+        Route::resource('employee-of-the-month', VotingController::class)->only(['index']);
 
         Route::get('monthly-employee-of-the-month', function (Illuminate\Http\Request $request) {
-            $month = $request->input('month') ?? now()->timezone('Asia/Manila')->format('Y-m');
-            $department = $request->input('department') ?? '';
-            $sort = $request->input('sort') ?? 'lastname';
-            $order = $request->input('order') ?? 'asc';
+            $year = $request->input('year') ?? date('Y');
 
-            $departments = Department::all();
+            if (!preg_match('/^\d{4}$/', $year) || (int)$year < 1900 || (int)$year > date('Y')) {
+                return redirect()->route('employee-of-the-month.monthly')->with('error', 'Invalid Year');
+            }
 
-            return view('eom-results.monthly', ['departments' => $departments]);
+            $yearlyEOM = [];
+
+            for ($month = 1; $month <= 12; $month++) {
+
+                $formattedMonth = str_pad($month, 2, '0', STR_PAD_LEFT);
+                $yearMonth = "{$year}-{$formattedMonth}";
+
+                $topEmployee = Employee::byMonth($yearMonth)
+                    ->orderBy('total_votes', 'desc')
+                    ->first();
+
+                if ($topEmployee && $topEmployee->total_votes > 0) {
+                    $yearlyEOM[$yearMonth] = $topEmployee;
+                } else {
+                    $yearlyEOM[$yearMonth] = null;
+                }
+            }
+
+            return view('eom-results.monthly', ['yearlyEOM' => $yearlyEOM, 'currentYear' => $year]);
         })->name('employee-of-the-month.monthly');
 
         Route::get('reports', function () {
@@ -197,8 +224,14 @@ Route::middleware('auth')->group(function () {
             return view('administration.leave-request', ['config' => $config]);
         })->name('administration.leave-request.index');
 
+        Route::get('administration/eom-voting', function () {
+            $config = SystemConfig::first();
+            return view('administration.eom-voting', ['config' => $config]);
+        })->name('administration.eom-voting');
+
         Route::put('administration/leave-request/max-credits', [LeaveRequestController::class, 'updateMaxCredits'])->name('leave-request.updateMaxCredits');
         Route::put('administration/leave-request/max-days', [LeaveRequestController::class, 'updateMaxDays'])->name('leave-request.updateMaxDays');
+        Route::put('administration/eom-voting', [VotingController::class, 'updateEOMVoting'])->name('eom-voting.updateVoting');
 
 
         Route::get('leave-requests', function () {

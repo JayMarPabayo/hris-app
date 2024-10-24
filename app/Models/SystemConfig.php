@@ -12,6 +12,7 @@ class SystemConfig extends Model
     protected $fillable = [
         'maxCredits',
         'maxDays',
+        'eomVoting',
     ];
 
 
@@ -22,5 +23,10 @@ class SystemConfig extends Model
             ->count();
 
         return $this->maxCredits - $totalLeaveRequests;
+    }
+
+    public function isVotingOpen()
+    {
+        return $this->eomVoting;
     }
 }

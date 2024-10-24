@@ -3,12 +3,22 @@
     <div class="flex items-center gap-x-2 mb-10">
         <h3 class="text-sm font-medium text-teal-800">{{ $employee->department->name }}</h3>
         <h3 class="text-sm font-medium text-slate-400">{{ $employee->designation }}</h3>
-        <div class="ms-auto flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
-            <x-carbon-request-quote class="h-5" />
-            <a href="{{ route('profile.leave') }}" class="border-none bg-none underline">
-                Request Leave
-            </a>
-        </div>
+        <section class="ms-auto flex gap-x-4">
+            <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+                <x-carbon-request-quote class="h-5" />
+                <a href="{{ route('profile.leave') }}" class="border-none bg-none underline">
+                    Request Leave
+                </a>
+            </div>
+            @if (!$userVoted && $isVotingOpen)
+                <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+                    <x-carbon-policy class="h-5" />
+                    <a href="{{ route('employee-of-the-month.create') }}" class="border-none bg-none underline">
+                        EOM Voting
+                    </a>
+                </div>
+            @endif
+        </section>
     </div>
     
 

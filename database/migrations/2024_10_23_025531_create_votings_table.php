@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('votings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->string('month', 7); // Storing in 'YYYY-MM' format (year-month)
-            $table->text('remarks');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('month', 7);
+            $table->string('remarks');
             $table->timestamps();
         });
     }

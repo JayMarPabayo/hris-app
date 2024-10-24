@@ -11,6 +11,13 @@ class Voting extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'employee_id',
+        'user_id',
+        'month',
+        'remarks',
+    ];
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

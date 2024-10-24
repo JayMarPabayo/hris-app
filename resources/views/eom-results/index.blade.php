@@ -4,7 +4,7 @@
         <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-calendar class="h-5" />
             <a href="{{ route('employee-of-the-month.monthly') }}" class="border-none bg-none underline">
-                Monthly Results
+                Yearly Records
             </a>
         </div>
         
@@ -20,23 +20,24 @@
         <table>
             <thead>
                 <tr class="bg-slate-300">
-                    <th>ID</th>
                     <th>Employee</th>
-                    <th>Remarks</th>
+                    <th class="text-center">Total Votes</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($votes as $index => $vote)
+                @forelse ($employees as $index => $employee)
                     <tr class="data-row">
-                        <td>{{ $vote->employee_id }}</td>
                         <td class="max-w-32">
-                            <div class="text-sm font-medium">{{ "{$vote->employee->lastname}, {$vote->employee->firstname} " . strtoupper(substr($vote->employee->middlename, 0, 1)) . "." }}</div>
+                            <div class="text-sm font-medium">{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</div>
                             <span class="block text-teal-700">
-                                {{ $vote->employee->department->name }}
+                                {{ $employee->department->name }}
                             </span>
                             <span class="block text-slate-500/70 truncate">
-                                {{ $vote->employee->designation }}
+                                {{ $employee->designation }}
                             </span>
+                        </td>
+                        <td class="text-center">
+                            <p class="text-lg font-medium">{{ $employee->total_votes }}</p>
                         </td>
                     </tr>
                 @empty
@@ -48,9 +49,9 @@
                 @endforelse
             </tbody>
         </table>
-    @if ($votes->count())
+    @if ($employees->count())
         <div class="text-xs mt-4">
-            {{ $votes->links()}}
+            {{ $employees->links()}}
         </div>
     @endif
 </x-layout>
