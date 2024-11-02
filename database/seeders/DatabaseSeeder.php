@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
         Department::factory(6)->create();
         SystemConfig::factory()->create([
             'maxCredits' => 5,
-            'maxDays' => 5,
             'eomVoting' => false,
         ]);
 

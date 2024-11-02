@@ -19,20 +19,6 @@ class LeaveRequestController extends Controller
         $config->save();
 
         // Redirect back with success message
-        return redirect()->route('leave-request.index')->with('success', 'Max Credits updated successfully!');
-    }
-
-    public function updateMaxDays(Request $request)
-    {
-        $request->validate([
-            'maxDays' => 'required|integer|min:1',
-        ]);
-
-        $config = SystemConfig::first();
-
-        $config->maxDays = $request->input('maxDays');
-        $config->save();
-
-        return redirect()->route('leave-request.index')->with('success', 'Max Leave Days updated successfully!');
+        return redirect()->route('administration.leave-request.index')->with('success', 'Max Credits updated successfully!');
     }
 }

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('system_configs', function (Blueprint $table) {
             $table->id();
             $table->integer(column: 'maxCredits')->nullable();
-            $table->integer(column: 'maxDays')->nullable();
             $table->boolean('eomVoting')->default(false);
             $table->timestamps();
         });

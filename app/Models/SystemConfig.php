@@ -11,18 +11,20 @@ class SystemConfig extends Model
 
     protected $fillable = [
         'maxCredits',
-        'maxDays',
         'eomVoting',
     ];
 
 
     public function getRemainingCreditsForEmployee($userId)
     {
-        $totalLeaveRequests = LeaveRequest::where('user_id', $userId)
-            ->where('status', '!=', 'rejected')
-            ->count();
+        $totalLeaveDays = LeaveRequest::where('user_id', $userId)
+            ->where('status', 'approved')
+            ->get()
+            ->sum(function ($leaveRequest) {
+                return $leaveRequest->start->diffInDays($leaveRequest->end) + 1;
+            });
 
-        return $this->maxCredits - $totalLeaveRequests;
+        return $this->maxCredits - $totalLeaveDays;
     }
 
     public function isVotingOpen()

@@ -18,6 +18,12 @@ class LeaveRequest extends Model
         'status',
     ];
 
+    protected $casts = [
+        'start' => 'date',
+        'end' => 'date',
+    ];
+
+
     public function user()
     {
         return $this->belongsTo(related: User::class);

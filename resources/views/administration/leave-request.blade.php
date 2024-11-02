@@ -17,20 +17,6 @@
                     <button type="submit" class="btn" >Update</button>
                 </div>
             </form>
-            <form action="{{ route('leave-request.updateMaxDays') }}" method="POST" class="ps-3">
-                @csrf
-                @method("PUT")
-                <div class="flex items-end gap-x-3">
-                    <div class="w-1/3">
-                        <label for="maxDays">Maximum No. Days for Leave</label>
-                        <input type="number" name="maxDays"
-                        placeholder="No. of Days"
-                        value="{{ old('maxDays', $config->maxDays) }}"
-                        @class(['border-red-400' => $errors->has('maxDays')])/>
-                    </div>
-                    <button type="submit" class="btn" >Update</button>
-                </div>
-            </form>
         </main>
     </div>
 </x-layout>

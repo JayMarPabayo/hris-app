@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\NegativeVoting;
 use App\Models\SystemConfig;
 use Illuminate\Http\Request;
 use App\Models\Voting;
@@ -16,15 +17,15 @@ class VotingController extends Controller
     public function index(Request $request)
     {
 
-        $userVoted = Voting::where('month', date('Y-m'))
-            ->where('user_id', Auth::user()->id)
-            ->first();
+        // $userVoted = Voting::where('month', date('Y-m'))
+        //     ->where('user_id', Auth::user()->id)
+        //     ->first();
 
-        if ($userVoted) {
-            abort(403, 'You have already voted for this month.');
-        }
+        // if ($userVoted) {
+        //     abort(403, 'You have already voted for this month.');
+        // }
 
-        $searchKey = $request->input('search');
+        // $searchKey = $request->input('search');
 
         $currentMonth = date('Y-m');
 
@@ -34,14 +35,18 @@ class VotingController extends Controller
             $currentMonth = $month;
         }
 
-        $employees = Employee::when($searchKey, fn($query, $searchKey) => $query->search($searchKey))
-            ->byMonth($currentMonth)
+        $employees = Employee::query()->byMonth($currentMonth)
+            ->orderBy('total_votes', 'desc')
+            ->paginate(15);
+
+        $negativeEmployees = Employee::query()->byNegativeMonth($currentMonth)
             ->orderBy('total_votes', 'desc')
             ->paginate(15);
 
         return view('eom-results.index', [
             'employees' => $employees,
-            'currentMonth' => $currentMonth
+            'negativeEmployees' => $negativeEmployees,
+            'currentMonth' => $currentMonth,
         ]);
     }
     /**
@@ -54,12 +59,16 @@ class VotingController extends Controller
             ->where('user_id', Auth::user()->id)
             ->first();
 
+        $userNegativeVoted = NegativeVoting::where('month', date('Y-m'))
+            ->where('user_id', Auth::user()->id)
+            ->first();
+
         $systemConfig = SystemConfig::first();
         $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
 
-        if ($userVoted) {
-            abort(403, 'You have already voted for this month.');
-        }
+        // if ($userVoted && $userNegativeVoted) {
+        //     abort(403, 'You have already voted for this month.');
+        // }
 
         if (!$isVotingOpen) {
             abort(403, 'Voting is still not open.');
@@ -74,7 +83,11 @@ class VotingController extends Controller
             ->orderBy('lastname')
             ->paginate(15);
 
-        return view('eom-results.create', ['employees' => $employees]);
+        return view('eom-results.create', [
+            'employees' => $employees,
+            'userVoted' => !!$userVoted,
+            'userNegativeVoted' => !!$userNegativeVoted,
+        ]);
     }
     /**
      * Store a newly created resource in storage.
@@ -93,10 +106,14 @@ class VotingController extends Controller
             ->where('user_id', Auth::user()->id)
             ->first();
 
+        $existingNegativeVote = NegativeVoting::where('month', $validatedData['month'])
+            ->where('user_id', Auth::user()->id)
+            ->first();
+
         $systemConfig = SystemConfig::first();
         $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
 
-        if ($existingVote) {
+        if ($existingVote && $existingNegativeVote) {
             abort(403, 'You have already voted for this month.');
         }
 
@@ -125,7 +142,7 @@ class VotingController extends Controller
 
         $message = $config->eomVoting ? 'EOM Voting is now open!' : 'EOM Voting is now closed.';
 
-        return redirect()->route('employee-of-the-month.index')->with('success',  $message);
+        return redirect()->route(route: 'evaluations.index')->with('success',  $message);
     }
 
     /**

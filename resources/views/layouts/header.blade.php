@@ -28,10 +28,10 @@
                         {{ request()->routeIs('requests.*') ? 'text-slate-400' : '' }}">
                             Leave Requests
                         </a>
-                        <a href="{{ route('employee-of-the-month.index') }}"
+                        <a href="{{ route('evaluations.index') }}"
                         class="hover:text-slate-400 duration-200
-                        {{ request()->routeIs('employee-of-the-month.*') ? 'text-slate-400' : '' }}">
-                            Employee of the Month
+                        {{ request()->routeIs('evaluations.*') ? 'text-slate-400' : '' }}">
+                            Evaluations
                         </a>
                         <a href="{{ route('reports.index') }}"
                         class="hover:text-slate-400 duration-200

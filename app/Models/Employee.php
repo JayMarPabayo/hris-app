@@ -117,6 +117,11 @@ class Employee extends Model
         return $this->hasMany(Voting::class);
     }
 
+    public function negativeVotings(): HasMany
+    {
+        return $this->hasMany(NegativeVoting::class);
+    }
+
     public function scopeSearch(Builder $query, string $keyword): Builder
     {
         return $query->where(function ($query) use ($keyword) {
@@ -154,15 +159,36 @@ class Employee extends Model
             }]);
     }
 
+    public function scopeByNegativeMonth(Builder $query, string $month): Builder
+    {
+
+        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $endOfMonth = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+        return $query->with(['negativeVotings' => function ($query) use ($startOfMonth, $endOfMonth) {
+            $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+        }])
+            ->withCount(['negativeVotings as total_votes' => function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+            }]);
+    }
+
     public function leaveRequests()
     {
+        // Retrieve the user associated with this employee
         $user = User::where('employee_id', $this->id)->first();
 
         if ($user) {
-            return LeaveRequest::where('user_id', $user->id)->where('status', '!=', 'rejected')->count();
+            // Sum the days of approved leave requests
+            return LeaveRequest::where('user_id', $user->id)
+                ->where('status', 'approved')
+                ->get()
+                ->sum(function ($leaveRequest) {
+                    return $leaveRequest->start->diffInDays($leaveRequest->end) + 1; // +1 to include both start and end dates
+                });
         }
 
-        return 0;
+        return 0; // No leave days if no user or approved leave requests
     }
 
 
@@ -171,6 +197,7 @@ class Employee extends Model
         $config = SystemConfig::first();
         $maxCredits = $config->maxCredits;
 
+        // Get the total leave days instead of the count
         $totalLeaveDays = $this->leaveRequests();
 
         return $maxCredits - $totalLeaveDays;

@@ -109,8 +109,9 @@
                             <p class="font-normal text-slate-500" style="word-wrap: break-word; word-break: break-word; white-space: normal;">{{ $request->custom_reason }}</p>
                         @endif
                     </td>
-                    <td class="align-top">{{ $request->start }}</td>
-                    <td class="align-top">{{ $request->end }}</td>
+                    <td class="align-top">{{ \Carbon\Carbon::parse($request->start)->format('d F Y') }}</td>
+                    <td class="align-top">{{ \Carbon\Carbon::parse($request->end)->format('d F Y') }}</td>
+                    
                     @php
                         $bgColor = '';
                         switch($request->status) {

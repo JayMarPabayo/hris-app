@@ -10,7 +10,7 @@
                     Request Leave
                 </a>
             </div>
-            @if (!$userVoted && $isVotingOpen)
+            @if ($isVotingOpen)
                 <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
                     <x-carbon-policy class="h-5" />
                     <a href="{{ route('employee-of-the-month.create') }}" class="border-none bg-none underline">
@@ -48,7 +48,7 @@
             @endphp
 
             <tr class="data-row">
-                @foreach ($weekdays as $day)
+                {{-- @foreach ($weekdays as $day)
                     <td class="text-center">
                         @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
                             <span class="time-style bg-teal-700/70" style="margin-inline: 0">
@@ -56,7 +56,47 @@
                             </span>
                         @endif
                     </td>
-                @endforeach
+                @endforeach --}}
+                @foreach ($weekdays as $day)
+                            <td class="text-center">
+                                {{-- @if (is_null($selectedDay) || $selectedDay === $day)  --}}
+                                    @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
+                                        @php
+
+                                            $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
+                                                            
+                                            if ($customTime) {
+                                                // -- Use custom time if available
+                                                $startTime = new DateTime($customTime['start_time']);
+                                                $endTime = new DateTime($customTime['end_time']);
+                                            } else {
+                                                // -- Otherwise, use default shift time
+                                                $startTime = new DateTime($schedule->shift->start_time);
+                                                $endTime = new DateTime($schedule->shift->end_time);
+                                            }
+
+                                            $startHour = $startTime->format('H');
+                                            $timePeriod = '';
+                        
+                                            if ($startHour >= 3 && $startHour < 11) {
+                                                $timePeriod = 'MORNING';
+                                            } elseif ($startHour >= 11 && $startHour < 15) {
+                                                $timePeriod = 'NOON';
+                                            } elseif ($startHour >= 15 && $startHour < 17) {
+                                                $timePeriod = 'NIGHT';
+                                            } else {
+                                                $timePeriod = 'DAWN';
+                                            }
+                                        @endphp
+                
+                                        <p class="mb-1 text-slate-700/70">{{ $timePeriod }}</p>
+                                        <span class="time-style bg-teal-700/70" style="margin-inline: 0">
+                                            {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                                        </span>
+                                    @endif
+                                {{-- @endif --}}
+                            </td>
+                        @endforeach
             </tr>
         </tbody>
     </table>

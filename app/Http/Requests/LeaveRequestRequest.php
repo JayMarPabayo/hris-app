@@ -39,15 +39,6 @@ class LeaveRequestRequest extends FormRequest
                 'required',
                 'date',
                 'after_or_equal:start',
-                function ($attribute, $value, $fail) use ($config) {
-                    $start = $this->input('start');
-                    $end = $value;
-                    $maxDays = $config->maxDays;
-                    $diffInDays = \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1;
-                    if ($diffInDays > ($maxDays)) {
-                        $fail("The leave duration cannot exceed {$maxDays} days.");
-                    }
-                }
             ],
             'status' => 'string',
         ];

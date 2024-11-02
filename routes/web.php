@@ -18,12 +18,15 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Employee;
 use App\Models\Department;
 use App\Models\LeaveRequest;
+use App\Models\NegativeVoting;
 use App\Models\Shift;
 use App\Models\Schedule;
 use App\Models\SystemConfig;
 use App\Models\User;
 use App\Models\Voting;
 use Illuminate\Validation\Rule;
+
+use Carbon\Carbon;
 
 // -- GUEST
 
@@ -81,16 +84,22 @@ Route::middleware('auth')->group(function () {
             $systemConfig = SystemConfig::first();
             $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
 
-            $userVoted = Voting::where('month', date('Y-m'))
-                ->where('user_id', Auth::user()->id)
-                ->first();
+            // $userVoted = Voting::where('month', date('Y-m'))
+            //     ->where('user_id', Auth::user()->id)
+            //     ->first();
+            // $userNegativeVoted = NegativeVoting::where('month', date('Y-m'))
+            //     ->where('user_id', Auth::user()->id)
+            //     ->first();
+
+
 
             return view('profile.index', [
                 'employee' => $employee,
                 'schedule' => $schedule,
-                'userVoted' => !!$userVoted,
+                // 'userVoted' => !!$userVoted,
+                // 'userNegativeVoted' => !!$userNegativeVoted,
                 'weekdays' => Shift::$weekdays,
-                'isVotingOpen' => $isVotingOpen
+                'isVotingOpen' => $isVotingOpen,
             ]);
         })->name('profile.index');
 
@@ -110,9 +119,21 @@ Route::middleware('auth')->group(function () {
         Route::post('profile/leave-request', function (LeaveRequestRequest $request) {
             $userId = Auth::user()->id;
             $config = SystemConfig::first();
+
+            if (!$config) {
+                return redirect()->route('profile.leave')
+                    ->with('error', "System configuration is missing.");
+            }
+
+
             $remainingCredits = $config->getRemainingCreditsForEmployee($userId);
 
-            if ($remainingCredits <= 0) {
+            $startDate = Carbon::parse($request->input('start'));
+            $endDate = Carbon::parse($request->input('end'));
+            $daysRequested = $startDate->diffInDays($endDate) + 1;
+
+
+            if (($remainingCredits - $daysRequested) < 0) {
                 return redirect()->route('profile.leave')
                     ->with('error', "Not enough leave credits.");
             }
@@ -123,6 +144,35 @@ Route::middleware('auth')->group(function () {
         })->name('profile.leave');
 
         Route::resource('employee-of-the-month', VotingController::class)->only(['create', 'store']);
+
+        Route::post('negative-employee-of-the-month', function (RequestRequest $request) {
+            $validatedData = $request->validate([
+                'employee_id' => 'required|exists:employees,id',
+                'month' => 'required|date_format:Y-m',
+                'remarks' => 'nullable|string',
+            ]);
+
+            $validatedData['user_id'] = Auth::user()->id;
+
+            $existingVote = NegativeVoting::where('month', $validatedData['month'])
+                ->where('user_id', Auth::user()->id)
+                ->first();
+
+            $systemConfig = SystemConfig::first();
+            $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
+
+            if ($existingVote) {
+                abort(403, 'You have already voted for this month.');
+            }
+
+            if (!$isVotingOpen) {
+                abort(403, 'Voting is still not open.');
+            }
+
+            NegativeVoting::create($validatedData);
+
+            return redirect()->route('profile.index')->with('success', 'Your vote has been submitted!');
+        })->name('negative.voting');
     });
 
     // For Administrator
@@ -135,9 +185,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('administration/departments', DepartmentController::class);
         Route::resource('administration/shifts', ShiftController::class);
         Route::resource('schedules', ScheduleController::class);
-        Route::resource('employee-of-the-month', VotingController::class)->only(['index']);
+        Route::resource('evaluations', VotingController::class)->only(['index']);
 
-        Route::get('monthly-employee-of-the-month', function (Illuminate\Http\Request $request) {
+        Route::get('monthly-evaluations', function (Illuminate\Http\Request $request) {
             $year = $request->input('year') ?? date('Y');
 
             if (!preg_match('/^\d{4}$/', $year) || (int)$year < 1900 || (int)$year > date('Y')) {
@@ -162,8 +212,26 @@ Route::middleware('auth')->group(function () {
                 }
             }
 
-            return view('eom-results.monthly', ['yearlyEOM' => $yearlyEOM, 'currentYear' => $year]);
-        })->name('employee-of-the-month.monthly');
+            $negativeYearlyEOM = [];
+
+            for ($month = 1; $month <= 12; $month++) {
+
+                $formattedMonth = str_pad($month, 2, '0', STR_PAD_LEFT);
+                $yearMonth = "{$year}-{$formattedMonth}";
+
+                $topEmployee = Employee::byNegativeMonth($yearMonth)
+                    ->orderBy('total_votes', 'desc')
+                    ->first();
+
+                if ($topEmployee && $topEmployee->total_votes > 0) {
+                    $negativeYearlyEOM[$yearMonth] = $topEmployee;
+                } else {
+                    $negativeYearlyEOM[$yearMonth] = null;
+                }
+            }
+
+            return view('eom-results.monthly', ['yearlyEOM' => $yearlyEOM, 'negativeYearlyEOM' => $negativeYearlyEOM, 'currentYear' => $year]);
+        })->name('evaluations.monthly');
 
         Route::get('reports', function () {
             return view('reports.index');
@@ -230,7 +298,6 @@ Route::middleware('auth')->group(function () {
         })->name('administration.eom-voting');
 
         Route::put('administration/leave-request/max-credits', [LeaveRequestController::class, 'updateMaxCredits'])->name('leave-request.updateMaxCredits');
-        Route::put('administration/leave-request/max-days', [LeaveRequestController::class, 'updateMaxDays'])->name('leave-request.updateMaxDays');
         Route::put('administration/eom-voting', [VotingController::class, 'updateEOMVoting'])->name('eom-voting.updateVoting');
 
 
@@ -245,6 +312,26 @@ Route::middleware('auth')->group(function () {
         })->name('requests.destroy');
 
         Route::put('leave-requests/{request}', function (LeaveRequest $request) {
+
+            $userId = $request->user_id;
+            $config = SystemConfig::first();
+
+            if (!$config) {
+                return redirect()->route('profile.leave')
+                    ->with('error', "System configuration is missing.");
+            }
+
+            $startDate = Carbon::parse($request->start);
+            $endDate = Carbon::parse($request->end);
+            $daysRequested = $startDate->diffInDays($endDate) + 1;
+
+            $remainingCredits = $config->getRemainingCreditsForEmployee($userId);
+
+            if (($remainingCredits - $daysRequested) < 0) {
+                return redirect()->route('requests.index')
+                    ->with('error', "Not enough leave credits for the requested period.");
+            }
+
             $request->update(['status' => 'approved']);
             return redirect()->route('requests.index')->with('success', 'Leave request approved successfully.');
         })->name('requests.update');
