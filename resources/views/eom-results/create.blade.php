@@ -1,6 +1,7 @@
 <x-layout>
+    <h3 class="text-lg font-bold">{{ auth()->user()->employee->department->name }}</h3>
     <div class="flex gap-x-2 justify-between items-center mb-5">
-        <h3 class="text-base font-semibol">Employee of the Month</h3>
+        <h3 class="text-base font-semibol opacity-60">Employee of the Month</h3>
         <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-user-profile class="h-5" />
             <a href="{{ route('profile.index') }}" class="border-none bg-none underline">
@@ -18,7 +19,6 @@
             <tr class="bg-slate-300">
                 <th>ID</th>
                 <th>Name</th>
-                <th>Department</th>
                 <th>Designation</th>
                 <th class="text-center">
                     <p>Employee of the Month</p>
@@ -39,7 +39,6 @@
                 <tr class="data-row">
                     <td>{{ $employee->id }}</td>
                     <td>{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</td>
-                    <td>{{ $employee->department->name }}</td>
                     <td>{{ $employee->designation }}</td>
                     <td class="text-center">
                         <div x-data="{ openEdit: false }">

@@ -17,35 +17,29 @@ class VotingController extends Controller
     public function index(Request $request)
     {
 
-        // $userVoted = Voting::where('month', date('Y-m'))
-        //     ->where('user_id', Auth::user()->id)
-        //     ->first();
+        $currentMonth = $request->input('month') ?? date('Y-m');
 
-        // if ($userVoted) {
-        //     abort(403, 'You have already voted for this month.');
-        // }
+        $employeesByDepartment = Employee::query()
+            ->byMonth($currentMonth)
+            ->with('department')
+            ->get()
+            ->groupBy('department.name')
+            ->map(function ($employees) {
+                return $employees->sortByDesc('total_votes');
+            });
 
-        // $searchKey = $request->input('search');
-
-        $currentMonth = date('Y-m');
-
-        $month = $request->input('month');
-
-        if ($month) {
-            $currentMonth = $month;
-        }
-
-        $employees = Employee::query()->byMonth($currentMonth)
-            ->orderBy('total_votes', 'desc')
-            ->paginate(15);
-
-        $negativeEmployees = Employee::query()->byNegativeMonth($currentMonth)
-            ->orderBy('total_votes', 'desc')
-            ->paginate(15);
+        $negativeEmployeesByDepartment = Employee::query()
+            ->byNegativeMonth($currentMonth)
+            ->with('department')
+            ->get()
+            ->groupBy('department.name')
+            ->map(function ($employees) {
+                return $employees->sortByDesc('total_votes');
+            });
 
         return view('eom-results.index', [
-            'employees' => $employees,
-            'negativeEmployees' => $negativeEmployees,
+            'employeesByDepartment' => $employeesByDepartment,
+            'negativeEmployeesByDepartment' => $negativeEmployeesByDepartment,
             'currentMonth' => $currentMonth,
         ]);
     }
@@ -55,6 +49,7 @@ class VotingController extends Controller
     public function create(Request $request)
     {
 
+        $departmentId = Auth::user()->employee->department_id;
         $userVoted = Voting::where('month', date('Y-m'))
             ->where('user_id', Auth::user()->id)
             ->first();
@@ -80,6 +75,7 @@ class VotingController extends Controller
 
         $employees = Employee::when($searchKey, fn($query, $searchKey) => $query->search($searchKey))
             ->where('id', '!=', $loggedInEmployeeId)
+            ->where('department_id', $departmentId)
             ->orderBy('lastname')
             ->paginate(15);
 
