@@ -115,17 +115,7 @@
                                             $endTime = $customTime ? new DateTime($customTime['end_time']) : new DateTime($schedule->shift->end_time);
 
                                             $startHour = $startTime->format('H');
-                                            $timePeriod = '';
-
-                                            if ($startHour >= 3 && $startHour < 11) {
-                                                $timePeriod = 'MORNING';
-                                            } elseif ($startHour >= 11 && $startHour < 15) {
-                                                $timePeriod = 'NOON';
-                                            } elseif ($startHour >= 15 && $startHour < 17) {
-                                                $timePeriod = 'NIGHT';
-                                            } else {
-                                                $timePeriod = 'DAWN';
-                                            }
+                                            $timePeriod = $schedule->shift->name;
                                         @endphp
 
                                         <p class="mb-1 text-slate-700/70">{{ $timePeriod }}</p>
