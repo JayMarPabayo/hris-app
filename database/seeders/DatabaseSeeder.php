@@ -40,10 +40,10 @@ class DatabaseSeeder extends Seeder
         }
 
         // Employee::factory(1)->create();
-        Education::factory(12)->create();
-        Children::factory(10)->create();
-        Eligibilities::factory(10)->create();
-        WorkExperience::factory(10)->create();
+        // Education::factory(12)->create();
+        // Children::factory(10)->create();
+        // Eligibilities::factory(10)->create();
+        // WorkExperience::factory(10)->create();
 
         // $employees = Employee::take(1)->get();
 
