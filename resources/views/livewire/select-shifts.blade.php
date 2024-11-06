@@ -1,7 +1,12 @@
 <div class="my-4">
     <label for="shift_id">Select Shift</label>
     <div class="flex items-center gap-x-2">
-        <select wire:model.live="selectedShift" name="shift_id" class="w-full cursor-pointer">
+        <select 
+            wire:model.live="selectedShift" 
+            name="shift_id" 
+            class="w-full cursor-pointer"
+            @change="showCustomizeTime = false"
+        >
             <option value="" hidden selected>Select Shift</option>
             @foreach ($shifts as $item)
                 <option value="{{ $item->id }}">

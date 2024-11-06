@@ -71,37 +71,46 @@ class ScheduleController extends Controller
      */
     public function update(ScheduleRequest $request, Schedule $schedule)
     {
-
         $validatedData = $request->validated();
 
         if (!$request->has('dayoffs') || empty($request->dayoffs)) {
             $validatedData['dayoffs'] = [];
         }
 
+        $shiftChanged = $request->shift_id != $schedule->shift_id;
 
+        if ($shiftChanged) {
+            CustomTime::where('schedule_id', $schedule->id)->delete();
+        }
+
+        // Update the schedule with the validated data
         $schedule->update($validatedData);
 
-        $days = $request->input('day', []);
-        $startTimes = $request->input('start_time', []);
-        $endTimes = $request->input('end_time', []);
+        // Only process custom times if the shift did not change
+        if (!$shiftChanged) {
+            $days = $request->input('day', []);
+            $startTimes = $request->input('start_time', []);
+            $endTimes = $request->input('end_time', []);
 
-        foreach ($days as $index => $day) {
-            if (!empty($startTimes[$index]) && !empty($endTimes[$index])) {
-                CustomTime::updateOrCreate(
-                    [
-                        'day' => $day,
-                        'schedule_id' => $schedule->id,
-                    ],
-                    [
-                        'start_time' => $startTimes[$index],
-                        'end_time' => $endTimes[$index],
-                    ]
-                );
+            foreach ($days as $index => $day) {
+                if (!empty($startTimes[$index]) && !empty($endTimes[$index])) {
+                    CustomTime::updateOrCreate(
+                        [
+                            'day' => $day,
+                            'schedule_id' => $schedule->id,
+                        ],
+                        [
+                            'start_time' => $startTimes[$index],
+                            'end_time' => $endTimes[$index],
+                        ]
+                    );
+                }
             }
         }
 
         return redirect()->route('schedules.index')->with('success', 'Schedule successfully updated.');
     }
+
 
     /**
      * Remove the specified resource from storage.

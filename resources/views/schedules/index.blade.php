@@ -167,8 +167,8 @@
                                                 </span>
                                             </div>
 
-                                            <div class="flex gap-x-5">
-                                                <div class="min-w-80 mb-2">
+                                            <div class="flex gap-x-5" x-data="{ showCustomizeTime: true }">
+                                                <div :class="showCustomizeTime ? 'min-w-80' : 'w-full'" class="mb-2">
                                                     <input type="hidden" name="employee_id" value="{{ $schedule->employee_id }}">
                                                     
                                                     @livewire('select-shifts', ['shiftId' => $schedule->shift_id])
@@ -191,7 +191,7 @@
                                                     </div>
                                                 </div>
                                             
-                                                <div class="flex flex-col gap-y-2 justify-between py-2 px-4 rounded-md bg-emerald-500/20  mt-4 mb-2 ">
+                                                <div x-show="showCustomizeTime" class="flex flex-col gap-y-2 justify-between py-2 px-4 rounded-md bg-emerald-500/20  mt-4 mb-2 ">
                                                     <h5 class="text-xs">Customize Time</h5>
                                                     @foreach($weekdays as $day)
                                                         @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
