@@ -19,14 +19,14 @@ class ScheduleController extends Controller
     {
         $selectedDay = $request->input('day');
 
-        $schedules = Schedule::with(['employee.department', 'shift'])
+        $schedules = Schedule::with(['employee', 'shift'])
             ->when($selectedDay, function ($query, $selectedDay) {
                 return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
                     $shiftQuery->whereJsonContains('weekdays', $selectedDay);
                 });
             })
             ->get()
-            ->groupBy('employee.department.name');
+            ->groupBy('employee.designation');
 
         return view('schedules.index', [
             'schedules' => $schedules,

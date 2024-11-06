@@ -106,25 +106,17 @@
                         </td>
                         @foreach ($weekdays as $day)
                             <td class="text-center">
-                                {{-- @if (is_null($selectedDay) || $selectedDay === $day)  --}}
+                                {{-- Show time in/out only if selectedDay is null or matches the current day --}}
+                                @if (is_null($selectedDay) || $selectedDay === $day)
                                     @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
                                         @php
-
                                             $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
-                                                            
-                                            if ($customTime) {
-                                                // -- Use custom time if available
-                                                $startTime = new DateTime($customTime['start_time']);
-                                                $endTime = new DateTime($customTime['end_time']);
-                                            } else {
-                                                // -- Otherwise, use default shift time
-                                                $startTime = new DateTime($schedule->shift->start_time);
-                                                $endTime = new DateTime($schedule->shift->end_time);
-                                            }
+                                            $startTime = $customTime ? new DateTime($customTime['start_time']) : new DateTime($schedule->shift->start_time);
+                                            $endTime = $customTime ? new DateTime($customTime['end_time']) : new DateTime($schedule->shift->end_time);
 
                                             $startHour = $startTime->format('H');
                                             $timePeriod = '';
-                        
+
                                             if ($startHour >= 3 && $startHour < 11) {
                                                 $timePeriod = 'MORNING';
                                             } elseif ($startHour >= 11 && $startHour < 15) {
@@ -135,15 +127,16 @@
                                                 $timePeriod = 'DAWN';
                                             }
                                         @endphp
-                
+
                                         <p class="mb-1 text-slate-700/70">{{ $timePeriod }}</p>
                                         <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
                                             {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
                                         </span>
                                     @endif
-                                {{-- @endif --}}
+                                @endif
                             </td>
                         @endforeach
+
                         <td class="flex justify-center items-center gap-x-1 px-2" style="margin-top: 0.5rem;">
                             {{-- EDIT BUTTON --}}
                             <div x-data="{ openEdit: false }">
