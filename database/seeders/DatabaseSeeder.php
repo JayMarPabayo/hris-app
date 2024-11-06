@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create(['name' => 'Kentjohn A. Branzuela', 'username' => 'admin', 'role' => 'Administrator']);
+        User::factory()->create(['name' => 'Kentjohn A. Branzuela', 'email' => 'kentjohnbranzuela13@gmail.com', 'username' => 'admin', 'role' => 'Administrator']);
         Department::factory(6)->create();
         SystemConfig::factory()->create([
             'maxCredits' => 5,
@@ -39,19 +39,20 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        Employee::factory(10)->create();
+        Employee::factory(1)->create();
         Education::factory(12)->create();
         Children::factory(10)->create();
         Eligibilities::factory(10)->create();
         WorkExperience::factory(10)->create();
 
-        $employees = Employee::take(10)->get();
+        $employees = Employee::take(1)->get();
 
         foreach ($employees as $employee) {
 
             User::factory()->create([
                 'name' => "$employee->firstname $employee->lastname",
                 'username' => strtolower("$employee->firstname$employee->lastname"),
+                'email' => 'jaymarpabayo@gmail.com',
                 'role' => 'Employee',
                 'password' => Hash::make('password'),
                 'employee_id' => $employee->id,

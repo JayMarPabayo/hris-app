@@ -15,6 +15,14 @@
             Search<span class="text-lg leading-3">⌕</span>
         </button> --}}
         <a href="{{ route('schedules.create') }}" class="btn w-32">Add New ✚</a>
+        <form method="GET" action="{{ route('schedules.index') }}">
+            <select name="day" class="w-60" onchange="this.form.submit()">
+                <option value="" selected>All</option>
+                @foreach ($weekdays as $week)
+                    <option value="{{ $week }}" @selected($selectedDay === $week)>{{ $week }}</option>
+                @endforeach
+            </select>
+        </form>
     </form>
     @foreach ($schedules as $department => $departmentSchedules)
         <h1 class="text-2xl font-bold mt-8 mb-4">{{ $department }}</h1>

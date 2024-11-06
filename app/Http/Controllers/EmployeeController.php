@@ -77,6 +77,7 @@ class EmployeeController extends Controller
         User::create([
             'name' => "{$employee->firstname} {$employee->lastname}",
             'username' => $username,
+            'email' => $employee->email,
             'role' => 'Employee',
             'password' => Hash::make('password'),
             'employee_id' => $employee->id,
@@ -118,6 +119,14 @@ class EmployeeController extends Controller
     {
         $validatedData = $request->validated();
         $employee->update($validatedData);
+
+        $user = $employee->user;
+        if ($user) {
+            $user->update([
+                'name' => "{$employee->firstname} {$employee->lastname}",
+                'email' => $employee->email,
+            ]);
+        }
 
         // -- Update children if provided
         $employee->children()->delete();

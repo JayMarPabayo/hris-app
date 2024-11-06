@@ -17,26 +17,14 @@ class ScheduleController extends Controller
      */
     public function index(Request $request)
     {
-        // $searchKey = $request->input('search');
-        // $shiftId = $request->input('shift');
-        // $selectedDay = $request->input('day');
-
-        // $schedules = Schedule::when($shiftId, function ($query, $shiftId) {
-        //     return $query->where('shift_id', '=', $shiftId);
-        // })->when($searchKey, function ($query, $searchKey) {
-        //     return $query->search($searchKey);
-        // })
-        //     ->when($selectedDay, function ($query, $selectedDay) {
-        //         return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
-        //             $shiftQuery->whereJsonContains('weekdays', $selectedDay);
-        //         });
-        //     })
-        //     ->join('shifts', 'schedules.shift_id', '=', 'shifts.id')
-        //     ->orderBy('shifts.start_time', 'asc')
-        //     ->select('schedules.*', 'shifts.start_time', 'shifts.end_time', 'shifts.weekdays')
-        //     ->paginate(10);
+        $selectedDay = $request->input('day');
 
         $schedules = Schedule::with(['employee.department', 'shift'])
+            ->when($selectedDay, function ($query, $selectedDay) {
+                return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
+                    $shiftQuery->whereJsonContains('weekdays', $selectedDay);
+                });
+            })
             ->get()
             ->groupBy('employee.department.name');
 
@@ -44,9 +32,10 @@ class ScheduleController extends Controller
             'schedules' => $schedules,
             'shifts' => Shift::all(),
             'weekdays' => Shift::$weekdays,
-            // 'selectedDay' => $selectedDay
+            'selectedDay' => $selectedDay
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

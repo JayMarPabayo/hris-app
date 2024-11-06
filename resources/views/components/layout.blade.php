@@ -24,6 +24,14 @@
                     </div>
                 @endif
 
+                @if (session()->has('status'))
+                    <div x-show="flash" role="alert" class="relative mx-auto max-w-7xl bg-green-400/70 text-green-800 border border-green-800/30 tracking-wide text-sm py-2 px-5 rounded-md shadow-md mb-4">
+                        <strong class="block">Success:</strong>
+                        {{ session('status') }}
+                        <x-carbon-close @click="flash = false" class="w-7 absolute right-3 top-3 cursor-pointer hover:scale-105 active:scale-95" />
+                    </div>
+                @endif
+
                 @if (session()->has('error'))
                     <div x-show="flash" role="alert" class="relative mx-auto max-w-7xl bg-red-400/70 text-red-800 border border-red-800/30 tracking-wide text-sm py-2 px-5 rounded-md shadow-md mb-4">
                         <strong class="block">Error:</strong>

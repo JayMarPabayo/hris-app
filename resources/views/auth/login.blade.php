@@ -28,9 +28,11 @@
                 @class(['border-red-400' => $errors->has('password')])/>
             </div>
 
-            <div class="flex justify-start items-center gap-x-2 w-fit mb-5">
-                <input type="checkbox" name="remember" class="rounded-sm border border-slate-400 cursor-pointer">
+            <div class="flex items-center justify-start gap-x-2 w-full mb-5 px-2 py-1">
+                <input type="checkbox" name="remember" class="cursor-pointer w-fit" style="margin: 0;">
                 <label for="remember" class="whitespace-nowrap text-sm">Remember me?</label>
+
+                <a href="{{ route('password.request') }}" class="ms-auto text-sky-700 hover:underline">Forgot Password?</a>
             </div>
 
             <button type="submit" class="btn w-full text-lg">
