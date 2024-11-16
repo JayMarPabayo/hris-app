@@ -11,6 +11,9 @@ export default {
             gridColumn: {
                 "span-0.5": "span 0.5 / span 0.5",
             },
+            fontFamily: {
+                engagement: ["Engagement", "cursive"],
+            },
         },
     },
     plugins: [],

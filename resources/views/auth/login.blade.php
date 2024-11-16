@@ -1,9 +1,7 @@
 <x-layout>
     <div class="flex justify-stretch gap-x-2">
         <div class="w-1/2">
-            {{-- <h1>Cafe Leone Modern Restaurant</h1>
-            <h3>Ramon Chavez Street, Cagayan de Oro City</h3> --}}
-            <div class="px-2 py-10 bg-white rounded-md shadow-md flex justify-center items-center">
+            <div class="px-2 py-10 mt-5 bg-white rounded-md shadow-md flex justify-center items-center">
                 <img src="{{ asset('/assets/restaurant.jpg') }}" class="w-96" alt="restaurant-logo">
             </div>
         </div>

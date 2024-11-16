@@ -2,7 +2,7 @@
     <h3 class="text-lg font-semibold mb-1">{{ auth()->user()->name }}</h3>
     <div class="flex items-center gap-x-2 mb-10">
         <h3 class="text-sm font-medium text-teal-800">{{ $employee->department->name }}</h3>
-        <h3 class="text-sm font-medium text-slate-400">{{ $employee->designation }}</h3>
+        <h3 class="text-sm font-medium text-pink-800/70">{{ $employee->designation }}</h3>
         <section class="ms-auto flex gap-x-4">
             <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
                 <x-carbon-container-image-push-pull class="h-5" />

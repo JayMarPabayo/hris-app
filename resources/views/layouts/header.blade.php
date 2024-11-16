@@ -1,4 +1,4 @@
-<header class="bg-slate-700 text-white py-4 px-32 font-normal tracking-wide">
+<header class="bg-slate-700/90 text-white py-4 px-32 font-normal tracking-wide">
     <div class="container mx-auto flex items-center justify-between">
         {{-- Logo and Menu --}}
         <div class="flex items-center space-x-4">
@@ -49,12 +49,12 @@
                         
                     </nav>
                 @else
-                    <h2>Human Resource Information System</h2>
+                    <h2 class="font-engagement text-2xl tracking-wider">Human Resource Information System</h2>
                 @endif
                 
             @endauth
             @if (!auth()->user())
-                <h2>Human Resource Information System</h2>
+                <h2 class="font-engagement text-2xl tracking-wider">Human Resource Information System</h2>
             @endif
         </div>
         {{-- Username --}}
@@ -74,7 +74,7 @@
                                         Account
                                     </button>
                                     <div x-cloak x-show="openAccount" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                        <div class="w-2/5 bg-slate-100 pt-4 px-6 pb-3 rounded-lg text-slate-600">
+                                        <div class="w-2/5 bg-slate-100/90 pt-4 px-6 pb-3 rounded-lg text-slate-600">
                                             <form
                                             id="update-user-form"
                                             action="{{ route('auth.update', auth()->user()->id) }}"
@@ -83,7 +83,7 @@
                                                 @csrf
                                                 @method('PUT')
                                 
-                                                <h3 class="text-base font-semibold mb-3">Account</h3>
+                                                <h3 class="text-base font-semibold mb-3 text-pink-800/80">Account</h3>
 
                                                 <div class="h-1 border-t border-slate-600/50 mb-3"></div>
                                 
@@ -144,17 +144,17 @@
                                         Log out?
                                     </button>
                                     <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                        <div class="bg-white pt-4 px-4 pb-3 rounded-lg">
-                                            <p class="mb-4 text-lg text-rose-700/80">Are you sure you want to logout?</p>
+                                        <div class="bg-white pt-4 w-1/4 px-3 pb-3 rounded-lg">
+                                            <p class="mb-4 text-base text-rose-700/80">Are you sure you want to logout?</p>
                                             <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                                <button type="button" @click="open = false" class="btn">No</button>
-                                                <form id="auth-logout-form" action="{{ route('auth.logout') }}" method="POST">
+                                                <button type="button" @click="open = false" class="btn w-36">No</button>
+                                                <form id="auth-logout-form" action="{{ route('auth.logout') }}" method="POST" class="w-36">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button
                                                     type="submit"
                                                     x-on:click="submitting=true; document.getElementById('auth-logout-form').submit();"
-                                                    class="btn">
+                                                    class="btn w-full">
                                                         Yes
                                                     </button>
                                                 </form>
