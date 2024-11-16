@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('swap_requests', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('shift_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('coworker_id')->constrained('users')->cascadeOnDelete();
             $table->string('week');
-            $table->json('dayoffs')->nullable();
+            $table->string('status')->default('pending');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('swap_requests');
     }
 };

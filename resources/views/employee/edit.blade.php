@@ -151,7 +151,7 @@
 
             <div class="flex items-center gap-2 mb-2">
 
-                <div class="w-1/3">
+                {{-- <div class="w-1/3">
                     <label for="gsis">GSIS ID</label>
                     <input type="text" name="gsis"
                     value="{{ old('gsis', $employee->gsis) }}"
@@ -159,9 +159,9 @@
                     @error('gsis')
                         <p class="error">{{ $message }}</p>
                     @enderror
-                </div>
+                </div> --}}
 
-                <div class="w-1/3">
+                <div class="w-1/2">
                     <label for="pagibig">Pag-ibig ID</label>
                     <input type="text" name="pagibig"
                     value="{{ old('pagibig', $employee->pagibig) }}"
@@ -171,7 +171,7 @@
                     @enderror
                 </div>
 
-                <div class="w-1/3">
+                <div class="w-1/2">
                     <label for="philhealth">PhilHealth</label>
                     <input type="text" name="philhealth"
                     value="{{ old('philhealth', $employee->philhealth) }}"

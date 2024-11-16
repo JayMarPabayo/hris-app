@@ -54,10 +54,9 @@ class EmployeeFactory extends Factory
             'permanent_province' => $this->faker->state,
             'permanent_region' => $this->faker->stateAbbr,
             'permanent_zipcode' => $this->faker->postcode,
-            'height' => $this->faker->randomFloat(1, 1.5, 2), // height in meters
-            'weight' => $this->faker->randomFloat(1, 50, 100), // weight in kg
+            'height' => $this->faker->randomFloat(1, 1.5, 2),
+            'weight' => $this->faker->randomFloat(1, 50, 100),
             'bloodtype' => $this->faker->randomElement(Employee::$bloodtype),
-            'gsis' => $this->faker->unique()->numerify('##########'),
             'pagibig' => $this->faker->unique()->numerify('##########'),
             'philhealth' => $this->faker->unique()->numerify('##########'),
             'sss' => $this->faker->unique()->numerify('##########'),

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class Employee extends Model
 {
@@ -44,7 +45,6 @@ class Employee extends Model
         'height',
         'weight',
         'bloodtype',
-        'gsis',
         'pagibig',
         'philhealth',
         'sss',
@@ -201,5 +201,30 @@ class Employee extends Model
         $totalLeaveDays = $this->leaveRequests();
 
         return $maxCredits - $totalLeaveDays;
+    }
+
+    public function leaveRequestDates()
+    {
+        $userId = $this->user->id ?? User::where('employee_id', $this->id)->value('id');
+
+        if (!$userId) {
+            return collect([]);
+        }
+
+        $leaveRequests = LeaveRequest::where('user_id', $userId)
+            ->where('status', 'approved')
+            ->get(['start', 'end']);
+
+        $dates = [];
+
+        foreach ($leaveRequests as $leave) {
+            $period = CarbonPeriod::create($leave->start, $leave->end);
+
+            foreach ($period as $date) {
+                $dates[] = $date->format('Y-m-d');
+            }
+        }
+
+        return collect($dates)->unique()->values();
     }
 }

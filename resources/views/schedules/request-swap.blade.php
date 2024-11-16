@@ -1,50 +1,36 @@
 <x-layout>
-    <h3 class="text-lg font-semibold mb-1">{{ auth()->user()->name }}</h3>
-    <div class="flex items-center gap-x-2 mb-10">
-        <h3 class="text-sm font-medium text-teal-800">{{ $employee->department->name }}</h3>
-        <h3 class="text-sm font-medium text-slate-400">{{ $employee->designation }}</h3>
-        <section class="ms-auto flex gap-x-4">
-            <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
-                <x-carbon-container-image-push-pull class="h-5" />
-                <a href="{{ route('profile.swap-request') }}" class="border-none bg-none underline">
-                    Request Schedule Swap
-                </a>
-            </div>
-            @if ($employee->getRemainingCredits())
-                <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
-                    <x-carbon-request-quote class="h-5" />
-                    <a href="{{ route('profile.leave') }}" class="border-none bg-none underline">
-                        Request Leave
-                    </a>
-                </div>
-            @endif
-            @if ($isVotingOpen)
-                <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
-                    <x-carbon-policy class="h-5" />
-                    <a href="{{ route('employee-of-the-month.create') }}" class="border-none bg-none underline">
-                        EOM Voting
-                    </a>
-                </div>
-            @endif
-        </section>
+    <div class="flex justify-between">
+        <h3 class="text-lg font-semibold mb-3">Swap Schedule</h3>
+        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+            <x-carbon-user-profile class="h-5" />
+            <a href="{{ route('profile.index') }}" class="border-none bg-none underline">
+                Profile
+            </a>
+        </div>  
     </div>
-    
+    <section class="flex items-center gap-2 mb-4">
+        <form method="GET" action="{{ route('profile.swap-request') }}" class="flex items-center gap-x-2">
+            <select name="employee_id" class="w-80" >
+                <option value="" hidden disabled selected>Select Employee</option>
+                @foreach ($employees as $employee)
+                    <option value="{{  $employee->id }}" @selected($employee_id == $employee->id)>{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</option>
+                @endforeach
+            </select>
+            <input type="week" name="week" class="w-52" value="{{ $week ?? date('Y-\WW') }}">
+            <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Check</button>
+        </form>
+    </section>
 
-    <h3 class="text-sm mb-2">Schedules</h3>
-    <hr class="border-t border-slate-500/50 mb-4">
-
-
-    @php    
-        function getOrdinalSuffix($number) {
-            $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
-            if (($number % 100) >= 11 && ($number % 100) <= 13) {
-                return $number . 'th';
-            }
-            return $number . $ends[$number % 10];
-        }
-    @endphp
-    @forelse ($schedules as $schedule)
+    @if ($schedule)
         @php
+            function getOrdinalSuffix($number) {
+                $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
+                if (($number % 100) >= 11 && ($number % 100) <= 13) {
+                    return $number . 'th';
+                }
+                return $number . $ends[$number % 10];
+            }
+
             $weekString = $schedule->week;
 
             $date = new DateTime();
@@ -58,7 +44,6 @@
             $formattedWeek = getOrdinalSuffix($weekOfMonth);
         @endphp
 
-
         <div class="mb-4 flex text-sm items-center gap-x-2">
             <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
             <div><span class="font-semibold">{{ $month }} {{ $year }}</span> <span class="font-medium text-slate-500">{{ $formattedWeek }} Week</span></div>
@@ -70,7 +55,7 @@
             </span>
         </div>
 
-        <table class="mt-4 mb-10">
+        <table class="mt-4 mb-5">
             <thead>
                 <tr class="bg-slate-300">
                     @foreach ($weekdays as $day)
@@ -78,7 +63,7 @@
                             $date = new DateTime();
                             $date->setISODate(substr($schedule->week, 0, 4), substr($schedule->week, 6)); 
                             $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
-                            $actualDate = $date->format('Y-m-d');
+                            $actualDate = $date->format('Y-m-d'); // Get the actual date for this weekday
                         @endphp
                         <th class="text-center">
                             {{ $day }} <br>
@@ -131,13 +116,15 @@
                 </tr>
             </tbody>
         </table>
-    @empty
-        <div class="mb-4 flex text-sm items-center gap-x-2">
-            <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
-            <span class="font-medium rounded-sm text-teal-700/80">
-                No Schedule Yet
-            </span>
-        </div>
-    @endforelse
-    
+
+        <form action="{{ route('profile.swap-post') }}" method="post" class="flex justify-end">
+            @csrf
+            <input type="hidden" name="week" value="{{ $week ?? date('Y-\WW') }}">
+            <input type="hidden" name="employee" value="{{ $employee_id ?? '' }}">
+            <button type="submit" class="btn w-56">REQUEST SWAP</button>
+        </form>
+    @else
+        <div class="text-sm text-teal-800"></div>
+    @endif
+
 </x-layout>

@@ -64,7 +64,7 @@
                                 </button>
                                 <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                     <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                        <p class="mb-4">Rejection Confirmation</p>
+                                        <p class="mb-4 text-lg text-rose-700/80">Rejection Confirmation</p>
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                                             <button type="button" @click="open = false" class="btn">No</button>
                                             <form
@@ -90,7 +90,7 @@
                                 </button>
                                 <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                     <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                        <p class="mb-4">Approval Confirmation</p>
+                                        <p class="mb-4 text-lg text-emerald-700/80">Approval Confirmation</p>
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                                             <button type="button" @click="open = false" class="btn">No</button>
                                             <form

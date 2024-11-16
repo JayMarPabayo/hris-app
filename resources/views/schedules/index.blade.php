@@ -1,21 +1,10 @@
 <x-layout>
     <h3 class="text-base font-semibold mb-3">Schedules</h3>
 
-    <form method="GET" action="{{ route('schedules.index') }}" class="flex items-center gap-2 mb-4">
-        {{-- <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
-        <select name="shift" class="w-60">
-            <option value="" selected>All Shifts</option>
-            @foreach ($shifts as $shift)
-                <option value="{{ $shift->id }}" @selected(request('shift') == $shift->id)>
-                    {{ $shift->name }}
-                </option>
-            @endforeach
-        </select>
-        <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">
-            Search<span class="text-lg leading-3">⌕</span>
-        </button> --}}
+    <section class="flex items-center gap-2 mb-4">
         <a href="{{ route('schedules.create') }}" class="btn w-32">Add New ✚</a>
-        <form method="GET" action="{{ route('schedules.index') }}">
+        <form method="GET" action="{{ route('schedules.index') }}" class="flex items-center gap-x-2">
+            <input type="week" name="week" class="w-52" value="{{ $week ?? date('Y-\WW') }}"  onchange="this.form.submit()">
             <select name="day" class="w-60" onchange="this.form.submit()">
                 <option value="" selected>All</option>
                 @foreach ($weekdays as $week)
@@ -23,22 +12,37 @@
                 @endforeach
             </select>
         </form>
-    </form>
+        <div class="ms-auto relative flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+            <x-carbon-container-image-push-pull class="h-5" />
+            <a href="{{ route('schedules.swap.requests') }}" class="border-none bg-none underline">
+                Schedule Swap Requests
+            </a>
+            @if ($hasAnyPendingRequest)
+                <x-carbon-circle-solid class="h-3 fill-red-600 absolute top-0 -right-1" />
+            @endif
+        </div>
+    </section>
     @foreach ($schedules as $department => $departmentSchedules)
         <h1 class="text-2xl font-bold mt-8 mb-4">{{ $department }}</h1>
         <table class="w-full mb-8">
             <thead>
                 <tr class="bg-slate-300">
                     <th>Employee</th>
-                    @foreach ($weekdays as $day)
-
-                    <th class="text-center">
-                        <a href="{{ route('schedules.index', array_merge(request()->query(), ['day' => $day])) }}" class="hover:tracking-wider active:tracking-tighter duration-300
-                            {{-- {{ $selectedDay == $day ? 'text-sky-800 tracking-wider' : '' }} --}}
-                            ">
-                            {{ $day }}
-                        </a>
-                    </th>
+                    @foreach ($weekdays as $index => $day)
+                        @php
+                            
+                            $firstSchedule = $departmentSchedules->first(); 
+                            $date = new DateTime();
+                            $date->setISODate(substr($firstSchedule->week, 0, 4), substr($firstSchedule->week, 6)); 
+                            $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
+                            $actualDate = $date->format('Y-m-d'); 
+                        @endphp
+                        <th class="text-center">
+                            <a href="{{ route('schedules.index', array_merge(request()->query(), ['day' => $day])) }}" class="hover:tracking-wider active:tracking-tighter duration-300">
+                                {{ $day }} <br>
+                                <span class="text-[0.7rem] text-slate-400">{{ $actualDate }}</span>
+                            </a>
+                        </th>
                     @endforeach
                     <th class="text-center">Action</th>
                 </tr>
@@ -106,9 +110,8 @@
                         </td>
                         @foreach ($weekdays as $day)
                             <td class="text-center">
-                                {{-- Show time in/out only if selectedDay is null or matches the current day --}}
                                 @if (is_null($selectedDay) || $selectedDay === $day)
-                                    @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
+                                    @if (in_array($day, $schedule->shift->weekdays)  ?? [])
                                         @php
                                             $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
                                             $startTime = $customTime ? new DateTime($customTime['start_time']) : new DateTime($schedule->shift->start_time);
@@ -116,12 +119,22 @@
 
                                             $startHour = $startTime->format('H');
                                             $timePeriod = $schedule->shift->name;
-                                        @endphp
 
+                                            $date = new DateTime();
+                                            $date->setISODate(substr($firstSchedule->week, 0, 4), substr($firstSchedule->week, 6)); 
+                                            $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
+                                            $actualDate = $date->format('Y-m-d'); 
+                                        @endphp
                                         <p class="mb-1 text-slate-700/70">{{ $timePeriod }}</p>
-                                        <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
-                                            {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
-                                        </span>
+                                        @if (in_array($day, $schedule->dayoffs) || in_array($actualDate, $schedule->employee->leaveRequestDates()->toArray()))
+                                            <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
+                                                Dayoff
+                                            </span>
+                                        @else
+                                            <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
+                                                {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                                            </span>
+                                        @endif
                                     @endif
                                 @endif
                             </td>
@@ -157,17 +170,15 @@
                                                 </span>
                                             </div>
 
-                                            <div class="flex gap-x-5" x-data="{ showCustomizeTime: true }">
+                                            <div class="flex gap-x-5">
                                                 <div :class="showCustomizeTime ? 'min-w-80' : 'w-full'" class="mb-2">
-                                                    <input type="hidden" name="employee_id" value="{{ $schedule->employee_id }}">
-                                                    
-                                                    @livewire('select-shifts', ['shiftId' => $schedule->shift_id])
+                                                    <input type="hidden" name="employee_id" value="{{ $schedule->employee_id }}">    
                     
                                                     {{-- Add Dayoffs field --}}
                                                     <h5 class="text-xs mt-4">Day Offs</h5>
-                                                    <div class="border border-slate-200 p-2 grid grid-cols-2 gap-2">
+                                                    <div class="py-2 grid grid-cols-2 gap-2">
                                                         @foreach($weekdays as $day)
-                                                            <label class="flex justify-between items-center py-1 px-3 bg-slate-200 rounded-md shadow-sm cursor-pointer">
+                                                            <label class="flex justify-between items-center py-1 px-3 w-32 bg-slate-200 rounded-md shadow-sm cursor-pointer">
                                                                 <span class="text-xs font-medium">{{ $day }}</span>
                                                                 <input 
                                                                     type="checkbox" 
@@ -181,7 +192,7 @@
                                                     </div>
                                                 </div>
                                             
-                                                <div x-show="showCustomizeTime" class="flex flex-col gap-y-2 justify-between py-2 px-4 rounded-md bg-emerald-500/20  mt-4 mb-2 ">
+                                                <div class="flex flex-col gap-y-2 justify-between mt-4 mb-2 ">
                                                     <h5 class="text-xs">Customize Time</h5>
                                                     @foreach($weekdays as $day)
                                                         @if (in_array($day, $schedule->shift->weekdays) && !in_array($day, $schedule->dayoffs ?? []))
@@ -270,12 +281,5 @@
             </tbody>
         </table>
     @endforeach
-    
-    
-    {{-- @if ($schedules->count())
-        <div class="text-xs mt-4">
-            {{ $schedules->links()}}
-        </div>
-    @endif --}}
     
 </x-layout>

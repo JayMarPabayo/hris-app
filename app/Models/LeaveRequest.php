@@ -28,4 +28,9 @@ class LeaveRequest extends Model
     {
         return $this->belongsTo(related: User::class);
     }
+
+    public static function hasAnyPendingRequest(): bool
+    {
+        return self::where('status', 'pending')->exists();
+    }
 }

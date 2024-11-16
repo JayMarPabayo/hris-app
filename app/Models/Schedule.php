@@ -15,7 +15,8 @@ class Schedule extends Model
     protected $fillable = [
         'shift_id',
         'employee_id',
-        'dayoffs'
+        'week',
+        'dayoffs',
     ];
 
     protected $casts = [

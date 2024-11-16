@@ -47,75 +47,76 @@
         <div class="col-span-4 text-slate-800 font-semibold">
             {{ $employee->birthplace ?? "N/A"}}
         </div>
-        <div class="col-span-2 text-slate-500 tracking-wider text-xs">
+        {{-- <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           GSIS No.
         </div>
         <div class="col-span-3 text-slate-800 font-semibold">
             {{ $employee->gsis ?? "N/A"}}
-        </div>
-       {{-- 5th Row --}}
+        </div> --}}
+
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           Civil Status
         </div>
-        <div class="col-span-4 text-slate-800 font-semibold">
+        <div class="col-span-3 text-slate-800 font-semibold">
             {{ $employee->civilstatus ?? "N/A"}}
         </div>
+               {{-- 5th Row --}}
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           Pag-ibig No.
         </div>
-        <div class="col-span-3 text-slate-800 font-semibold">
+        <div class="col-span-4 text-slate-800 font-semibold">
             {{ $employee->pagibig ?? "N/A"}}
         </div>
         {{-- 6th Row --}}
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           Citizenship
         </div>
-        <div class="col-span-4 text-slate-800 font-semibold">
+        <div class="col-span-3 text-slate-800 font-semibold">
             {{ $employee->citizenship ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           PhilHealth No.
         </div>
-        <div class="col-span-3 text-slate-800 font-semibold">
+        <div class="col-span-4 text-slate-800 font-semibold">
             {{ $employee->philhealth ?? "N/A"}}
         </div>
         {{-- 7th Row --}}
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           Blood Type
         </div>
-        <div class="col-span-4 text-slate-800 font-semibold">
+        <div class="col-span-3 text-slate-800 font-semibold">
             {{ $employee->bloodtype ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           SSS No.
         </div>
-        <div class="col-span-3 text-slate-800 font-semibold">
+        <div class="col-span-4 text-slate-800 font-semibold">
             {{ $employee->sss ?? "N/A"}}
         </div>
         {{-- 8th Row --}}
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           Height (m)
         </div>
-        <div class="col-span-4 text-slate-800 font-semibold">
+        <div class="col-span-3 text-slate-800 font-semibold">
             {{ $employee->height ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           TIN No.
         </div>
-        <div class="col-span-3 text-slate-800 font-semibold">
+        <div class="col-span-4 text-slate-800 font-semibold">
             {{ $employee->tin ?? "N/A"}}
         </div>
         {{-- 9th Row --}}
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           Weight (kg)
         </div>
-        <div class="col-span-4 text-slate-800 font-semibold">
+        <div class="col-span-3 text-slate-800 font-semibold">
             {{ number_format($employee->weight, 2) ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">
           Agency Employee No.
         </div>
-        <div class="col-span-3 text-slate-800 font-semibold">
+        <div class="col-span-4 text-slate-800 font-semibold">
             {{ $employee->agencynumber ?? "N/A"}}
         </div>
     </div>

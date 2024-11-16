@@ -24,9 +24,12 @@
                             Schedules
                         </a>
                         <a href="{{ route('requests.index') }}"
-                        class="hover:text-slate-400 duration-200
+                        class="relative hover:text-slate-400 duration-200
                         {{ request()->routeIs('requests.*') ? 'text-slate-400' : '' }}">
-                            Leave Requests
+                            <span>Leave Requests</span>
+                            @if(App\Models\LeaveRequest::hasAnyPendingRequest())
+                                <x-carbon-circle-solid class="h-3 fill-red-600 absolute -top-1 -right-1" />
+                            @endif
                         </a>
                         <a href="{{ route('evaluations.index') }}"
                         class="hover:text-slate-400 duration-200
@@ -142,7 +145,7 @@
                                     </button>
                                     <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                         <div class="bg-white pt-4 px-4 pb-3 rounded-lg">
-                                            <p class="mb-4 text-slate-800">Are you sure you want to Log out?</p>
+                                            <p class="mb-4 text-lg text-rose-700/80">Are you sure you want to logout?</p>
                                             <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                                                 <button type="button" @click="open = false" class="btn">No</button>
                                                 <form id="auth-logout-form" action="{{ route('auth.logout') }}" method="POST">

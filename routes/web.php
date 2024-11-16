@@ -7,6 +7,7 @@ use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ShiftController;
 
+use App\Models\SwapRequest;
 use Illuminate\Http\Request as RequestRequest;
 use App\Http\Requests\LeaveRequestRequest;
 
@@ -130,24 +131,13 @@ Route::middleware('auth')->group(function () {
         Route::get('profile', function () {
             $employeeId = Auth::user()->employee_id;
             $employee = Employee::findOrFail($employeeId);
-            $schedule = Schedule::where('employee_id', $employee->id)->first();
+            $schedules = Schedule::where('employee_id', $employee->id)->get();
             $systemConfig = SystemConfig::first();
             $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
 
-            // $userVoted = Voting::where('month', date('Y-m'))
-            //     ->where('user_id', Auth::user()->id)
-            //     ->first();
-            // $userNegativeVoted = NegativeVoting::where('month', date('Y-m'))
-            //     ->where('user_id', Auth::user()->id)
-            //     ->first();
-
-
-
             return view('profile.index', [
                 'employee' => $employee,
-                'schedule' => $schedule,
-                // 'userVoted' => !!$userVoted,
-                // 'userNegativeVoted' => !!$userNegativeVoted,
+                'schedules' => $schedules,
                 'weekdays' => Shift::$weekdays,
                 'isVotingOpen' => $isVotingOpen,
             ]);
@@ -192,6 +182,44 @@ Route::middleware('auth')->group(function () {
 
             return redirect()->route('profile.leave')->with('success', 'Leave request submitted successfully.');
         })->name('profile.leave');
+
+        Route::get('profile/swap-request', function (RequestRequest $request) {
+            $departmentId = Auth::user()->employee->department_id;
+            $employeeId = Auth::user()->employee->id;
+
+            $employee = $request->input('employee_id');
+            $week = $request->input('week');
+
+            $employees = Employee::where('department_id', $departmentId)->whereNot('id',  $employeeId)->get();
+            $schedule = Schedule::where('employee_id', $employee)->where('week', $week)->first();
+
+            return view('schedules.request-swap', [
+                'employees' => $employees,
+                'employee_id' => $employee,
+                'weekdays' => Shift::$weekdays,
+                'week' => $week,
+                'schedule' => $schedule
+            ]);
+        })->name('profile.swap-request');
+
+        Route::post('profile/swap-request', function (RequestRequest $request) {
+
+            $request->validate([
+                'employee' => 'required|exists:employees,id',
+                'week' => 'required|string',
+            ]);
+
+            $requesterId = Auth::user()->employee->id;
+
+            SwapRequest::create([
+                'employee_id' => $requesterId,
+                'coworker_id' => $request->input('employee'),
+                'week' => $request->input('week'),
+                'status' => 'pending',
+            ]);
+
+            return redirect()->route('profile.swap-request')->with('success', 'Your swap request has been submitted!');
+        })->name('profile.swap-post');
 
         Route::resource('employee-of-the-month', VotingController::class)->only(['create', 'store']);
 
@@ -350,6 +378,30 @@ Route::middleware('auth')->group(function () {
         Route::put('administration/leave-request/max-credits', [LeaveRequestController::class, 'updateMaxCredits'])->name('leave-request.updateMaxCredits');
         Route::put('administration/eom-voting', [VotingController::class, 'updateEOMVoting'])->name('eom-voting.updateVoting');
 
+        Route::get('schedule-swap-requests', function () {
+            $swapRequests = SwapRequest::all();
+            return view('schedules.swap-requests', ['swapRequests' => $swapRequests]);
+        })->name('schedules.swap.requests');
+
+        Route::delete('schedule-swap-requests/{request}', function (SwapRequest $request) {
+            $request->update(['status' => 'rejected']);
+            return redirect()->route('schedules.swap.requests')->with('success', 'Swap Request Rejected.');
+        })->name('schedules.swap.reject');
+
+        Route::put('schedule-swap-requests/{request}', function (SwapRequest $request) {
+
+            $requesterSchedule = $request->getSchedule();
+            $coWorkerSchedule = $request->getCoworkerSchedule();
+
+            if ($requesterSchedule && $coWorkerSchedule) {
+                $requesterEmployeeId = $requesterSchedule->employee_id;
+                $requesterSchedule->update(['employee_id' => $request->coworker_id]);
+                $coWorkerSchedule->update(['employee_id' => $requesterEmployeeId]);
+            }
+
+            $request->update(['status' => 'approved']);
+            return redirect()->route('schedules.swap.requests')->with('success', 'Swap Request Approved.');
+        })->name('schedules.swap.approved');
 
         Route::get('leave-requests', function () {
             $leaveRequests = LeaveRequest::all();

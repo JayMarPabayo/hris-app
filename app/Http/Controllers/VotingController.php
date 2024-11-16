@@ -61,10 +61,6 @@ class VotingController extends Controller
         $systemConfig = SystemConfig::first();
         $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
 
-        // if ($userVoted && $userNegativeVoted) {
-        //     abort(403, 'You have already voted for this month.');
-        // }
-
         if (!$isVotingOpen) {
             abort(403, 'Voting is still not open.');
         }

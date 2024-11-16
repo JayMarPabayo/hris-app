@@ -68,4 +68,8 @@ class User extends Authenticatable implements CanResetPassword
     {
         return $this->hasMany(LeaveRequest::class);
     }
+    public function swapRequests(): HasMany
+    {
+        return $this->hasMany(SwapRequest::class);
+    }
 }

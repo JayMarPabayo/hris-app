@@ -55,12 +55,6 @@ class EmployeeRequest extends FormRequest
             'height' => 'nullable|numeric',
             'weight' => 'nullable|numeric',
             'bloodtype' => 'required|in:' . implode(',', Employee::$bloodtype),
-            'gsis' => [
-                'nullable',
-                'string',
-                'max:20',
-                Rule::unique('employees')->ignore($employeeId),
-            ],
             'pagibig' => [
                 'nullable',
                 'string',
@@ -97,7 +91,6 @@ class EmployeeRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('employees')->ignore($employeeId),
             ],
             'spouse_firstname' => 'nullable|string|max:100',
             'spouse_middlename' => 'nullable|string|max:100',

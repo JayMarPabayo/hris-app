@@ -10,6 +10,7 @@
     </div>
     <form method="GET" action="{{ route('schedules.create') }}" class="flex items-center gap-2 mb-4">
         <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
+        <input type="week" name="week" class="w-48   block mt-1"  value="{{ request('week') ?? date('Y-\WW') }}">
         <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
     </form>
     <table>
@@ -53,7 +54,7 @@
                                         @csrf
                                         <h5 class="text-sm mb-4">Add Schedule</h5>
 
-                                        <div class="px-2 py-1 rounded-sm bg-stone-600/20 font-medium">
+                                        <div class="px-2 py-1 rounded-sm bg-stone-600/20 font-medium mb-3">
                                             <span class="block">
                                                 {{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}
                                             </span>
@@ -68,6 +69,9 @@
 
                                         <input type="hidden" name="employee_id" value="{{ $employee->id }}">
                                         
+                                        <label for="week">Week</label>
+                                        <input type="week" name="week" class="w-full block mt-1"  value="{{ request('week') ?? date('Y-\WW') }}">
+
                                         @livewire('select-shifts')
 
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">

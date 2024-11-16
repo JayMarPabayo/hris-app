@@ -43,7 +43,6 @@ return new class extends Migration
             $table->float('height')->nullable();
             $table->float('weight')->nullable();
             $table->enum('bloodtype', Employee::$bloodtype);
-            $table->string('gsis', 20)->nullable();
             $table->string('pagibig', 20)->nullable();
             $table->string('philhealth', 20)->nullable();
             $table->string('sss', 20)->nullable();
@@ -51,7 +50,7 @@ return new class extends Migration
             $table->string('agencynumber', 20)->nullable();
             $table->string('telephone', 20)->nullable();
             $table->string('mobile', 20)->nullable();
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->nullable();
             $table->string('spouse_firstname', 100)->nullable();
             $table->string('spouse_middlename', 100)->nullable();
             $table->string('spouse_lastname', 100)->nullable();
