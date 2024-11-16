@@ -312,7 +312,10 @@ Route::middleware('auth')->group(function () {
         })->name('evaluations.monthly');
 
         Route::get('reports', function () {
-            return view('reports.index');
+
+            $employees = Employee::paginate(15);
+
+            return view('reports.index', ['employees' => $employees]);
         })->name('reports.index');
 
         Route::get('export', function (Illuminate\Http\Request $request) {

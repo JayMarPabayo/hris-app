@@ -31,8 +31,7 @@
         <!-- Content -->
         <div class="flex-1 px-2">
             <div x-cloak x-show="openTab === 'individual'" class="px-4">
-                <!-- Individual Table Container -->
-                @livewire('show-employee')
+                <x-employees-list :employees="$employees ?? []" />
             </div>
             <div x-cloak x-show="openTab === 'department'" class="p-4 bg-white/30 shadow rounded h-full">
                 <!-- Department Table Container -->

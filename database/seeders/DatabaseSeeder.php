@@ -39,29 +39,29 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        Employee::factory(5)->create();
-        Education::factory(12)->create();
-        Children::factory(10)->create();
-        Eligibilities::factory(10)->create();
-        WorkExperience::factory(10)->create();
+        // Employee::factory(5)->create();
+        // Education::factory(12)->create();
+        // Children::factory(10)->create();
+        // Eligibilities::factory(10)->create();
+        // WorkExperience::factory(10)->create();
 
-        $employees = Employee::take(5)->get();
+        // $employees = Employee::take(5)->get();
 
-        foreach ($employees as $employee) {
+        // foreach ($employees as $employee) {
 
-            User::factory()->create([
-                'name' => "$employee->firstname $employee->lastname",
-                'username' => strtolower("$employee->firstname$employee->lastname"),
-                'email' => 'jaymarpabayo@gmail.com',
-                'role' => 'Employee',
-                'password' => Hash::make('password'),
-                'employee_id' => $employee->id,
-            ]);
+        //     User::factory()->create([
+        //         'name' => "$employee->firstname $employee->lastname",
+        //         'username' => strtolower("$employee->firstname$employee->lastname"),
+        //         'email' => 'jaymarpabayo@gmail.com',
+        //         'role' => 'Employee',
+        //         'password' => Hash::make('password'),
+        //         'employee_id' => $employee->id,
+        //     ]);
 
 
-            Schedule::factory()->create([
-                'employee_id' => $employee->id,
-            ]);
-        }
+        //     Schedule::factory()->create([
+        //         'employee_id' => $employee->id,
+        //     ]);
+        // }
     }
 }
