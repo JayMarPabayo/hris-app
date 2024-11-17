@@ -1,6 +1,6 @@
 <div>
     <div class="flex items-center gap-x-2 mb-3">
-        <h3 class="text-sm font-normal text-slate-400">Government Employment Eligibilities</h3>
+        <h3 class="text-sm font-normal text-teal-600">Government Employment Eligibilities</h3>
         <button type="button" class="btn-add" wire:click.prevent="addEligibility">✚</button>
     </div>
 

@@ -26,6 +26,7 @@ class EmployeeRequest extends FormRequest
         $employeeId = $this->employee ? $this->employee->id : null;
 
         return [
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'firstname' => 'required|string|max:100',
             'middlename' => 'nullable|string|max:100',
             'lastname' => 'required|string|max:100',

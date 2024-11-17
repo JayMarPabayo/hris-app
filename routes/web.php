@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\VotingController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ScheduleController;
@@ -18,8 +19,10 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\Employee;
 use App\Models\Department;
+use App\Models\Evaluation;
 use App\Models\LeaveRequest;
 use App\Models\NegativeVoting;
+use App\Models\Question;
 use App\Models\Shift;
 use App\Models\Schedule;
 use App\Models\SystemConfig;
@@ -133,13 +136,13 @@ Route::middleware('auth')->group(function () {
             $employee = Employee::findOrFail($employeeId);
             $schedules = Schedule::where('employee_id', $employee->id)->get();
             $systemConfig = SystemConfig::first();
-            $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
+            $isMonthlyEvaluationOpen = $systemConfig ? $systemConfig->isMonthlyEvaluationOpen() : false;
 
             return view('profile.index', [
                 'employee' => $employee,
                 'schedules' => $schedules,
                 'weekdays' => Shift::$weekdays,
-                'isVotingOpen' => $isVotingOpen,
+                'isMonthlyEvaluationOpen' => $isMonthlyEvaluationOpen,
             ]);
         })->name('profile.index');
 
@@ -221,36 +224,68 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('profile.swap-request')->with('success', 'Your swap request has been submitted!');
         })->name('profile.swap-post');
 
-        Route::resource('employee-of-the-month', VotingController::class)->only(['create', 'store']);
+        Route::get('profile/evaluation', function () {
+            $employee = Auth::user()->employee;
+            $departmentId = $employee->department_id;
 
-        Route::post('negative-employee-of-the-month', function (RequestRequest $request) {
-            $validatedData = $request->validate([
-                'employee_id' => 'required|exists:employees,id',
-                'month' => 'required|date_format:Y-m',
-                'remarks' => 'nullable|string',
-            ]);
+            $evaluatedCoworkerIds = Evaluation::where('employee_id', $employee->id)
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->whereYear('created_at', Carbon::now()->year)
+                ->pluck('coworker_id');
 
-            $validatedData['user_id'] = Auth::user()->id;
+            $evaluatedCoworkers = Employee::whereIn('id', $evaluatedCoworkerIds)->get();
 
-            $existingVote = NegativeVoting::where('month', $validatedData['month'])
-                ->where('user_id', Auth::user()->id)
+            // Add 'avg_rating' property to each evaluated coworker
+            $evaluatedCoworkers->each(function ($coworker) use ($employee) {
+                $coworker->avg_rating = Evaluation::where('employee_id', $employee->id)
+                    ->where('coworker_id', $coworker->id)
+                    ->whereMonth('created_at', Carbon::now()->month)
+                    ->whereYear('created_at', Carbon::now()->year)
+                    ->avg('rating');
+            });
+
+            $coworker = Employee::where('department_id', $departmentId)
+                ->whereNot('id', $employee->id)
+                ->whereNotIn('id', $evaluatedCoworkerIds)
                 ->first();
 
-            $systemConfig = SystemConfig::first();
-            $isVotingOpen = $systemConfig ? $systemConfig->isVotingOpen() : false;
+            $questions = Question::all();
 
-            if ($existingVote) {
-                abort(403, 'You have already voted for this month.');
+
+            return view('profile.evaluation', [
+                'employee' => $employee,
+                'coworker' => $coworker,
+                'questions' => $questions,
+                'evaluatedCoworkers' => $evaluatedCoworkers,
+            ]);
+        })->name('profile.evaluation');
+
+        Route::post('profile/evaluation', function (RequestRequest $request) {
+            $employeeId = Auth::user()->employee->id;
+
+            $request->validate([
+                'coworker' => 'required|exists:employees,id',
+                'question' => 'required|array',
+                'rating' => 'required|array',
+                'rating.*' => 'required|integer|between:1,5',
+            ]);
+
+            $evaluations = [];
+            foreach ($request->question as $index => $questionId) {
+                $evaluations[] = [
+                    'employee_id' => $employeeId,
+                    'coworker_id' => $request->coworker,
+                    'question_id' => $questionId,
+                    'rating' => $request->rating[$index],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
 
-            if (!$isVotingOpen) {
-                abort(403, 'Voting is still not open.');
-            }
+            Evaluation::insert($evaluations);
 
-            NegativeVoting::create($validatedData);
-
-            return redirect()->route('profile.index')->with('success', 'Your vote has been submitted!');
-        })->name('negative.voting');
+            return redirect()->route('profile.evaluation')->with('success', 'Evaluation submitted successfully!');
+        })->name('profile.evaluation.post');
     });
 
     // For Administrator
@@ -263,52 +298,42 @@ Route::middleware('auth')->group(function () {
         Route::resource('administration/departments', DepartmentController::class);
         Route::resource('administration/shifts', ShiftController::class);
         Route::resource('schedules', ScheduleController::class);
-        Route::resource('evaluations', VotingController::class)->only(['index']);
+        Route::resource('evaluations', EvaluationController::class)->only(['index']);
 
-        Route::get('monthly-evaluations', function (Illuminate\Http\Request $request) {
+        Route::get('monthly-evaluations', function (RequestRequest $request) {
             $year = $request->input('year') ?? date('Y');
 
             if (!preg_match('/^\d{4}$/', $year) || (int)$year < 1900 || (int)$year > date('Y')) {
-                return redirect()->route('employee-of-the-month.monthly')->with('error', 'Invalid Year');
+                return redirect()->route('evaluations.monthly')->with('error', 'Invalid Year');
             }
 
             $yearlyEOM = [];
 
             for ($month = 1; $month <= 12; $month++) {
+                $evaluations = Evaluation::whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->get()
+                    ->groupBy('coworker_id');
 
-                $formattedMonth = str_pad($month, 2, '0', STR_PAD_LEFT);
-                $yearMonth = "{$year}-{$formattedMonth}";
+                $employeeRatings = $evaluations->map(function ($evaluationGroup) {
+                    return $evaluationGroup->avg('rating');
+                });
 
-                $topEmployee = Employee::byMonth($yearMonth)
-                    ->orderBy('total_votes', 'desc')
-                    ->first();
+                if ($employeeRatings->isNotEmpty()) {
+                    $bestEmployeeId = $employeeRatings->keys()->first(function ($id) use ($employeeRatings) {
+                        return $employeeRatings[$id] === $employeeRatings->max();
+                    });
 
-                if ($topEmployee && $topEmployee->total_votes > 0) {
-                    $yearlyEOM[$yearMonth] = $topEmployee;
-                } else {
-                    $yearlyEOM[$yearMonth] = null;
+                    $bestEmployee = Employee::find($bestEmployeeId);
+
+                    $yearlyEOM["$year-" . str_pad($month, 2, '0', STR_PAD_LEFT)] = $bestEmployee;
                 }
             }
 
-            $negativeYearlyEOM = [];
-
-            for ($month = 1; $month <= 12; $month++) {
-
-                $formattedMonth = str_pad($month, 2, '0', STR_PAD_LEFT);
-                $yearMonth = "{$year}-{$formattedMonth}";
-
-                $topEmployee = Employee::byNegativeMonth($yearMonth)
-                    ->orderBy('total_votes', 'desc')
-                    ->first();
-
-                if ($topEmployee && $topEmployee->total_votes > 0) {
-                    $negativeYearlyEOM[$yearMonth] = $topEmployee;
-                } else {
-                    $negativeYearlyEOM[$yearMonth] = null;
-                }
-            }
-
-            return view('eom-results.monthly', ['yearlyEOM' => $yearlyEOM, 'negativeYearlyEOM' => $negativeYearlyEOM, 'currentYear' => $year]);
+            return view('evaluation.monthly', [
+                'yearlyEOM' => $yearlyEOM,
+                'currentYear' => $year,
+            ]);
         })->name('evaluations.monthly');
 
         Route::get('reports', function () {
@@ -373,13 +398,13 @@ Route::middleware('auth')->group(function () {
             return view('administration.leave-request', ['config' => $config]);
         })->name('administration.leave-request.index');
 
-        Route::get('administration/eom-voting', function () {
+        Route::get('administration/evaluation', function () {
             $config = SystemConfig::first();
-            return view('administration.eom-voting', ['config' => $config]);
-        })->name('administration.eom-voting');
+            return view('administration.evaluation', ['config' => $config]);
+        })->name('administration.evaluation');
 
         Route::put('administration/leave-request/max-credits', [LeaveRequestController::class, 'updateMaxCredits'])->name('leave-request.updateMaxCredits');
-        Route::put('administration/eom-voting', [VotingController::class, 'updateEOMVoting'])->name('eom-voting.updateVoting');
+        Route::put('administration/evaluation/update', [EvaluationController::class, 'updateEvaluation'])->name('evaluation.update');
 
         Route::get('schedule-swap-requests', function () {
             $swapRequests = SwapRequest::all();

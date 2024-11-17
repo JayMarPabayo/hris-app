@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('swap_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('coworker_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('coworker_id')->constrained('employees')->cascadeOnDelete();
             $table->string('week');
             $table->string('status')->default('pending');
             $table->timestamps();

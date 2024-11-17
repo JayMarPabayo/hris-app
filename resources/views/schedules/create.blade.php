@@ -10,7 +10,7 @@
     </div>
     <form method="GET" action="{{ route('schedules.create') }}" class="flex items-center gap-2 mb-4">
         <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
-        <input type="week" name="week" class="w-48   block mt-1"  value="{{ request('week') ?? date('Y-\WW') }}">
+        <input type="week" name="week" class="w-48 block mt-1" value="{{ request('week') ?? date('Y-\WW') }}">
         <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
     </form>
     <table>
@@ -70,7 +70,7 @@
                                         <input type="hidden" name="employee_id" value="{{ $employee->id }}">
                                         
                                         <label for="week">Week</label>
-                                        <input type="week" name="week" class="w-full block mt-1"  value="{{ request('week') ?? date('Y-\WW') }}">
+                                        <input type="week" name="week" class="w-full block mt-1" min="{{ date('Y-\WW') }}" value="{{ request('week') ?? date('Y-\WW') }}">
 
                                         @livewire('select-shifts')
 
@@ -109,4 +109,6 @@
             {{ $employees->links()}}
         </div>
     @endif
+
 </x-layout>
+

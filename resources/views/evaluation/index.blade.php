@@ -24,7 +24,7 @@
                             <thead>
                                 <tr class="bg-slate-300">
                                     <th>Employee</th>
-                                    <th class="text-center">Total Votes</th>
+                                    <th class="text-center">Rating</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,41 +37,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-lg font-medium">{{ $employee->total_votes }}</p>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="100%" class="py-20">
-                                            <x-empty-alert />
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-    
-                    <!-- Least Effective Employee of the Month Table -->
-                    <div class="w-1/2">
-                        <h3 class="text-base font-semibold mb-2">Least Effective Employee of the Month</h3>
-                        <table>
-                            <thead>
-                                <tr class="bg-slate-300">
-                                    <th>Employee</th>
-                                    <th class="text-center">Total Votes</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($negativeEmployeesByDepartment[$departmentName] ?? [] as $employee)
-                                    <tr class="data-row">
-                                        <td class="max-w-32">
-                                            <div class="text-sm font-medium">{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</div>
-                                            <span class="block text-slate-500/70 truncate">
-                                                {{ $employee->designation }}
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <p class="text-lg font-medium">{{ $employee->total_votes }}</p>
+                                            <p class="text-lg font-medium">{{ number_format($employee->avg_rating, 2) }}</p>
                                         </td>
                                     </tr>
                                 @empty

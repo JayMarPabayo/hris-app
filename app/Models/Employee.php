@@ -16,6 +16,7 @@ class Employee extends Model
     use HasFactory;
 
     protected $fillable = [
+        'picture',
         'firstname',
         'middlename',
         'lastname',
@@ -112,14 +113,9 @@ class Employee extends Model
         return $this->hasMany(Schedule::class);
     }
 
-    public function votings(): HasMany
+    public function evaluations(): HasMany
     {
-        return $this->hasMany(Voting::class);
-    }
-
-    public function negativeVotings(): HasMany
-    {
-        return $this->hasMany(NegativeVoting::class);
+        return $this->hasMany(Evaluation::class);
     }
 
     public function scopeSearch(Builder $query, string $keyword): Builder
@@ -143,34 +139,6 @@ class Employee extends Model
     public function scopeByDesignation(Builder $query, string $designation): Builder
     {
         return $query->where('designation', '=', $designation);
-    }
-
-    public function scopeByMonth(Builder $query, string $month): Builder
-    {
-
-        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
-        $endOfMonth = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
-
-        return $query->with(['votings' => function ($query) use ($startOfMonth, $endOfMonth) {
-            $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
-        }])
-            ->withCount(['votings as total_votes' => function ($query) use ($startOfMonth, $endOfMonth) {
-                $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
-            }]);
-    }
-
-    public function scopeByNegativeMonth(Builder $query, string $month): Builder
-    {
-
-        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
-        $endOfMonth = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
-
-        return $query->with(['negativeVotings' => function ($query) use ($startOfMonth, $endOfMonth) {
-            $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
-        }])
-            ->withCount(['negativeVotings as total_votes' => function ($query) use ($startOfMonth, $endOfMonth) {
-                $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
-            }]);
     }
 
     public function leaveRequests()

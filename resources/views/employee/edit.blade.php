@@ -1,5 +1,5 @@
 <x-layout>
-    <form id="update-employee-form" method="POST" action="{{ route('employees.update', $employee) }}">
+    <form id="update-employee-form" method="POST" action="{{ route('employees.update', $employee) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="flex justify-between items-center border-b border-slate-300 pb-3 mb-3">
@@ -19,8 +19,19 @@
             </section>
         </div>
 
-        <h3 class="text-sm font-normal text-slate-400 mb-3">Personal Information</h3>
-        {{--  --}}
+        <h3 class="text-sm font-normal text-teal-600 mb-3">Personal Information</h3>
+
+        <div class="mb-3">
+            <div class="flex items-end gap-2">
+                <img id="image-preview" src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="w-24 h-24 object-cover rounded-md opacity-90 border border-teal-600">
+
+                <input type="file" name="picture" id="picture" accept="image/*" class="w-52" onchange="previewImage(event)">
+            </div>
+            @error('picture')
+                <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+            @enderror
+        </div>
+
         <label for="firstname" class="block">Name</label>
         <div class="flex items-center gap-2 mb-2">
 
@@ -211,7 +222,7 @@
 
             <div class="col-span-1">
 
-                <h3 class="text-sm font-normal text-slate-400 mb-3">Residential Address</h3>
+                <h3 class="text-sm font-normal text-teal-600 mb-3">Residential Address</h3>
 
                 <div class="flex items-center justify-stretch gap-3">
 
@@ -283,7 +294,7 @@
             </div>
 
             <div class="col-span-1">
-                <h3 class="text-sm font-normal text-slate-400 mb-3">Permanent Address</h3>
+                <h3 class="text-sm font-normal text-teal-600 mb-3">Permanent Address</h3>
                 <div class="flex items-center justify-stretch gap-3">
                     <div class="flex flex-col gap-2">
                         <div>
@@ -350,7 +361,7 @@
         </div>
 
         {{-- FAMILY BACKGROUND --}}
-        <h3 class="text-sm font-normal text-slate-400 mb-3">Family Background</h3>
+        <h3 class="text-sm font-normal text-teal-600 mb-3">Family Background</h3>
 
         <label for="father_firstname" class="block">Father Information</label>
         <div class="flex items-center gap-2 mb-2">
@@ -491,4 +502,18 @@
         </div>
 
     </form>
+    <script>
+        function previewImage(event) {
+            const preview = document.getElementById('image-preview');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result; 
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </x-layout>

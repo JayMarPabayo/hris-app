@@ -1,5 +1,10 @@
 <div>
     <h3 class="text-base font-semibold text-cyan-700 mb-3">Personal Information</h3>
+
+    <div class="mb-5">
+        <img src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="w-24 h-24 object-cover rounded-md opacity-90 border border-teal-600">
+    </div>
+
     <div class="grid grid-cols-11 gap-x-1 gap-y-1 px-2 mb-5 items-center text-xs">
         {{-- 1st Row --}}
         <div class="col-span-2 text-slate-500 tracking-wider text-xs">

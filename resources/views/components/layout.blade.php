@@ -56,6 +56,8 @@
                 <div class="bg-slate-200/85 pt-3 pb-10 px-5 max-w-7xl mx-auto mt-5 rounded-md shadow-md">
                     {{ $slot }}
                 </div>
+
+                
                 <x-spinner />
             </div>
          @livewireScripts

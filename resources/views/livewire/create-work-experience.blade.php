@@ -1,6 +1,6 @@
 <div>
     <div class="flex items-center gap-x-2 mb-3">
-        <h3 class="text-sm font-normal text-slate-400">Work Experience</h3>
+        <h3 class="text-sm font-normal text-teal-600">Work Experience</h3>
         <button type="button" class="btn-add" wire:click.prevent="addWorkExperience">✚</button>
     </div>
     <div class="flex flex-col gap-y-2 mb-2 pb-5 border-b border-slate-300">

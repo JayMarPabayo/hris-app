@@ -1,8 +1,13 @@
 <x-layout>
-    <h3 class="text-lg font-semibold mb-1">{{ auth()->user()->name }}</h3>
-    <div class="flex items-center gap-x-2 mb-10">
-        <h3 class="text-sm font-medium text-teal-800">{{ $employee->department->name }}</h3>
-        <h3 class="text-sm font-medium text-pink-800/70">{{ $employee->designation }}</h3>
+    <div class="flex items-end gap-x-2 mb-10">
+        <img src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="w-24 h-24 object-cover rounded-md opacity-90 border border-teal-600">
+        <div class="flex flex-col">
+            <h3 class="text-lg font-semibold">{{ auth()->user()->name }}</h3>
+            <div class="flex gap-x-2">
+                <h3 class="text-sm font-medium text-teal-800">{{ $employee->department->name }}</h3>
+                <h3 class="text-sm font-medium text-pink-800/70">{{ $employee->designation }}</h3>
+            </div>
+        </div>
         <section class="ms-auto flex gap-x-4">
             <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
                 <x-carbon-container-image-push-pull class="h-5" />
@@ -18,11 +23,11 @@
                     </a>
                 </div>
             @endif
-            @if ($isVotingOpen)
+            @if ($isMonthlyEvaluationOpen)
                 <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
-                    <x-carbon-policy class="h-5" />
-                    <a href="{{ route('employee-of-the-month.create') }}" class="border-none bg-none underline">
-                        EOM Voting
+                    <x-carbon-white-paper class="h-5" />
+                    <a href="{{ route('profile.evaluation') }}" class="border-none bg-none underline">
+                        Monthly Evaluation
                     </a>
                 </div>
             @endif

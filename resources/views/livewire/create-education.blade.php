@@ -1,6 +1,6 @@
 <div>
     <div class="flex items-center gap-x-2 mb-3">
-        <h3 class="text-sm font-normal text-slate-400">Education</h3>
+        <h3 class="text-sm font-normal text-teal-600">Education</h3>
         <button type="button" class="btn-add" wire:click.prevent="addEducation">✚</button>
     </div>
     <div class="flex flex-col gap-y-2 mb-2 pb-5 border-b border-slate-300">

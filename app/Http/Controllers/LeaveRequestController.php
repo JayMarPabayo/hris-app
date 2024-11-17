@@ -18,7 +18,6 @@ class LeaveRequestController extends Controller
         $config->maxCredits = $request->input('maxCredits');
         $config->save();
 
-        // Redirect back with success message
         return redirect()->route('administration.leave-request.index')->with('success', 'Max Credits updated successfully!');
     }
 }

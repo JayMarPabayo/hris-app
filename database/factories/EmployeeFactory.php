@@ -27,6 +27,7 @@ class EmployeeFactory extends Factory
         $gender = $this->faker->randomElement(Employee::$gender);
 
         return [
+            'picture' => "ids/1.jpg",
             'firstname' => $gender === 'Male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale,
             'middlename' => $motherLastName,
             'lastname' => $fatherLastName,

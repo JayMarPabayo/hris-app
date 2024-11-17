@@ -1,6 +1,4 @@
 <x-layout>
-    
-
     <div class="flex gap-x-2 justify-between items-center mb-5">
         <h3 class="text-base font-semibold">Application for Leave of Abscence</h3>
         <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
@@ -28,7 +26,8 @@
                 name="start"
                 value="{{ old('start') }}"
                 class="w-56"
-                @class(['border-red-400' => $errors->has('start')]) />
+                @class(['border-red-400' => $errors->has('start')])
+                min="{{ date('Y-m-d') }}"  />
             </div>
             <div class="flex flex-col gap-y-1 mb-2">
                 <label for="date">End</label>
@@ -37,7 +36,8 @@
                 name="end"
                 value="{{ old('end') }}"
                 class="w-56"
-                @class(['border-red-400' => $errors->has('end')]) />
+                @class(['border-red-400' => $errors->has('end')]) 
+                min="{{ date('Y-m-d') }}" />
             </div>
             <div class="flex flex-col gap-y-1 mb-2">
                 <label for="reason">Reason</label>

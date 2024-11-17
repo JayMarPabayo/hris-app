@@ -43,7 +43,16 @@ class EmployeeController extends Controller
      */
     public function store(EmployeeRequest $request)
     {
-        $employee = Employee::create($request->validated());
+        if ($request->hasFile('picture')) {
+            $imagePath = $request->file('picture')->store('ids', 'public');
+        } else {
+            $imagePath = null;
+        }
+
+        $employee = Employee::create(array_merge(
+            $request->validated(),
+            ['picture' => $imagePath]
+        ));
 
         // -- Add children if provided
         if ($request->has('children')) {
@@ -118,6 +127,17 @@ class EmployeeController extends Controller
     public function update(EmployeeRequest $request, Employee $employee)
     {
         $validatedData = $request->validated();
+
+        if ($request->hasFile('picture')) {
+            if ($employee->picture && file_exists(storage_path('app/public/' . $employee->picture))) {
+                unlink(storage_path('app/public/' . $employee->picture));
+            }
+
+            $imagePath = $request->file('picture')->store('ids', 'public');
+            $validatedData['picture'] = $imagePath;
+        }
+
+
         $employee->update($validatedData);
 
         $user = $employee->user;

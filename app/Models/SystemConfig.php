@@ -11,7 +11,7 @@ class SystemConfig extends Model
 
     protected $fillable = [
         'maxCredits',
-        'eomVoting',
+        'evaluation',
     ];
 
 
@@ -27,8 +27,8 @@ class SystemConfig extends Model
         return $this->maxCredits - $totalLeaveDays;
     }
 
-    public function isVotingOpen()
+    public function isMonthlyEvaluationOpen()
     {
-        return $this->eomVoting;
+        return $this->evaluation;
     }
 }
