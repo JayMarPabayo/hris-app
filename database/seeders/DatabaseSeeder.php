@@ -40,39 +40,39 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $employees = Employee::factory(5)->create();
+        // $employees = Employee::factory(5)->create();
 
-        $employees->each(function ($employee, $index) {
-            $imageNumber = $index + 1;
-            $employee->update([
-                'picture' => "ids/{$imageNumber}.jpg",
-            ]);
-        });
-
-
-        Education::factory(12)->create();
-        Children::factory(10)->create();
-        Eligibilities::factory(10)->create();
-        WorkExperience::factory(10)->create();
-
-        $employees = Employee::take(5)->get();
-
-        foreach ($employees as $employee) {
-
-            User::factory()->create([
-                'name' => "$employee->firstname $employee->lastname",
-                'username' => strtolower("$employee->firstname$employee->lastname"),
-                'email' => 'jaymarpabayo@gmail.com',
-                'role' => 'Employee',
-                'password' => Hash::make('password'),
-                'employee_id' => $employee->id,
-            ]);
+        // $employees->each(function ($employee, $index) {
+        //     $imageNumber = $index + 1;
+        //     $employee->update([
+        //         'picture' => "ids/{$imageNumber}.jpg",
+        //     ]);
+        // });
 
 
-            // Schedule::factory()->create([
-            //     'employee_id' => $employee->id,
-            // ]);
-        }
+        // Education::factory(12)->create();
+        // Children::factory(10)->create();
+        // Eligibilities::factory(10)->create();
+        // WorkExperience::factory(10)->create();
+
+        // $employees = Employee::take(5)->get();
+
+        // foreach ($employees as $employee) {
+
+        //     User::factory()->create([
+        //         'name' => "$employee->firstname $employee->lastname",
+        //         'username' => strtolower("$employee->firstname$employee->lastname"),
+        //         'email' => 'jaymarpabayo@gmail.com',
+        //         'role' => 'Employee',
+        //         'password' => Hash::make('password'),
+        //         'employee_id' => $employee->id,
+        //     ]);
+
+
+        //     // Schedule::factory()->create([
+        //     //     'employee_id' => $employee->id,
+        //     // ]);
+        // }
 
         $questions = [
             [

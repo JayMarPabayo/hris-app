@@ -10,6 +10,11 @@
                    class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
                    Individual
                 </a>
+                {{-- <a href="#" @click.prevent="openTab = 'record'" 
+                   :class="{'bg-slate-500 text-white': openTab === 'record', 'text-gray-700': openTab !== 'record'}"
+                   class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
+                   Employee Records
+                </a> --}}
                 <a href="#" @click.prevent="openTab = 'department'" 
                    :class="{'bg-slate-500 text-white': openTab === 'department', 'text-gray-700': openTab !== 'department'}"
                    class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
