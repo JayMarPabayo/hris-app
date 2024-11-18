@@ -12,6 +12,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     </head> 
 <body>
+    <div class="h-fit min-h-screen pb-4 bg-black/50">
     @php
         $employee = $data['employee'] ?? null;
         $department = $data['department'] ?? null;
@@ -78,7 +79,7 @@
             </table>
         @endif
     </main>
-
+    </div>
     <script>
         function printMainContent() {
             window.print();
