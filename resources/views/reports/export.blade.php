@@ -32,8 +32,8 @@
             <x-carbon-printer class="w-6" />
         </button>
     </header>
-    <main id="printable-area">
-        <div class="flex items-center gap-x-2 mb-10">
+    <main id="printable-area" class="bg-white/90">
+        <div class="flex items-center gap-x-2 mb-10 ">
             <img src="{{ asset('assets/logo.png') }}" alt="Website Logo" class="h-14 w-h-14">
             <div>
                 <h1 class="text-lg font-medium">Human Resource Information System</h1>

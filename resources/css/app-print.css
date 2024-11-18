@@ -13,13 +13,15 @@ main {
 
     body * {
         visibility: hidden;
+        margin: 2;
     }
 
     main {
         margin: 0;
-        padding: 0;
+        padding: 5;
         border: 0;
         width: 100%;
+        background: none;
     }
 
     #printable-area,

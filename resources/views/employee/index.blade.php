@@ -1,9 +1,14 @@
 <x-layout>
     <h3 class="text-base font-semibold mb-3">Employees</h3>
-
-    <form method="GET" action="{{ route('employees.index') }}" class="flex items-center gap-2 mb-4">
-        <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
-        <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
+    <form method="GET" action="{{ route('employees.index') }}" class="flex items-center gap-2 mb-4" id="searchForm">
+        <input 
+            type="search" 
+            placeholder="Search..." 
+            name="search" 
+            value="{{ request('search') }}" 
+            class="flex-grow"
+            oninput="document.getElementById('searchForm').submit()">
+        {{-- <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button> --}}
         <a href="{{ route('employees.create') }}" class="btn w-32">Add New ✚</a>
     </form>
 
@@ -77,5 +82,4 @@
             {{ $employees->links()}}
         </div>
     @endif
-    
 </x-layout>

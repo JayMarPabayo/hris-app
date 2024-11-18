@@ -1,6 +1,6 @@
 <div>
     <div class="flex items-center gap-x-2 w-full mb-3">
-        <select class="w-60" wire:model="selectedShift">
+        <select class="w-60" wire:model="selectedShift" wire:change="getEmployeesByShift">
             <option value="" hidden disabled selected>Select Shift</option>
             <option value="0">All Shift</option>
             @foreach ($shifts as $shift)
@@ -8,9 +8,6 @@
             @endforeach
         </select>
 
-        <button type="button" class="btn" wire:loading.attr="disabled" wire:click.prevent="getEmployeesByShift">
-            Search
-        </button>
         <div wire:loading.delay wire:target="getEmployeesByShift">
             <x-carbon-awake class="w-5 text-slate-500 animate-spin" />
         </div>
@@ -39,8 +36,8 @@
                         <span class="cursor-pointer {{ $sort === 'asc' ? 'text-cyan-600' : '' }}">▼</span>
                     </button>
                 </th>
-                <th>Schedule</th>
-                <th class="text-center">Time</th>
+                <th>Weekdays</th>
+                <th>Shift</th>
             </tr>
         </thead>
         <tbody>
@@ -51,20 +48,29 @@
                     $endTime = new DateTime($schedule->shift->end_time);
                 @endphp
 
-                <tr class="data-row">
+                <tr class="data-row" style="padding-block: 0.5rem">
                     <td>{{ $schedule->employee->id }}</td>
                     <td>{{ "{$schedule->employee->lastname}, {$schedule->employee->firstname} " . strtoupper(substr($schedule->employee->middlename, 0, 1)) . "." }}</td>
-                    <td class="flex gap-x-2 justify-start items-center">
-                        @foreach ($schedule->shift->weekdays as $day)
-                            <div class="time-style bg-white" style="margin-inline: 0; color: darkgreen">
-                                {{ strtoupper(substr($day, 0, 3)) }}
-                            </div>
-                        @endforeach
+                    <td>
+                        <div class="flex gap-x-2 justify-start items-center">
+                            @foreach ($schedule->shift->weekdays as $day)
+                                @if (!in_array($day, $schedule->dayoffs ?? []))
+                                    <div class="time-style bg-white" style="margin-inline: 0; color: darkgreen">
+                                        {{ strtoupper(substr($day, 0, 3)) }}
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
                     </td>
-                    <td class="text-center">
-                        <span class="time-style" style="margin-inline: 0; color: darkgreen">
-                            {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
-                        </span>
+                    <td>
+                       <div class="flex flex-col">
+                            <p class="text-base font-medium">
+                                {{ $schedule->shift->name }}
+                            </p>
+                            <p class="time-style" style="margin-inline: 0; color: darkgreen; padding-left: 0">
+                                {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                            </p>
+                       </div>
                     </td>
                     
                 </tr>

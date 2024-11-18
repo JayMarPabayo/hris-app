@@ -7,9 +7,15 @@
         </a>
     </div>
 
-    <form method="GET" action="{{ route('evaluations.index') }}" class="flex items-center gap-2 mb-4">
-        <input type="month" name="month" value="{{ request('month') ?? $currentMonth }}" class="w-48 btn">
-        <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Filter</button>
+    <form method="GET" action="{{ route('evaluations.index') }}" class="flex items-center gap-2 mb-4" id="monthFilterForm">
+        <div class="text-teal-700 text-sm">Select Month</div>
+        <input 
+            type="month" 
+            name="month" 
+            value="{{ request('month') ?? $currentMonth }}" 
+            class="w-48 btn" 
+            onchange="document.getElementById('monthFilterForm').submit()">
+        {{-- <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Filter</button> --}}
     </form>
 
     <div class="space-y-8">

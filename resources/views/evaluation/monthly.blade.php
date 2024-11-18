@@ -10,9 +10,23 @@
     </div>
 
 
-    <form method="GET" action="{{ route('evaluations.monthly') }}" class="flex items-center gap-2 mb-4">
-        <input type="number" name="year" value="{{ request('year') ?? $currentYear }}" class="w-48">
-        <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Filter</button>
+    <form method="GET" action="{{ route('evaluations.monthly') }}" class="flex w-64 items-center gap-2 mb-4" id="yearFilterForm">
+        <div class="text-teal-700 text-sm w-36">Select Year</div>
+        <select 
+            name="year"
+            onchange="document.getElementById('yearFilterForm').submit()">
+            @php
+                $currentYear = date('Y');
+                $startYear = $currentYear - 5;
+                $endYear = $currentYear + 5;
+            @endphp
+    
+            <option value="" disabled>Select a Year</option>
+            @for ($year = $startYear; $year <= $endYear; $year++)
+                <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+            @endfor
+        </select>
+        {{-- <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Filter</button> --}}
     </form>
 
     <div class="flex gap-x-4">

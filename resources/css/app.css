@@ -15,7 +15,6 @@ select:not(.rating-select) {
 .rating-select {
     @apply bg-transparent text-sm text-teal-800;
 }
-
 table {
     @apply w-full border border-slate-600 border-opacity-10 shadow-sm;
 }

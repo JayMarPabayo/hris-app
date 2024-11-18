@@ -1,13 +1,14 @@
 <div>
     <div class="flex items-center gap-x-2 w-full mb-3">
-        <select class="w-60" wire:model.live="department">
+        <select class="w-60" wire:model.live="department" wire:change="getEmployeesByDepartment">
             <option value="" hidden disabled selected>Select Department</option>
             @foreach ($departments as $department)
                 <option value="{{ $department->id }}">{{ $department->name }}</option>
             @endforeach
         </select>
+
         @if ($withDesignation)
-            <select class="w-60" wire:model="designation">
+            <select class="w-60" wire:model="designation" wire:change="getEmployeesByDepartment">
                 <option value="" hidden disabled selected>Select Designation</option>
                 @foreach ($designations as $designation)
                     <option value="{{ $designation }}">{{ $designation }}</option>
@@ -15,24 +16,21 @@
             </select>
         @endif
 
-        <button type="button" class="btn" wire:loading.attr="disabled" wire:click.prevent="getEmployeesByDepartment">
-            Search
-        </button>
         <div wire:loading.delay wire:target="getEmployeesByDepartment">
             <x-carbon-awake class="w-5 text-slate-500 animate-spin" />
         </div>
-        
+
         @if ($employees)
             <a
-            href="{{ route('reports.export', ['department' => $this->department] ) }}"
-            class="btn ml-auto"
-            target="_blank"
+                href="{{ route('reports.export', ['department' => $this->department] ) }}"
+                class="btn ml-auto"
+                target="_blank"
             >
                 <x-carbon-printer class="w-4" />
             </a>
         @endif
-
     </div>
+
     <table>
         <thead>
             <tr class="bg-slate-300">

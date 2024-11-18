@@ -12,7 +12,7 @@ class ShowShifts extends Component
 
     public $selectedShift = '';
     public $schedules = [];
-    public $shifts = [];
+    public $shifts;
     public $sort = 'asc';
 
     public function render()
@@ -23,6 +23,10 @@ class ShowShifts extends Component
     public function mount()
     {
         $this->shifts = Shift::all();
+
+        $this->selectedShift = $this->shifts->first()->id ?? '';
+
+        $this->getEmployeesByShift();
     }
 
     public function getEmployeesByShift()
