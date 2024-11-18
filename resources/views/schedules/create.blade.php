@@ -8,10 +8,22 @@
             </a>
         </div>
     </div>
-    <form method="GET" action="{{ route('schedules.create') }}" class="flex items-center gap-2 mb-4">
-        <input type="search" placeholder="Search..." name="search" value="{{ request('search') }}" class="flex-grow">
-        <input type="week" name="week" class="w-48 block mt-1" value="{{ request('week') ?? date('Y-\WW') }}">
-        <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Search<span class="text-lg leading-3">⌕</span></button>
+    <form method="GET" action="{{ route('schedules.create') }}" class="flex items-center gap-2 mb-4" x-data>
+        <input 
+            type="search" 
+            placeholder="Search..." 
+            name="search" 
+            value="{{ request('search') }}" 
+            class="flex-grow"
+            @input.debounce.500ms="$event.target.form.submit()" 
+        >
+        <input 
+            type="week" 
+            name="week" 
+            class="w-48 block mt-1" 
+            value="{{ request('week') ?? date('Y-\WW') }}"
+            @change="$event.target.form.submit()"
+        >
     </form>
     <table>
         <thead>

@@ -16,16 +16,13 @@ class ScheduleController extends Controller
     public function index(Request $request)
     {
         $selectedDay = $request->input('day');
-        $week = $request->input('week');
+        $week = $request->input('week') ?? date('Y-\WW');
 
-        $schedules = Schedule::with(['employee', 'shift'])
+        $schedules = Schedule::where('week', $week)->with(['employee', 'shift'])
             ->when($selectedDay, function ($query, $selectedDay) {
                 return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
                     $shiftQuery->whereJsonContains('weekdays', $selectedDay);
                 });
-            })
-            ->when($week, function ($query, $week) {
-                return $query->where('week', $week);
             })
             ->get()
             ->groupBy('employee.designation');

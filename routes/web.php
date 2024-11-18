@@ -216,8 +216,6 @@ Route::middleware('auth')->group(function () {
                     return $schedule;
                 });
 
-
-
             return view('schedules.request-swap', [
                 'employee_id' => $employee,
                 'employee' => Auth::user()->employee,

@@ -14,7 +14,7 @@
         <p class="text-lg">{{ $remainingCredits ?? 'N/A' }}</p>
     </div>
 
-
+    @if ($remainingCredits)
     <form method="POST" action="{{ route('profile.leave') }}" class="mb-5">
         @csrf
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
@@ -78,7 +78,9 @@
             </div>
         </div>
         <button type="submit" class="btn w-40">Submit</button>
-    </form>
+    </form>      
+    @endif
+    
 
     <hr class="border-t border-slate-600/30">
 

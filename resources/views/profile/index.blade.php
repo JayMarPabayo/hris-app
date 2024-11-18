@@ -15,14 +15,12 @@
                     Request Schedule Swap
                 </a>
             </div>
-            @if ($employee->getRemainingCredits())
-                <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
-                    <x-carbon-request-quote class="h-5" />
-                    <a href="{{ route('profile.leave') }}" class="border-none bg-none underline">
-                        Request Leave
-                    </a>
-                </div>
-            @endif
+            <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+                <x-carbon-request-quote class="h-5" />
+                <a href="{{ route('profile.leave') }}" class="border-none bg-none underline">
+                    Request Leave
+                </a>
+            </div>
             @if ($isMonthlyEvaluationOpen)
                 <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
                     <x-carbon-white-paper class="h-5" />
