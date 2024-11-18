@@ -193,15 +193,38 @@ Route::middleware('auth')->group(function () {
             $employee = $request->input('employee_id');
             $week = $request->input('week');
 
-            $employees = Employee::where('department_id', $departmentId)->whereNot('id',  $employeeId)->get();
-            $schedule = Schedule::where('employee_id', $employee)->where('week', $week)->first();
+            $iRequestedForThisWeek = SwapRequest::where('employee_id', $employeeId)
+                ->where('week', $week)
+                ->exists();
+
+            $schedules = Schedule::where('week', $week)
+                ->whereHas('employee', function ($query) use ($departmentId) {
+                    $query->where('department_id', $departmentId);
+                })
+                ->whereNot('employee_id', $employeeId)
+                ->with('employee')
+                ->get()
+                ->sortBy(function ($schedule) {
+                    return $schedule->id;
+                })
+                ->map(function ($schedule) use ($employeeId, $week) {
+                    $schedule->isRequestedByThisEmployee = SwapRequest::where('employee_id', $employeeId)
+                        ->where('coworker_id', $schedule->employee->id)
+                        ->where('week', $week)
+                        ->exists();
+
+                    return $schedule;
+                });
+
+
 
             return view('schedules.request-swap', [
-                'employees' => $employees,
                 'employee_id' => $employee,
+                'employee' => Auth::user()->employee,
                 'weekdays' => Shift::$weekdays,
                 'week' => $week,
-                'schedule' => $schedule
+                'schedules' => $schedules,
+                'iRequestedForThisWeek' => $iRequestedForThisWeek
             ]);
         })->name('profile.swap-request');
 
@@ -214,6 +237,16 @@ Route::middleware('auth')->group(function () {
 
             $requesterId = Auth::user()->employee->id;
 
+            $exists = SwapRequest::where('employee_id', $requesterId)
+                ->where('week', $request->input('week'))
+                ->exists();
+
+            if ($exists) {
+                return redirect()->route('profile.swap-request', [
+                    'week' => $request->input('week'),
+                ])->withErrors(['error' => 'You have already submitted a swap request for this week.']);
+            }
+
             SwapRequest::create([
                 'employee_id' => $requesterId,
                 'coworker_id' => $request->input('employee'),
@@ -221,7 +254,9 @@ Route::middleware('auth')->group(function () {
                 'status' => 'pending',
             ]);
 
-            return redirect()->route('profile.swap-request')->with('success', 'Your swap request has been submitted!');
+            return redirect()->route('profile.swap-request', [
+                'week' => $request->input('week')
+            ])->with('success', 'Your swap request has been submitted!');
         })->name('profile.swap-post');
 
         Route::get('profile/evaluation', function () {
