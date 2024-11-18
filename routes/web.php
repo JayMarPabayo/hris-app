@@ -429,10 +429,24 @@ Route::middleware('auth')->group(function () {
         Route::get('records', function (Illuminate\Http\Request $request) {
             $employeeId = $request->query('employee');
 
+            $user = User::where('employee_id', $employeeId)->first();
+
+            $userId = $user->id;
+
+
+            $leaveRequests = LeaveRequest::where('user_id', $userId)
+                ->where(function ($query) {
+                    $query->where('status', 'approved')
+                        ->orWhere('status', 'rejected');
+                })
+                ->get();
+
+            $schedules = Schedule::where('employee_id', $employeeId)
+                ->get();
 
             $employee = Employee::findOrFail($employeeId);
 
-            return view('reports.records', ['employee' => $employee]);
+            return view('reports.records', ['employee' => $employee, 'leaveRequests' => $leaveRequests, 'schedules' => $schedules, 'weekdays' => Shift::$weekdays,]);
         })->name('reports.records');
 
         Route::get('export/{shift:slug}', function ($slug) {
