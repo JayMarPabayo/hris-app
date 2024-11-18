@@ -15,6 +15,10 @@
     </div>
 
     @if ($remainingCredits)
+
+    @php
+        $nextWeekStart = date('Y-m-d', strtotime('next Monday'));
+    @endphp
     <form method="POST" action="{{ route('profile.leave') }}" class="mb-5">
         @csrf
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
@@ -22,22 +26,22 @@
             <div class="flex flex-col gap-y-1 mb-2">
                 <label for="date">Start</label>
                 <input
-                type="date"
-                name="start"
-                value="{{ old('start') }}"
-                class="w-56"
-                @class(['border-red-400' => $errors->has('start')])
-                min="{{ date('Y-m-d') }}"  />
+                    type="date"
+                    name="start"
+                    value="{{ old('start') }}"
+                    class="w-56"
+                    @class(['border-red-400' => $errors->has('start')])
+                    min="{{ $nextWeekStart }}" />
             </div>
             <div class="flex flex-col gap-y-1 mb-2">
                 <label for="date">End</label>
                 <input
-                type="date"
-                name="end"
-                value="{{ old('end') }}"
-                class="w-56"
-                @class(['border-red-400' => $errors->has('end')]) 
-                min="{{ date('Y-m-d') }}" />
+                    type="date"
+                    name="end"
+                    value="{{ old('end') }}"
+                    class="w-56"
+                    @class(['border-red-400' => $errors->has('end')]) 
+                    min="{{ $nextWeekStart }}" />
             </div>
             <div class="flex flex-col gap-y-1 mb-2">
                 <label for="reason">Reason</label>

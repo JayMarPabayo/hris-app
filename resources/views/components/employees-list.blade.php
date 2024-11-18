@@ -18,9 +18,18 @@
                     <td>{{ $employee->designation }}</td>
                     <td class="flex justify-center items-center">
                         <a
-                        href="{{ route('reports.export', ['employee' => $employee->id] ) }}"
-                        class="btn mx-auto"
-                        target="_blank"
+                            @switch($mode)
+                                @case('individual')
+                                    href="{{ route('reports.export', ['employee' => $employee->id]) }}"
+                                    @break
+                                @case('records')
+                                    href="{{ route('reports.records', ['employee' => $employee->id]) }}"
+                                    @break
+                                @default
+                                    href="#"
+                            @endswitch
+                            class="btn mx-auto"
+                            target="_blank"
                         >
                             <x-carbon-printer class="w-4" />
                         </a>

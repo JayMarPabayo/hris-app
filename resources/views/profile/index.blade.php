@@ -99,36 +99,43 @@
                 <tr class="data-row">
                     @foreach ($weekdays as $day)
                         <td class="text-center">
+                        @php
+                            $date = new DateTime();
+                            $date->setISODate(substr($schedule->week, 0, 4), substr($schedule->week, 6)); 
+                            $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
+                            $actualDate = $date->format('Y-m-d');
+                        @endphp
+                        @if (in_array($actualDate, $employee->leaveRequestDates()->toArray()))
+                            <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
+                                Dayoff
+                            </span>
+                        @else
                             @if (in_array($day, $schedule->shift->weekdays))
-                            @php
-                                $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
-                                
-                                if ($customTime) {
-                                    $startTime = new DateTime($customTime['start_time']);
-                                    $endTime = new DateTime($customTime['end_time']);
-                                } else {
-                                    $startTime = new DateTime($schedule->shift->start_time);
-                                    $endTime = new DateTime($schedule->shift->end_time);
-                                }
-                        
-                                $date = new DateTime();
-                                $date->setISODate(substr($schedule->week, 0, 4), substr($schedule->week, 6));
-                                $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
-                        
-                                $actualDate = $date->format('Y-m-d');
-                            @endphp
-                        
-                            <p class="mb-1 text-slate-700/70">{{ $schedule->shift->name }}</p>
-                            @if (in_array($day, $schedule->dayoffs ?? []) || in_array($actualDate, $employee->leaveRequestDates()->toArray()))
-                                <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
-                                    Dayoff
-                                </span>
-                            @else
-                                <span class="time-style bg-teal-700/70" style="margin-inline: 0">
-                                    {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
-                                </span>
+                                @php
+                                    $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
+                                    
+                                    if ($customTime) {
+                                        $startTime = new DateTime($customTime['start_time']);
+                                        $endTime = new DateTime($customTime['end_time']);
+                                    } else {
+                                        $startTime = new DateTime($schedule->shift->start_time);
+                                        $endTime = new DateTime($schedule->shift->end_time);
+                                    }
+                                @endphp
+                            
+                                <p class="mb-1 text-slate-700/70">{{ $schedule->shift->name }}</p>
+                                @if (in_array($day, $schedule->dayoffs ?? []))
+                                    <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
+                                        Dayoff
+                                    </span>
+                                @else
+                                    <span class="time-style bg-teal-700/70" style="margin-inline: 0">
+                                        {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                                    </span>
+                                @endif
                             @endif
                         @endif
+
                         </td>
                     @endforeach
                 </tr>

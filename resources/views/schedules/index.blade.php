@@ -110,33 +110,43 @@
                         </td>
                         @foreach ($weekdays as $day)
                             <td class="text-center">
-                                @if (is_null($selectedDay) || $selectedDay === $day)
-                                    @if (in_array($day, $schedule->shift->weekdays)  ?? [])
-                                        @php
-                                            $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
-                                            $startTime = $customTime ? new DateTime($customTime['start_time']) : new DateTime($schedule->shift->start_time);
-                                            $endTime = $customTime ? new DateTime($customTime['end_time']) : new DateTime($schedule->shift->end_time);
+                                @php
+                                    $date = new DateTime();
+                                    $date->setISODate(substr($firstSchedule->week, 0, 4), substr($firstSchedule->week, 6)); 
+                                    $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
+                                    $actualDate = $date->format('Y-m-d'); 
+                                @endphp
 
-                                            $startHour = $startTime->format('H');
-                                            $timePeriod = $schedule->shift->name;
+                                @if (in_array($actualDate, $schedule->employee->leaveRequestDates()->toArray()))
+                                    <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
+                                        Dayoff
+                                    </span>
+                                @else   
+                                    @if (is_null($selectedDay) || $selectedDay === $day)
+                                        @if (in_array($day, $schedule->shift->weekdays)  ?? [])
+                                            @php
+                                                $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
+                                                $startTime = $customTime ? new DateTime($customTime['start_time']) : new DateTime($schedule->shift->start_time);
+                                                $endTime = $customTime ? new DateTime($customTime['end_time']) : new DateTime($schedule->shift->end_time);
 
-                                            $date = new DateTime();
-                                            $date->setISODate(substr($firstSchedule->week, 0, 4), substr($firstSchedule->week, 6)); 
-                                            $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
-                                            $actualDate = $date->format('Y-m-d'); 
-                                        @endphp
-                                        <p class="mb-1 text-slate-700/70">{{ $timePeriod }}</p>
-                                        @if (in_array($day, $schedule->dayoffs) || in_array($actualDate, $schedule->employee->leaveRequestDates()->toArray()))
-                                            <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
-                                                Dayoff
-                                            </span>
-                                        @else
-                                            <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
-                                                {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
-                                            </span>
+                                                $startHour = $startTime->format('H');
+                                                $timePeriod = $schedule->shift->name;
+
+                                            @endphp
+                                            <p class="mb-1 text-slate-700/70">{{ $timePeriod }}</p>
+                                            @if (in_array($day, $schedule->dayoffs))
+                                                <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
+                                                    Dayoff
+                                                </span>
+                                            @else
+                                                <span class="time-style {{ $colorClass }}" style="margin-inline: 0">
+                                                    {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                                                </span>
+                                            @endif
                                         @endif
                                     @endif
                                 @endif
+
                             </td>
                         @endforeach
 

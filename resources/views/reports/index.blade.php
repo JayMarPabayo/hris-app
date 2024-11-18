@@ -10,11 +10,11 @@
                    class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
                    Individual
                 </a>
-                {{-- <a href="#" @click.prevent="openTab = 'record'" 
-                   :class="{'bg-slate-500 text-white': openTab === 'record', 'text-gray-700': openTab !== 'record'}"
+                <a href="#" @click.prevent="openTab = 'records'" 
+                   :class="{'bg-slate-500 text-white': openTab === 'records', 'text-gray-700': openTab !== 'records'}"
                    class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
                    Employee Records
-                </a> --}}
+                </a>
                 <a href="#" @click.prevent="openTab = 'department'" 
                    :class="{'bg-slate-500 text-white': openTab === 'department', 'text-gray-700': openTab !== 'department'}"
                    class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
@@ -36,7 +36,10 @@
         <!-- Content -->
         <div class="flex-1 px-2">
             <div x-cloak x-show="openTab === 'individual'" class="px-4">
-                <x-employees-list :employees="$employees ?? []" />
+                <x-employees-list :employees="$employees ?? []" :mode="'individual'" />
+            </div>
+            <div x-cloak x-show="openTab === 'records'" class="px-4">
+                <x-employees-list :employees="$employees ?? []" :mode="'records'" />
             </div>
             <div x-cloak x-show="openTab === 'department'" class="p-4 bg-white/30 shadow rounded h-full">
                 <!-- Department Table Container -->

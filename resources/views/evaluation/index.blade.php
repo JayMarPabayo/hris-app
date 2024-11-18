@@ -36,11 +36,17 @@
                             <tbody>
                                 @forelse ($employees as $employee)
                                     <tr class="data-row">
-                                        <td class="max-w-32">
-                                            <div class="text-sm font-medium">{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</div>
-                                            <span class="block text-slate-500/70 truncate">
-                                                {{ $employee->designation }}
-                                            </span>
+                                        <td class="">
+                                            <div class="flex gap-x-2 items-end">
+                                                <img src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="w-10 h-10 object-cover rounded-md opacity-90 border border-teal-600">
+                                                <div class="w-56">
+                                                    <div class="text-sm font-medium">{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</div>
+                                                    <span class="block text-slate-500/70 truncate">
+                                                        {{ $employee->designation }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
                                         </td>
                                         <td class="text-center">
                                             <p class="text-lg font-medium">{{ number_format($employee->avg_rating, 2) }}</p>

@@ -168,6 +168,14 @@ Route::middleware('auth')->group(function () {
                     ->with('error', "System configuration is missing.");
             }
 
+            $pendingLeaveRequest = LeaveRequest::where('user_id', $userId)
+                ->where('status', 'pending')
+                ->exists();
+
+            if ($pendingLeaveRequest) {
+                return redirect()->route('profile.leave')
+                    ->with('error', "You still have a pending leave request.");
+            }
 
             $remainingCredits = $config->getRemainingCreditsForEmployee($userId);
 
@@ -191,7 +199,16 @@ Route::middleware('auth')->group(function () {
             $employeeId = Auth::user()->employee->id;
 
             $employee = $request->input('employee_id');
-            $week = $request->input('week');
+            $week = $request->input('week') ?? date('Y-\WW');
+
+            $employeeSchedule = Schedule::where('week', $week)
+                ->where('employee_id', $employeeId)
+                ->first();
+
+            if (!$employeeSchedule) {
+                $weekNumber = date('W', strtotime($week . '-1'));
+                return redirect()->back()->with('error', "You have no week {$weekNumber} schedule to swap with.");
+            }
 
             $iRequestedForThisWeek = SwapRequest::where('employee_id', $employeeId)
                 ->where('week', $week)
@@ -376,6 +393,7 @@ Route::middleware('auth')->group(function () {
             return view('reports.index', ['employees' => $employees]);
         })->name('reports.index');
 
+
         Route::get('export', function (Illuminate\Http\Request $request) {
             $employeeId = $request->query('employee');
             $departmentId = $request->query('department');
@@ -407,6 +425,15 @@ Route::middleware('auth')->group(function () {
 
             return view('reports.export', ['data' => $data]);
         })->name('reports.export');
+
+        Route::get('records', function (Illuminate\Http\Request $request) {
+            $employeeId = $request->query('employee');
+
+
+            $employee = Employee::findOrFail($employeeId);
+
+            return view('reports.records', ['employee' => $employee]);
+        })->name('reports.records');
 
         Route::get('export/{shift:slug}', function ($slug) {
             $shift = null;

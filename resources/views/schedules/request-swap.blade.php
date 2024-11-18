@@ -51,7 +51,7 @@
                 'bg-yellow-500/30' => $schedule->isRequestedByThisEmployee,
                 'bg-slate-200/50' => !$schedule->isRequestedByThisEmployee,
             ]) >
-                <div class="flex gap-x-2 items-end">
+                <div class="flex gap-x-2 items-end mb-2">
                     <img src="{{ asset('storage/' . $schedule->employee->picture) }}" alt="Employee Picture" class="w-16 h-16 object-cover rounded-md opacity-90 border border-teal-600">
                     <div class="w-56">
                         <h3 class="text-base font-semibold"> {{ $schedule->employee->firstname . ' ' . $schedule->employee->middlename . ' ' . $schedule->employee->lastname . ($schedule->employee->nameextension ? ' ' . $schedule->employee->nameextension : '') }}</h3>

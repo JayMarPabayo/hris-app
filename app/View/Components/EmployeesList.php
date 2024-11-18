@@ -9,9 +9,11 @@ use Illuminate\View\Component;
 class EmployeesList extends Component
 {
     public $employees;
-    public function __construct($employees)
+    public $mode;
+    public function __construct($employees, $mode)
     {
         $this->employees = $employees;
+        $this->mode = $mode;
         //
     }
 

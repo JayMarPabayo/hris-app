@@ -18,11 +18,13 @@ class ScheduleController extends Controller
         $selectedDay = $request->input('day');
         $week = $request->input('week') ?? date('Y-\WW');
 
-        $schedules = Schedule::where('week', $week)->with(['employee', 'shift'])
+        $schedules = Schedule::where('week', $week)
+            ->with(['employee', 'shift'])
             ->when($selectedDay, function ($query, $selectedDay) {
                 return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
                     $shiftQuery->whereJsonContains('weekdays', $selectedDay);
-                });
+                })
+                    ->whereJsonDoesntContain('dayoffs', $selectedDay);
             })
             ->get()
             ->groupBy('employee.designation');

@@ -173,7 +173,10 @@ class Employee extends Model
 
     public function leaveRequestDates()
     {
-        $userId = $this->user->id ?? User::where('employee_id', $this->id)->value('id');
+
+        $user = User::where('employee_id', $this->id)->first();
+
+        $userId = $user->id;
 
         if (!$userId) {
             return collect([]);
