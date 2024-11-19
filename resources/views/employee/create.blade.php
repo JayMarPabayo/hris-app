@@ -470,7 +470,7 @@
         @livewire('create-education', ['educations' => old('education', [])])
 
         {{-- ELIGIBILITIES --}}
-        @livewire('create-eligibility', ['eligibilities' => old('eligibilities', [])])
+        {{-- @livewire('create-eligibility', ['eligibilities' => old('eligibilities', [])]) --}}
         
         {{-- WORK EXPERIENCES --}}
         @livewire('create-work-experience', ['workexperiences' => old('workexperiences', [])])
@@ -490,7 +490,7 @@
         function previewImage(event) {
         const output = document.getElementById('image-preview');
         const errorElement = document.getElementById('picture-error');
-        
+
         output.src = URL.createObjectURL(event.target.files[0]);
 
         if (event.target.files.length > 0) {

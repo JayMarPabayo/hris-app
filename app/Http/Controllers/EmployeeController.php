@@ -69,11 +69,11 @@ class EmployeeController extends Controller
         }
 
         // -- Add eligibility if provided
-        if ($request->has('eligibilities')) {
-            foreach ($request->eligibilities as $eligibility) {
-                $employee->eligibilities()->create($eligibility);
-            }
-        }
+        // if ($request->has('eligibilities')) {
+        //     foreach ($request->eligibilities as $eligibility) {
+        //         $employee->eligibilities()->create($eligibility);
+        //     }
+        // }
 
         // -- Add workexperiences if provided
         if ($request->has('workexperiences')) {
@@ -165,12 +165,12 @@ class EmployeeController extends Controller
         }
 
         // -- Update eligibilities if provided
-        $employee->eligibilities()->delete();
-        if ($request->has('eligibilities')) {
-            foreach ($request->eligibilities as $eligibility) {
-                $employee->eligibilities()->create($eligibility);
-            }
-        }
+        // $employee->eligibilities()->delete();
+        // if ($request->has('eligibilities')) {
+        //     foreach ($request->eligibilities as $eligibility) {
+        //         $employee->eligibilities()->create($eligibility);
+        //     }
+        // }
 
         // -- Update workexperience if provided
         $employee->workexperiences()->delete();

@@ -234,7 +234,7 @@
     @endif
     
     
-    @if ($employee->eligibilities->isNotEmpty())
+    {{-- @if ($employee->eligibilities->isNotEmpty())
         <div class="avoid-break">
             <h3 class="text-base font-semibold text-cyan-700 mb-3">Government Employment Eligibilities</h3>
     
@@ -271,7 +271,7 @@
                 </tbody>
             </table>
         </div>
-    @endif
+    @endif --}}
     
     @if ($employee->workexperiences->isNotEmpty())
         <div class="avoid-break">

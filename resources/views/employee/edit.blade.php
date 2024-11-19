@@ -507,7 +507,7 @@
         @livewire('create-education', ['educations' => old('educations', $employee->education->toArray() ?? [])])
 
         {{-- ELIGIBILITIES --}}
-        @livewire('create-eligibility', ['eligibilities' => old('eligibilities', $employee->eligibilities->toArray() ?? [])])
+        {{-- @livewire('create-eligibility', ['eligibilities' => old('eligibilities', $employee->eligibilities->toArray() ?? [])]) --}}
 
         {{-- WORK EXPERIENCES --}}
         @livewire('create-work-experience', ['workexperiences' => old('workexperiences', $employee->workexperiences->toArray() ?? [])])

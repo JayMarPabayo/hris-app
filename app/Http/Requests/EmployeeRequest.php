@@ -126,13 +126,13 @@ class EmployeeRequest extends FormRequest
             'education.*.graduated' => 'nullable|integer|digits:4|min:1900|max:' . date('Y'),
             'education.*.accolades' => 'nullable|string',
 
-            'eligibilities' => 'sometimes|array',
-            'eligibilities.*.examination' => 'required|string|max:200',
-            'eligibilities.*.rating' => 'nullable|numeric|min:0|max:100',
-            'eligibilities.*.examdate' => 'nullable|date',
-            'eligibilities.*.address' => 'nullable|string',
-            'eligibilities.*.license' => 'nullable|string|max:80',
-            'eligibilities.*.validity' => 'nullable|integer|digits:4|min:1900|max:2100' . date('Y'),
+            // 'eligibilities' => 'sometimes|array',
+            // 'eligibilities.*.examination' => 'required|string|max:200',
+            // 'eligibilities.*.rating' => 'nullable|numeric|min:0|max:100',
+            // 'eligibilities.*.examdate' => 'nullable|date',
+            // 'eligibilities.*.address' => 'nullable|string',
+            // 'eligibilities.*.license' => 'nullable|string|max:80',
+            // 'eligibilities.*.validity' => 'nullable|integer|digits:4|min:1900|max:2100' . date('Y'),
 
             'workexperiences' => 'sometimes|array',
             'workexperiences.*.position' => 'required|string|max:120',
@@ -175,9 +175,9 @@ class EmployeeRequest extends FormRequest
             'education.*.start.required' => 'Start year is required for each education entry.',
             'education.*.end.required' => 'End year is required for each education entry.',
 
-            'eligibilities.*.examination.required' => 'Examination name is required.',
-            'eligibilities.*.rating.required' => 'Rating is required for each eligibility.',
-            'eligibilities.*.examdate.required' => 'Examination date is required for each eligibility.',
+            // 'eligibilities.*.examination.required' => 'Examination name is required.',
+            // 'eligibilities.*.rating.required' => 'Rating is required for each eligibility.',
+            // 'eligibilities.*.examdate.required' => 'Examination date is required for each eligibility.',
 
             'workexperiences.*.position.required' => 'Job position is required for each work experience.',
             'workexperiences.*.company.required' => 'Company name is required for each work experience.',
