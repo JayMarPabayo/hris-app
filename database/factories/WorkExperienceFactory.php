@@ -32,7 +32,7 @@ class WorkExperienceFactory extends Factory
             'monthlysalary' => $this->generateSalary(),
             'paygrade' => $this->faker->bothify('##-#'),
             'appointmentstatus' => $this->faker->boolean(80) ? 'Regular' : $this->faker->randomElement($appointmentStatuses),
-            'govtservice' => $this->faker->boolean(),
+            // 'govtservice' => $this->faker->boolean(),
             'start' => $startDate,
             'end' => $this->faker->dateTimeBetween($startDate, 'now'),
             'employee_id' => $employeeId,

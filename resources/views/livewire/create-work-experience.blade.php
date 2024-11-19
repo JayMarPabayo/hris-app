@@ -76,7 +76,7 @@
                     class="{{ $errors->has("workexperiences.{$index}.paygrade") ? 'border-red-400' : '' }}" />
                 </div>
 
-                <div class="col-span-2">
+                <div class="col-span-4">
                     <label for="workexperiences[{{ $index }}][appointmentstatus]">Appointment Status</label>
                     <select
                     name="workexperiences[{{ $index }}][appointmentstatus]"
@@ -89,7 +89,7 @@
                     </select>
                 </div>
 
-                <div class="col-span-2">
+                {{-- <div class="col-span-2">
                     <label for="workexperiences[{{ $index }}][govtservice]">Government Service</label>
                     <select
                     name="workexperiences[{{ $index }}][govtservice]"
@@ -101,8 +101,7 @@
                             No
                         </option>
                     </select>
-
-                </div>
+                </div> --}}
             </div>
         @endforeach
     </div>

@@ -286,7 +286,7 @@
                         <th scope="col" class="py-2 px-1">Monthly Salary</th>
                         <th scope="col" class="py-2 px-1">Job/Pay Grade</th>
                         <th scope="col" class="py-2 px-1">Status</th>
-                        <th scope="col" class="py-2 px-1">Government Service</th>
+                        {{-- <th scope="col" class="py-2 px-1">Government Service</th> --}}
                     </tr>
                 </thead>
                 <tbody class="text-xs">
@@ -298,7 +298,7 @@
                             <td class="py-2 px-1">{{ number_format($row->monthlysalary, 2) }}</td>
                             <td class="py-2 px-1">{{ $row->paygrade }}</td>
                             <td class="py-2 px-1">{{ $row->appointmentstatus }}</td>
-                            <td class="py-2 px-1">{{ $row->govtservice ? 'Yes' : 'No' }}</td>
+                            {{-- <td class="py-2 px-1">{{ $row->govtservice ? 'Yes' : 'No' }}</td> --}}
                         </tr>
                     @endforeach
                 </tbody>

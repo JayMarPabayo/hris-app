@@ -29,7 +29,7 @@ class CreateWorkexperience extends Component
             'monthlysalary' => '',
             'paygrade' => '',
             'appointmentstatus' => '',
-            'govtservice' => '',
+            // 'govtservice' => '',
             'start' => '',
             'end' => '',
         ];

@@ -140,7 +140,7 @@ class EmployeeRequest extends FormRequest
             'workexperiences.*.monthlysalary' => 'nullable|string',
             'workexperiences.*.paygrade' => 'nullable|string|max:10',
             'workexperiences.*.appointmentstatus' => 'required|string|max:70',
-            'workexperiences.*.govtservice' => 'required|boolean',
+            // 'workexperiences.*.govtservice' => 'required|boolean',
             'workexperiences.*.start' => 'nullable|date',
             'workexperiences.*.end' => 'nullable|date|after_or_equal:start',
 
@@ -182,7 +182,7 @@ class EmployeeRequest extends FormRequest
             'workexperiences.*.position.required' => 'Job position is required for each work experience.',
             'workexperiences.*.company.required' => 'Company name is required for each work experience.',
             'workexperiences.*.appointmentstatus.required' => 'Appointment status is required.',
-            'workexperiences.*.govtservice.required' => 'Government service status is required.',
+            // 'workexperiences.*.govtservice.required' => 'Government service status is required.',
         ];
     }
 }

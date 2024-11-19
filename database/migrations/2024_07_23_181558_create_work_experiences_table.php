@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('monthlysalary')->nullable();
             $table->string('paygrade', 10)->nullable();
             $table->string('appointmentstatus', 50);
-            $table->boolean('govtservice');
+            // $table->boolean('govtservice');
             $table->date('start')->nullable();
             $table->date('end')->nullable();
             $table->timestamps();
