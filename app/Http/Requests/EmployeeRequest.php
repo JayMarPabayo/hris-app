@@ -26,12 +26,12 @@ class EmployeeRequest extends FormRequest
         $employeeId = $this->employee ? $this->employee->id : null;
 
         return [
-            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'firstname' => 'required|string|max:100',
             'middlename' => 'nullable|string|max:100',
             'lastname' => 'required|string|max:100',
             'nameextension' => 'nullable|string|max:10',
-            'designation' => 'string|max:100',
+            'designation' => 'required|string|max:100',
             'birthdate' => 'required|date',
             'birthplace' => 'required|string|max:255',
             'gender' => 'required|in:' . implode(',', Employee::$gender),
@@ -86,9 +86,9 @@ class EmployeeRequest extends FormRequest
                 'max:20',
                 Rule::unique('employees')->ignore($employeeId),
             ],
-            'mobile' => 'nullable|string|max:20',
+            'mobile' => 'required|string|max:20',
             'email' => [
-                'nullable',
+                'required',
                 'string',
                 'email',
                 'max:255',
@@ -144,6 +144,45 @@ class EmployeeRequest extends FormRequest
             'workexperiences.*.start' => 'nullable|date',
             'workexperiences.*.end' => 'nullable|date|after_or_equal:start',
 
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'picture.required' => 'An employee picture is required.',
+            'firstname.required' => 'First name is required.',
+            'lastname.required' => 'Last name is required.',
+            'birthdate.required' => 'Date of birth is required.',
+            'birthplace.required' => 'Place of birth is required.',
+            'gender.required' => 'Please select the gender of the employee.',
+            'citizenship.required' => 'Citizenship is required.',
+            'civilstatus.required' => 'Civil status is required.',
+            'mobile.required' => 'Mobile number is required.',
+            'email.required' => 'Email address is required.',
+            'bloodtype.required' => 'Blood type is required.',
+            'designation.required' => 'Designation/Position is required.',
+            'department_id.required' => 'Please select the department for the employee.',
+
+            // Nested messages
+            'children.*.fullname.required' => 'The full name of the child is required.',
+            'children.*.gender.required' => 'Gender is required for each child.',
+            'children.*.birthdate.required' => 'Birthdate is required for each child.',
+
+            'education.*.level.required' => 'Education level is required.',
+            'education.*.school.required' => 'School name is required.',
+            'education.*.degree.required' => 'Degree earned is required.',
+            'education.*.start.required' => 'Start year is required for each education entry.',
+            'education.*.end.required' => 'End year is required for each education entry.',
+
+            'eligibilities.*.examination.required' => 'Examination name is required.',
+            'eligibilities.*.rating.required' => 'Rating is required for each eligibility.',
+            'eligibilities.*.examdate.required' => 'Examination date is required for each eligibility.',
+
+            'workexperiences.*.position.required' => 'Job position is required for each work experience.',
+            'workexperiences.*.company.required' => 'Company name is required for each work experience.',
+            'workexperiences.*.appointmentstatus.required' => 'Appointment status is required.',
+            'workexperiences.*.govtservice.required' => 'Government service status is required.',
         ];
     }
 }

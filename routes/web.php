@@ -433,7 +433,6 @@ Route::middleware('auth')->group(function () {
 
             $userId = $user->id;
 
-
             $leaveRequests = LeaveRequest::where('user_id', $userId)
                 ->where(function ($query) {
                     $query->where('status', 'approved')

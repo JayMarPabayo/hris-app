@@ -5,12 +5,22 @@
         <div class="flex justify-between items-center border-b border-slate-300 pb-3 mb-3">
             <h3 class="text-base font-semibold">Edit Employee</h3>
             <section class="flex justify-between items-center gap-2">
-                <select name="department_id" class="w-80 @class(['border-red-400' => $errors->has('department_id')])>
-                    <option value="" hidden disabled selected>Select Department</option>
+                <select 
+                    name="department_id" 
+                    class="w-80 border-gray-300 rounded-md"
+                    style="{{ $errors->has('department_id') ? 'border-color: #f87171;' : '' }}"
+                >
+                    <option value="" hidden disabled>Select Department</option>
                     @foreach ($departments as $department)
-                        <option value="{{ $department->id }}" @selected($department->id == $employee->department_id)>{{ $department->name }}</option>
+                        <option 
+                            value="{{ $department->id }}" 
+                            @selected($department->id == $employee->department_id)
+                        >
+                            {{ $department->name }}
+                        </option>
                     @endforeach
                 </select>
+
                   <input type="text"
                   name="designation"
                   placeholder="Designation"
@@ -78,7 +88,11 @@
 
             <div class="flex-grow">
                 <label for="gender">Gender</label>
-                <select name="gender" @class(['border-red-400' => $errors->has('gender')])>
+                <select 
+                    name="gender" 
+                    class="border-gray-300 rounded-md w-full"
+                    style="{{ $errors->has('gender') ? 'border-color: #f87171;' : '' }}"
+                >
                     <option value="Male" @selected($employee->gender === "Male")>Male</option>
                     <option value="Female" @selected($employee->gender === "Female")>Female</option>
                 </select>
@@ -86,9 +100,15 @@
 
             <div class="flex-grow">
                 <label for="civilstatus">Civil Status</label>
-                <select name="civilstatus" @class(['border-red-400' => $errors->has('civilstatus')])>
+                <select 
+                    name="civilstatus" 
+                    class="border-gray-300 rounded-md w-full"
+                    style="{{ $errors->has('civilstatus') ? 'border-color: #f87171;' : '' }}"
+                >
                     @foreach ($civilstatus as $status)
-                        <option value="{{ $status }}" @selected($employee->civilstatus === $status)>{{ $status }}</option>
+                        <option value="{{ $status }}" @selected($employee->civilstatus === $status)>
+                            {{ $status }}
+                        </option>
                     @endforeach
                 </select>
             </div>

@@ -4,12 +4,24 @@
         <div class="flex justify-between items-center border-b border-slate-300 pb-3 mb-3">
             <h3 class="text-base font-semibold">New Employee</h3>
             <section class="flex justify-between items-center gap-2">
-                <select name="department_id" class="w-80" @class(['border-red-400' => $errors->has('department_id')])>
-                    <option value="" hidden disabled selected>Select Department</option>
+                <select 
+                    name="department_id" 
+                    class="w-80 border-gray-300 rounded-md"
+                    style="{{ $errors->has('department_id') ? 'border-color: #f87171;' : '' }}"
+                >
+                    <option value="" hidden disabled @selected(old('department_id') === null || old('department_id') === '')>
+                        Select Department
+                    </option>
                     @foreach ($departments as $department)
-                        <option value="{{ $department->id }}" @selected($department->id === old('department_id'))">{{ $department->name }}</option>
+                        <option 
+                            value="{{ $department->id }}" 
+                            @selected($department->id == old('department_id'))
+                        >
+                            {{ $department->name }}
+                        </option>
                     @endforeach
                 </select>
+
                 <input
                 type="text"
                 name="designation"
@@ -27,7 +39,7 @@
                 <input type="file" name="picture" id="picture" accept="image/*" class="w-52" onchange="previewImage(event)">
             </div>
             @error('picture')
-                <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                <div class="text-red-500 text-xs mt-1" id="picture-error">{{ $message }}</div>
             @enderror
         </div>
 
@@ -77,15 +89,25 @@
 
             <div class="flex-grow">
                 <label for="gender">Gender</label>
-                <select name="gender" @class(['border-red-400' => $errors->has('gender')])>
-                    <option value="Male" @selected(old('gender') ? (old('gender') === "Male" ? true : false) : true)>Male</option>
+                <select 
+                    name="gender" 
+                    class="border-gray-300 rounded-md"
+                    style="{{ $errors->has('gender') ? 'border-color: #f87171;' : '' }}"
+                >
+                    <option value="" @selected(old('gender') === null || old('gender') === '')>---</option>
+                    <option value="Male" @selected(old('gender') === "Male")>Male</option>
                     <option value="Female" @selected(old('gender') === "Female")>Female</option>
                 </select>
             </div>
 
             <div class="flex-grow">
                 <label for="civilstatus">Civil Status</label>
-                <select name="civilstatus" @class(['border-red-400' => $errors->has('civilstatus')])>
+                <select 
+                    name="civilstatus" 
+                    class="border-gray-300 rounded-md"
+                    style="{{ $errors->has('civilstatus') ? 'border-color: #f87171;' : '' }}"
+                >
+                    <option value="" @selected(old('civilstatus') === null || old('civilstatus') === '')>---</option>
                     @foreach ($civilstatus as $status)
                         <option value="{{ $status }}" @selected(old('civilstatus') === $status)>{{ $status }}</option>
                     @endforeach
@@ -466,8 +488,16 @@
     </form>
     <script>
         function previewImage(event) {
-            const output = document.getElementById('image-preview');
-            output.src = URL.createObjectURL(event.target.files[0]);
+        const output = document.getElementById('image-preview');
+        const errorElement = document.getElementById('picture-error');
+        
+        output.src = URL.createObjectURL(event.target.files[0]);
+
+        if (event.target.files.length > 0) {
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
         }
+    }
     </script>
 </x-layout>
