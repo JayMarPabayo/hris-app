@@ -13,6 +13,7 @@
             type="month" 
             name="month" 
             value="{{ request('month') ?? $currentMonth }}" 
+            max="{{ date('Y-m') }}" 
             class="w-48 btn" 
             onchange="document.getElementById('monthFilterForm').submit()">
         {{-- <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Filter</button> --}}

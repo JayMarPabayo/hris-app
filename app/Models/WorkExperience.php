@@ -15,7 +15,6 @@ class WorkExperience extends Model
         'monthlysalary',
         'paygrade',
         'appointmentstatus',
-        'govtservice',
         'start',
         'end',
         'employee_id',

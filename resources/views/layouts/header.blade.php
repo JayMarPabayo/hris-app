@@ -87,11 +87,11 @@
 
                                                 <div class="h-1 border-t border-slate-600/50 mb-3"></div>
                                 
-                                                <label for="name">Full Name</label>
+                                                {{-- <label for="name">Full Name</label>
                                                 <input type="text" name="name"
                                                 placeholder="Name"
                                                 value="{{ auth()->user()->name }}"
-                                                class="mb-4"/>
+                                                class="mb-4"/> --}}
                                 
                                                 <label for="username">Username</label>
                                                 <input type="text" name="username"

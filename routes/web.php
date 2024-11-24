@@ -49,6 +49,7 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/login', function () {
         return view('auth.login');
     })->name('auth.login');
+
     Route::post('auth/login', function (Illuminate\Http\Request $request) {
         $request->validate([
             'username' => 'required',
@@ -59,19 +60,19 @@ Route::middleware('guest')->group(function () {
         $remember = $request->filled('remember');
 
         if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user(); // Get the authenticated user
+            $user = Auth::user();
 
-            // Check the user's role and redirect accordingly
+            // -- Check the user's role and redirect accordingly
+
             /** @disregard [OPTIONAL_CODE] [OPTION_DESCRIPTION] */
             if ($user->hasRole('Employee')) {
-                return redirect()->route('profile.index')->with('success', 'Log in Successfully!');
+                return redirect()->route('profile.index')->with('success', 'Log in Successful');
             }
             /** @disregard [OPTIONAL_CODE] [OPTION_DESCRIPTION] */
             if ($user->hasRole('Administrator')) {
-                return redirect()->route('employees.index')->with('success', 'Log in Successfully!');
+                return redirect()->route('employees.index')->with('success', 'Log in Successful');
             }
 
-            // Default redirect if no role is matched
             return redirect()->intended('/');
         } else {
             return redirect()->back()->with('error', 'Invalid credentials');
@@ -283,9 +284,15 @@ Route::middleware('auth')->group(function () {
                 ->whereYear('created_at', Carbon::now()->year)
                 ->pluck('coworker_id');
 
+            $coworkers = Employee::where('department_id', $departmentId)
+                ->whereNot('id', $employee->id)
+                ->whereNotIn('id', $evaluatedCoworkerIds)
+                ->get();
+
+            $questions = Question::all();
+
             $evaluatedCoworkers = Employee::whereIn('id', $evaluatedCoworkerIds)->get();
 
-            // Add 'avg_rating' property to each evaluated coworker
             $evaluatedCoworkers->each(function ($coworker) use ($employee) {
                 $coworker->avg_rating = Evaluation::where('employee_id', $employee->id)
                     ->where('coworker_id', $coworker->id)
@@ -294,47 +301,49 @@ Route::middleware('auth')->group(function () {
                     ->avg('rating');
             });
 
-            $coworker = Employee::where('department_id', $departmentId)
-                ->whereNot('id', $employee->id)
-                ->whereNotIn('id', $evaluatedCoworkerIds)
-                ->first();
-
-            $questions = Question::all();
-
-
             return view('profile.evaluation', [
                 'employee' => $employee,
-                'coworker' => $coworker,
+                'coworkers' => $coworkers,
                 'questions' => $questions,
                 'evaluatedCoworkers' => $evaluatedCoworkers,
             ]);
         })->name('profile.evaluation');
 
+
         Route::post('profile/evaluation', function (RequestRequest $request) {
             $employeeId = Auth::user()->employee->id;
 
+            // Validate the request
             $request->validate([
-                'coworker' => 'required|exists:employees,id',
-                'question' => 'required|array',
-                'rating' => 'required|array',
-                'rating.*' => 'required|integer|between:1,5',
+                'coworkers' => 'required|array',
+                'coworkers.*' => 'exists:employees,id',
+                'questions' => 'required|array',
+                'questions.*' => 'required|array',
+                'ratings' => 'required|array',
+                'ratings.*' => 'required|array',
+                'ratings.*.*' => 'required|integer|between:1,5',
             ]);
 
             $evaluations = [];
-            foreach ($request->question as $index => $questionId) {
-                $evaluations[] = [
-                    'employee_id' => $employeeId,
-                    'coworker_id' => $request->coworker,
-                    'question_id' => $questionId,
-                    'rating' => $request->rating[$index],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+
+            foreach ($request->coworkers as $coworkerId) {
+                if (isset($request->questions[$coworkerId]) && isset($request->ratings[$coworkerId])) {
+                    foreach ($request->questions[$coworkerId] as $index => $questionId) {
+                        $evaluations[] = [
+                            'employee_id' => $employeeId,
+                            'coworker_id' => $coworkerId,
+                            'question_id' => $questionId,
+                            'rating' => $request->ratings[$coworkerId][$index],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
             }
 
             Evaluation::insert($evaluations);
 
-            return redirect()->route('profile.evaluation')->with('success', 'Evaluation submitted successfully!');
+            return redirect()->route('profile.evaluation')->with('success', 'Evaluations submitted successfully!');
         })->name('profile.evaluation.post');
     });
 
@@ -577,6 +586,6 @@ Route::middleware('auth')->group(function () {
         Auth::logout();
         Request::session()->invalidate();
         Request::session()->regenerateToken();
-        return redirect()->route('auth.login')->with('success', 'Log out successfully.');
+        return redirect()->route('auth.login')->with('success', 'Log out successful.');
     })->name('auth.logout');
 });

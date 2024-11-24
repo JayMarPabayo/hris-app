@@ -9,7 +9,7 @@
 
         @if ($withDesignation)
             <select class="w-60" wire:model="designation" wire:change="getEmployeesByDepartment">
-                <option value="" hidden disabled selected>Select Designation</option>
+                <option value="">All</option>
                 @foreach ($designations as $designation)
                     <option value="{{ $designation }}">{{ $designation }}</option>
                 @endforeach
@@ -22,7 +22,7 @@
 
         @if ($employees)
             <a
-                href="{{ route('reports.export', ['department' => $this->department] ) }}"
+                href="{{ route('reports.export', ['department' => $this->department, 'designation' => $this->designation] ) }}"
                 class="btn ml-auto"
                 target="_blank"
             >
