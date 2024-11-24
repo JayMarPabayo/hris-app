@@ -64,11 +64,11 @@ Route::middleware('guest')->group(function () {
             // Check the user's role and redirect accordingly
             /** @disregard [OPTIONAL_CODE] [OPTION_DESCRIPTION] */
             if ($user->hasRole('Employee')) {
-                return redirect()->route('profile.index');
+                return redirect()->route('profile.index')->with('success', 'Log in Successfully!');
             }
             /** @disregard [OPTIONAL_CODE] [OPTION_DESCRIPTION] */
             if ($user->hasRole('Administrator')) {
-                return redirect()->route('employees.index');
+                return redirect()->route('employees.index')->with('success', 'Log in Successfully!');
             }
 
             // Default redirect if no role is matched
@@ -572,10 +572,11 @@ Route::middleware('auth')->group(function () {
         return redirect()->back()->with('success', 'Account Updated.');
     })->name('auth.update');
 
+
     Route::delete('auth/logout', function () {
         Auth::logout();
         Request::session()->invalidate();
         Request::session()->regenerateToken();
-        return redirect('/');
+        return redirect()->route('auth.login')->with('success', 'Log out successfully.');
     })->name('auth.logout');
 });

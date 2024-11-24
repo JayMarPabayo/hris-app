@@ -128,9 +128,8 @@
                                                         Cancel
                                                     </button>
                                                     <button
-                                                    type="submit"
                                                     class="btn w-40"
-                                                    x-on:click="submitting=true; document.getElementById('update-user-form').submit();"
+                                                    type="submit"
                                                     >
                                                         Update
                                                     </button>                                                                           
@@ -170,3 +169,68 @@
         </div>
     </div>
 </header>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const updateForm = document.getElementById("update-user-form");
+    const passwordField = updateForm.querySelector("input[name='password']");
+    const currentPasswordField = updateForm.querySelector("input[name='current_password']");
+    const confirmPasswordField = updateForm.querySelector("input[name='password_confirmation']");
+
+    const setErrorBorder = (field) => {
+        field.classList.add("border-red-500");
+        field.classList.add("outline-red-500");
+    };
+
+    const clearErrorBorder = (field) => {
+        field.classList.remove("border-red-500");
+        field.classList.remove("outline-red-500");
+    };
+
+    confirmPasswordField.addEventListener("input", () => {
+        if (passwordField.value !== confirmPasswordField.value) {
+            setErrorBorder(confirmPasswordField);
+        } else {
+            clearErrorBorder(confirmPasswordField);
+        }
+    })
+
+    updateForm.addEventListener("submit", (event) => {
+        let hasError = false;
+
+        console.log("Submitting");
+
+        if (passwordField.value) {
+            // Validate Current Password
+            if (!currentPasswordField.value) {
+                setErrorBorder(currentPasswordField);
+                hasError = true;
+            } else {
+                clearErrorBorder(currentPasswordField);
+            }
+
+            // Validate Confirm Password
+            if (!confirmPasswordField.value) {
+                setErrorBorder(confirmPasswordField);
+                hasError = true;
+            } else {
+                clearErrorBorder(confirmPasswordField);
+            }
+
+            // Check if Password and Confirmation Match
+            if (
+                confirmPasswordField.value &&
+                passwordField.value !== confirmPasswordField.value
+            ) {
+                setErrorBorder(confirmPasswordField);
+                hasError = true;
+            }
+        }
+
+        if (hasError) {
+            event.preventDefault();
+        }
+    });
+});
+
+</script>
