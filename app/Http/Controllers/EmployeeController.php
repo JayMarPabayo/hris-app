@@ -87,6 +87,7 @@ class EmployeeController extends Controller
             'name' => "{$employee->firstname} {$employee->lastname}",
             'username' => $username,
             'email' => $employee->email,
+            'notification' => '',
             'role' => 'Employee',
             'password' => Hash::make('password'),
             'employee_id' => $employee->id,

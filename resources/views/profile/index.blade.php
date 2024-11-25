@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="flex items-end gap-x-2 mb-10">
+    <div class="flex items-end gap-x-2 mb-10 relative">
         <img src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="w-24 h-24 object-cover rounded-md opacity-90 border border-teal-600">
         <div class="flex flex-col">
             <h3 class="text-lg font-semibold">{{ auth()->user()->name }}</h3>
@@ -30,6 +30,21 @@
                 </div>
             @endif
         </section>
+
+        @if ($notification)
+            <div class="absolute top-1 end-1 flex justify-between items-center gap-x-2 rounded-md p-2 bg-yellow-500 hover:bg-yellow-500/50 shadow-md duration-300">
+                <x-carbon-information-filled class="h-5"/>
+                <div class="font-medium">{{ $notification }}</div>
+                <form action="{{ route('notification.delete', $employee->user->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">
+                        <x-carbon-close-large class="h-5 ms-5 hover:scale-110 active:scale-100" />
+                    </button>
+                </form>
+            </div>
+        @endif
+    
     </div>
     
 

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             // $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->text('notification')->nullable();
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->rememberToken();
             $table->timestamps();

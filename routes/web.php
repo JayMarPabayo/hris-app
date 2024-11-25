@@ -3,7 +3,6 @@
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EvaluationController;
-use App\Http\Controllers\VotingController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ShiftController;
@@ -21,13 +20,11 @@ use App\Models\Employee;
 use App\Models\Department;
 use App\Models\Evaluation;
 use App\Models\LeaveRequest;
-use App\Models\NegativeVoting;
 use App\Models\Question;
 use App\Models\Shift;
 use App\Models\Schedule;
 use App\Models\SystemConfig;
 use App\Models\User;
-use App\Models\Voting;
 use Illuminate\Validation\Rule;
 
 use Illuminate\Support\Facades\Password;
@@ -134,6 +131,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('profile', function () {
             $employeeId = Auth::user()->employee_id;
+            $notification = Auth::user()->notification;
             $employee = Employee::findOrFail($employeeId);
             $schedules = Schedule::where('employee_id', $employee->id)->get();
             $systemConfig = SystemConfig::first();
@@ -144,6 +142,7 @@ Route::middleware('auth')->group(function () {
                 'schedules' => $schedules,
                 'weekdays' => Shift::$weekdays,
                 'isMonthlyEvaluationOpen' => $isMonthlyEvaluationOpen,
+                'notification' => $notification,
             ]);
         })->name('profile.index');
 
@@ -206,13 +205,13 @@ Route::middleware('auth')->group(function () {
                 ->where('employee_id', $employeeId)
                 ->first();
 
-            if (!$employeeSchedule) {
-                $weekNumber = date('W', strtotime($week . '-1'));
-                return redirect()->back()->with('error', "You have no week {$weekNumber} schedule to swap with.");
-            }
+            // if (!$employeeSchedule) {
+            //     $weekNumber = date('W', strtotime($week . '-1'));
+            //     return redirect()->back()->with('error', "You have no week {$weekNumber} schedule to swap with.");
+            // }
 
-            $iRequestedForThisWeek = SwapRequest::where('employee_id', $employeeId)
-                ->where('week', $week)
+            $iHavePendingRequest = SwapRequest::where('employee_id', $employeeId)
+                ->where('status', 'pending')
                 ->exists();
 
             $schedules = Schedule::where('week', $week)
@@ -240,7 +239,8 @@ Route::middleware('auth')->group(function () {
                 'weekdays' => Shift::$weekdays,
                 'week' => $week,
                 'schedules' => $schedules,
-                'iRequestedForThisWeek' => $iRequestedForThisWeek
+                'iHavePendingRequest' => $iHavePendingRequest,
+                'hasScheduleForThisWeek' => (bool)$employeeSchedule
             ]);
         })->name('profile.swap-request');
 
@@ -308,7 +308,6 @@ Route::middleware('auth')->group(function () {
                 'evaluatedCoworkers' => $evaluatedCoworkers,
             ]);
         })->name('profile.evaluation');
-
 
         Route::post('profile/evaluation', function (RequestRequest $request) {
             $employeeId = Auth::user()->employee->id;
@@ -401,7 +400,6 @@ Route::middleware('auth')->group(function () {
 
             return view('reports.index', ['employees' => $employees]);
         })->name('reports.index');
-
 
         Route::get('export', function (Illuminate\Http\Request $request) {
             $employeeId = $request->query('employee');
@@ -509,6 +507,7 @@ Route::middleware('auth')->group(function () {
                 $coWorkerSchedule->update(['employee_id' => $requesterEmployeeId]);
             }
 
+            $request->employee->user->update(['notification' => 'Your swap request has been approved.']);
             $request->update(['status' => 'approved']);
             return redirect()->route('schedules.swap.requests')->with('success', 'Swap Request Approved.');
         })->name('schedules.swap.approved');
@@ -545,6 +544,7 @@ Route::middleware('auth')->group(function () {
             }
 
             $request->update(['status' => 'approved']);
+            $request->user->update(['notification' => 'Your leave request has been approved.']);
             return redirect()->route('requests.index')->with('success', 'Leave request approved successfully.');
         })->name('requests.update');
     });
@@ -561,6 +561,7 @@ Route::middleware('auth')->group(function () {
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'notification' => 'nullable',
             'password' => 'nullable',
             'current_password' => 'required_with:password',
         ]);
@@ -581,11 +582,15 @@ Route::middleware('auth')->group(function () {
         return redirect()->back()->with('success', 'Account Updated.');
     })->name('auth.update');
 
-
     Route::delete('auth/logout', function () {
         Auth::logout();
         Request::session()->invalidate();
         Request::session()->regenerateToken();
         return redirect()->route('auth.login')->with('success', 'Log out successful.');
     })->name('auth.logout');
+
+    Route::delete('notification/{user}', function (User $user) {
+        $user->update(['notification' => null]);
+        return redirect()->back();
+    })->name('notification.delete');
 });

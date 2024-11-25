@@ -10,13 +10,20 @@
     </div>
     <section class="flex items-center gap-2 mb-4">
         <form method="GET" action="{{ route('profile.swap-request') }}" class="flex items-center gap-x-2">
+            @php
+                $nextWeek = now()->addWeek()->startOfWeek()->format('Y-\WW'); // Calculate the next week's starting value
+            @endphp
             <input 
                 type="week" 
                 name="week" 
                 class="w-52" 
                 value="{{ $week ?? date('Y-\WW') }}" 
+                min="{{ $nextWeek }}" 
                 onchange="this.form.submit()"
             >
+            @if (!$hasScheduleForThisWeek)
+                <span class="text-red-500">You have no existing schedule for this week. Unable to swap.</span>
+            @endif
         </form>
     </section>
 
@@ -150,7 +157,7 @@
                         @click.prevent="open = true" 
                         type="button" 
                         class="btn w-56"
-                        @disabled($iRequestedForThisWeek)
+                        @disabled($iHavePendingRequest)
                     >
                         REQUEST SWAP
                     </button>
