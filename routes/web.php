@@ -473,6 +473,45 @@ Route::middleware('auth')->group(function () {
             return view('administration.index', ['departments' => Department::withCount('employees')->get()]);
         })->name('administration.index');
 
+        Route::get('administration/users', function () {
+            $admins = User::where('role', 'Administrator')->get();
+            return view('administration.users', ['admins' => $admins]);
+        })->name('administration.users');
+
+        Route::post('administration/users', function (RequestRequest $request) {
+
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => [
+                    'required',
+                    'email',
+                    Rule::unique('users')->where(function ($query) {
+                        $query->where('role', 'Administrator');
+                    }),
+                ],
+                'username' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('users')->where(function ($query) {
+                        $query->where('role', 'Administrator');
+                    }),
+                ],
+            ]);
+
+            User::create([
+                'name' => $request->name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'notification' => '',
+                'role' => 'Administrator',
+                'password' => Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ]);
+
+            return redirect()->route('administration.users')->with('success', "Admin user added successfully.");
+        })->name('users.store');
+
         Route::get('administration/leave-request', function () {
             $config = SystemConfig::first();
             return view('administration.leave-request', ['config' => $config]);
