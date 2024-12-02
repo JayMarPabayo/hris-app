@@ -43,7 +43,7 @@
             <div class="flex items-end gap-x-2 mb-5">
                 <img src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="w-24 h-24 object-cover rounded-md opacity-90 border border-teal-600">
                 <div class="flex flex-col">
-                    <h3 class="text-lg font-semibold">{{ auth()->user()->name }}</h3>
+                    <h3 class="text-lg font-semibold">{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</h3>
                     <div class="flex gap-x-2">
                         <h3 class="text-sm font-medium text-teal-800">{{ $employee->department->name }}</h3>
                         <h3 class="text-sm font-medium text-pink-800/70">{{ $employee->designation }}</h3>

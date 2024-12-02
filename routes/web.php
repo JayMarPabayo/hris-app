@@ -137,12 +137,18 @@ Route::middleware('auth')->group(function () {
             $systemConfig = SystemConfig::first();
             $isMonthlyEvaluationOpen = $systemConfig ? $systemConfig->isMonthlyEvaluationOpen() : false;
 
+            $hasVotedForThisMonth = Evaluation::where('employee_id', $employeeId)
+                ->whereYear('created_at', Carbon::now()->year)
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->exists();
+
             return view('profile.index', [
                 'employee' => $employee,
                 'schedules' => $schedules,
                 'weekdays' => Shift::$weekdays,
                 'isMonthlyEvaluationOpen' => $isMonthlyEvaluationOpen,
                 'notification' => $notification,
+                'hasVotedForThisMonth' => $hasVotedForThisMonth,
             ]);
         })->name('profile.index');
 
@@ -183,10 +189,26 @@ Route::middleware('auth')->group(function () {
             $endDate = Carbon::parse($request->input('end'));
             $daysRequested = $startDate->diffInDays($endDate) + 1;
 
-
             if (($remainingCredits - $daysRequested) < 0) {
                 return redirect()->route('profile.leave')
                     ->with('error', "Not enough leave credits.");
+            }
+
+            $overlappingLeaveRequest = LeaveRequest::where('user_id', $userId)
+                ->where('status', 'approved')
+                ->where(function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('start', [$startDate, $endDate])
+                        ->orWhereBetween('end', [$startDate, $endDate])
+                        ->orWhere(function ($subQuery) use ($startDate, $endDate) {
+                            $subQuery->where('start', '<=', $startDate)
+                                ->where('end', '>=', $endDate);
+                        });
+                })
+                ->exists();
+
+            if ($overlappingLeaveRequest) {
+                return redirect()->route('profile.leave')
+                    ->with('error', "You already have an approved leave request within the selected dates.")->withInput();
             }
 
             LeaveRequest::create($request->validated());
@@ -199,7 +221,12 @@ Route::middleware('auth')->group(function () {
             $employeeId = Auth::user()->employee->id;
 
             $employee = $request->input('employee_id');
-            $week = $request->input('week') ?? date('Y-\WW');
+            $week = $request->input('week') ?? now()->addWeek()->startOfWeek()->format('Y-\WW');
+
+            $currentWeekStart = now()->startOfWeek()->format('Y-\WW');
+            if ($week <= $currentWeekStart) {
+                return redirect()->route('profile.index')->with('error', 'You cannot request a swap for past or current week.');
+            }
 
             $employeeSchedule = Schedule::where('week', $week)
                 ->where('employee_id', $employeeId)
@@ -342,12 +369,13 @@ Route::middleware('auth')->group(function () {
 
             Evaluation::insert($evaluations);
 
-            return redirect()->route('profile.evaluation')->with('success', 'Evaluations submitted successfully!');
+            return redirect()->route('profile.index')->with('success', 'Evaluations submitted successfully!');
         })->name('profile.evaluation.post');
     });
 
     // For Administrator
     Route::middleware('role:Administrator')->group(function () {
+
         Route::get('/', function () {
             return redirect()->route('employees.index');
         });

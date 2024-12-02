@@ -21,7 +21,7 @@
                     Request Leave
                 </a>
             </div>
-            @if ($isMonthlyEvaluationOpen)
+            @if ($isMonthlyEvaluationOpen && !$hasVotedForThisMonth)
                 <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
                     <x-carbon-white-paper class="h-5" />
                     <a href="{{ route('profile.evaluation') }}" class="border-none bg-none underline">

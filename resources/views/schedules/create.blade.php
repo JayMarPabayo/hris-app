@@ -57,7 +57,7 @@
                                 ✚
                             </button>
                             <div x-cloak x-show="openAddSchedule" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                <div class="w-96 bg-white pt-4 px-6 pb-3 rounded-lg">
+                                <div class="w-[30rem] bg-white pt-4 px-6 pb-3 rounded-lg">
                                     <form
                                     id="add-schedule-form-{{ $index }}"
                                     action="{{ route('schedules.store') }}"

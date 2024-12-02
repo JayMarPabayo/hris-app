@@ -11,13 +11,13 @@
     <section class="flex items-center gap-2 mb-4">
         <form method="GET" action="{{ route('profile.swap-request') }}" class="flex items-center gap-x-2">
             @php
-                $nextWeek = now()->addWeek()->startOfWeek()->format('Y-\WW'); // Calculate the next week's starting value
+                $nextWeek = now()->addWeek()->startOfWeek()->format('Y-\WW');
             @endphp
             <input 
                 type="week" 
                 name="week" 
                 class="w-52" 
-                value="{{ $week ?? date('Y-\WW') }}" 
+                value="{{ $week ?? $nextWeek }}" 
                 min="{{ $nextWeek }}" 
                 onchange="this.form.submit()"
             >
@@ -149,7 +149,7 @@
                
                 @if ($schedule->isRequestedByThisEmployee)
                     <div class="px-3 py-2 bg-yellow-800/80 text-white font-semibold tracking-wider rounded-sm">
-                        SCHEDULE REQUESTED
+                        SWAP SCHEDULE
                     </div>
                 @else
                 <div x-data="{ open: false }">
