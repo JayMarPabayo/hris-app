@@ -3,7 +3,7 @@
         @csrf
         @method('PUT')
         <div class="flex justify-between items-center border-b border-slate-300 pb-3 mb-3">
-            <h3 class="text-base font-semibold">Edit Employee</h3>
+            <h3 class="text-base font-semibold text-white">Edit Employee</h3>
             <section class="flex justify-between items-center gap-2">
                 <select 
                     name="department_id" 
@@ -29,7 +29,7 @@
             </section>
         </div>
 
-        <h3 class="text-sm font-normal text-teal-600 mb-3">Personal Information</h3>
+        <h3 class="text-sm font-normal text-teal-400 mb-3">Personal Information</h3>
 
         <div class="mb-3">
             <div class="flex items-end gap-2">
@@ -178,7 +178,7 @@
         </div>
 
         {{-- GOVERNMENT IDs --}}
-        <div class="mb-2 bg-slate-300 p-2 rounded-sm">
+        <div class="mb-2 bg-slate-300/50 p-2 rounded-md">
 
             <div class="flex items-center gap-2 mb-2">
 
@@ -242,7 +242,7 @@
 
             <div class="col-span-1">
 
-                <h3 class="text-sm font-normal text-teal-600 mb-3">Residential Address</h3>
+                <h3 class="text-sm font-normal text-teal-400 mb-3">Residential Address</h3>
 
                 <div class="flex items-center justify-stretch gap-3">
 
@@ -314,7 +314,7 @@
             </div>
 
             <div class="col-span-1">
-                <h3 class="text-sm font-normal text-teal-600 mb-3">Permanent Address</h3>
+                <h3 class="text-sm font-normal text-teal-400 mb-3">Permanent Address</h3>
                 <div class="flex items-center justify-stretch gap-3">
                     <div class="flex flex-col gap-2">
                         <div>
@@ -381,7 +381,7 @@
         </div>
 
         {{-- FAMILY BACKGROUND --}}
-        <h3 class="text-sm font-normal text-teal-600 mb-3">Family Background</h3>
+        <h3 class="text-sm font-normal text-teal-400 mb-3">Family Background</h3>
 
         <label for="father_firstname" class="block">Father Information</label>
         <div class="flex items-center gap-2 mb-2">
@@ -513,12 +513,12 @@
         @livewire('create-work-experience', ['workexperiences' => old('workexperiences', $employee->workexperiences->toArray() ?? [])])
 
         <div class="flex justify-end gap-3 items-center pt-3">
+            <a href="{{ route('employees.index') }}" class="btn w-32"><span class="mx-4">Cancel</span></a>
             <button type="submit"
-            class="btn"
+            class="btn-submit w-32"
             x-on:click="submitting=true; document.getElementById('update-employee-form').submit();" >
-                <span class="mx-4">Submit</span>
+                <span class="mx-4">Update</span>
             </button>
-            <a href="{{ route('employees.index') }}" class="btn"><span class="mx-4">Cancel</span></a>
         </div>
 
     </form>

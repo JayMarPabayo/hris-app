@@ -1,11 +1,11 @@
 <div>
     <div class="flex items-center gap-x-2 mb-3">
-        <h3 class="text-sm font-normal text-teal-600">Education</h3>
+        <h3 class="text-sm font-normal text-teal-400">Education</h3>
         <button type="button" class="btn-add" wire:click.prevent="addEducation">✚</button>
     </div>
     <div class="flex flex-col gap-y-2 mb-2 pb-5 border-b border-slate-300">
         @foreach ($educations as $index => $education)
-            <div class="grid grid-cols-12 gap-y-1 gap-x-2 py-4 px-3 border-b border-slate-300 bg-green-600/10 shadow-sm rounded-md">
+            <div class="grid grid-cols-12 gap-y-1 gap-x-2 py-4 px-3 border-b border-slate-300 bg-green-500/30 shadow-sm rounded-md">
                 
                 <div class="col-span-3">
                     <label for="level">School Level</label>
@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="row-span-2 w-fit ml-auto flex justify-end items-center">
-                    <button type="button" title="Remove" class="btn" wire:click.prevent="removeEducation({{ $index }})">
+                    <button type="button" title="Remove" class="btn-remove" wire:click.prevent="removeEducation({{ $index }})">
                         <x-carbon-trash-can class="w-4 mx-auto"/>
                     </button>
                 </div>

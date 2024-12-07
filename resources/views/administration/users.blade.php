@@ -1,5 +1,5 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Admins</h3>
+    <h3 class="text-base font-semibold mb-3 text-white">Admins</h3>
     <div class="flex gap-x-2">
         @include('layouts.navbar')
         <main class="grow">
@@ -14,7 +14,10 @@
                             method="POST"
                             >
                                 @csrf
-                                <h5 class="text-sm mb-4">Add Admin</h5>
+                                <div class="flex items-center gap-x-2 mb-5 text-slate-600 text-sm">
+                                    <x-ionicon-shield-half class="h-5 fill-teal-600" />
+                                    <p>Add Admin</p>
+                                </div>
 
                                 <input type="text" name="name"
                                 placeholder="Full name"
@@ -36,12 +39,12 @@
                                 </div>
 
                                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                    <button type="button" @click="openAdd = false" class="btn">
+                                    <button type="button" @click="openAdd = false" class="btn w-32">
                                         Cancel
                                     </button>
                                     <button
                                     type="submit"
-                                    class="btn"
+                                    class="btn-submit w-32"
                                     x-on:click="submitting=true; document.getElementById('add-department-form').submit();"
                                     >
                                         Submit

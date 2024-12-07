@@ -2,27 +2,27 @@
     <div class="flex items-end gap-x-2 mb-10 relative">
         <img src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="w-24 h-24 object-cover rounded-md opacity-90 border border-teal-600">
         <div class="flex flex-col">
-            <h3 class="text-lg font-semibold">{{ auth()->user()->name }}</h3>
+            <h3 class="text-lg font-semibold text-white">{{ auth()->user()->name }}</h3>
             <div class="flex gap-x-2">
-                <h3 class="text-sm font-medium text-teal-800">{{ $employee->department->name }}</h3>
-                <h3 class="text-sm font-medium text-pink-800/70">{{ $employee->designation }}</h3>
+                <h3 class="text-sm font-medium text-teal-500">{{ $employee->department->name }}</h3>
+                <h3 class="text-sm font-medium text-slate-400">{{ $employee->designation }}</h3>
             </div>
         </div>
         <section class="ms-auto flex gap-x-4">
-            <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+            <div class="flex gap-x-2 items-center text-white hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
                 <x-carbon-container-image-push-pull class="h-5" />
                 <a href="{{ route('profile.swap-request') }}" class="border-none bg-none underline">
                     Request Schedule Swap
                 </a>
             </div>
-            <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+            <div class="flex gap-x-2 items-center text-white hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
                 <x-carbon-request-quote class="h-5" />
                 <a href="{{ route('profile.leave') }}" class="border-none bg-none underline">
                     Request Leave
                 </a>
             </div>
             @if ($isMonthlyEvaluationOpen && !$hasVotedForThisMonth)
-                <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+                <div class="flex gap-x-2 items-center text-white hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
                     <x-carbon-white-paper class="h-5" />
                     <a href="{{ route('profile.evaluation') }}" class="border-none bg-none underline">
                         Monthly Evaluation
@@ -48,7 +48,7 @@
     </div>
     
 
-    <h3 class="text-sm mb-2">Schedules</h3>
+    <h3 class="text-sm mb-2 text-white">Schedules</h3>
     <hr class="border-t border-slate-500/50 mb-4">
 
 
@@ -79,11 +79,14 @@
 
         <div class="mb-4 flex text-sm items-center gap-x-2">
             <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
-            <div><span class="font-semibold">{{ $month }} {{ $year }}</span> <span class="font-medium text-slate-500">{{ $formattedWeek }} Week</span></div>
+            <div>
+                <span class="font-semibold text-white">{{ $month }} {{ $year }}</span>
+                <span class="font-medium text-slate-400 ms-1">{{ $formattedWeek }} Week</span>
+            </div>
             <div class="font-bold">
                 •
             </div>
-            <span class="font-medium rounded-sm text-teal-700/80">
+            <span class="font-medium rounded-sm text-teal-600/80">
                 {{ $schedule->shift->name }}
             </span>
         </div>
@@ -111,7 +114,7 @@
                     $endTime = new DateTime($schedule->shift->end_time);
                 @endphp
 
-                <tr class="data-row">
+                <tr class="data-row bg-slate-300/60">
                     @foreach ($weekdays as $day)
                         <td class="text-center">
                         @php

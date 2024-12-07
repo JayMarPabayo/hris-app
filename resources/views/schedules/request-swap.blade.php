@@ -1,7 +1,7 @@
 <x-layout>
     <div class="flex justify-between">
-        <h3 class="text-lg font-semibold mb-3">Swap Schedule</h3>
-        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+        <h3 class="text-lg font-semibold mb-3 text-white">Swap Schedule</h3>
+        <div class="flex gap-x-2 items-center text-white hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-user-profile class="h-5" />
             <a href="{{ route('profile.index') }}" class="border-none bg-none underline">
                 Profile
@@ -55,7 +55,7 @@
 
             <div @class([
                 'rounded-md p-4 mb-5 shadow-md',
-                'bg-yellow-500/30' => $schedule->isRequestedByThisEmployee,
+                'bg-yellow-200/50' => $schedule->isRequestedByThisEmployee,
                 'bg-slate-200/50' => !$schedule->isRequestedByThisEmployee,
             ]) >
                 <div class="flex gap-x-2 items-end mb-2">
@@ -148,7 +148,7 @@
                 <input type="hidden" name="employee" value="{{ $schedule->employee->id ?? '' }}">
                
                 @if ($schedule->isRequestedByThisEmployee)
-                    <div class="px-3 py-2 bg-yellow-800/80 text-white font-semibold tracking-wider rounded-sm">
+                    <div class="text-yellow-800/80 text-lg font-semibold tracking-wider rounded-sm">
                         SWAP SCHEDULE
                     </div>
                 @else
@@ -165,15 +165,19 @@
                     <div 
                         x-cloak 
                         x-show="open" 
-                        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20"
+                        class="fixed inset-0 bg-black bg-opacity-50 z-20"
                     >
-                        <div class="bg-white pt-4 px-4 w-2/5 pb-3 rounded-lg">
-                            <p class="mb-4 text-base font-medium">Are you sure you want to request a schedule swap?</p>
+                        <div class="bg-white pt-4 w-fit px-4 pb-3 rounded-lg fixed top-1/4 -translate-y-1/2 -translate-x-1/2 left-1/2">
+                            <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                <x-ionicon-trash-bin-sharp class="h-5 fill-teal-600" />
+                                <p>Are you sure you want to request a schedule swap?</p>
+                            </div>
+                           
                             <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                                 <button 
                                     type="button" 
                                     @click="open = false" 
-                                    class="btn"
+                                    class="btn w-32"
                                 >
                                     No
                                 </button>
@@ -181,7 +185,7 @@
                                     @csrf
                                     <input type="hidden" name="week" value="{{ $week ?? date('Y-\WW') }}">
                                     <input type="hidden" name="employee" value="{{ $schedule->employee->id ?? '' }}">
-                                    <button type="submit" class="btn">
+                                    <button type="submit" class="btn-submit w-32">
                                         Yes
                                     </button>
                                 </form>

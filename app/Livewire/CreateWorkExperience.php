@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\WorkExperience;
 use Livewire\Component;
 
-class CreateWorkexperience extends Component
+class CreateWorkExperience extends Component
 {
     public $workexperiences = [];
     public $appointmentStatuses = [];

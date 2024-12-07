@@ -9,7 +9,7 @@
         </select>
 
         <div wire:loading.delay wire:target="getEmployeesByShift">
-            <x-carbon-awake class="w-5 text-slate-500 animate-spin" />
+            <x-ionicon-reload-sharp class="w-5 text-slate-500 animate-spin" />
         </div>
         
         @if ($schedules)

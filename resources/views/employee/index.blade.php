@@ -1,5 +1,5 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Employees</h3>
+    <h3 class="text-base font-semibold mb-3 text-white">Employees</h3>
     <form method="GET" action="{{ route('employees.index') }}" class="flex items-center gap-2 mb-4" id="searchForm">
         <input 
             type="search" 
@@ -44,11 +44,14 @@
                             <button @click.prevent="open = true" title="Delete" class="btn">
                                 <x-carbon-trash-can class="w-4 mx-auto"/>
                             </button>
-                            <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                <div class="bg-white pt-4 px-4 pb-3 rounded-lg">
-                                    <p class="mb-4">Are you sure you want to delete this employee?</p>
-                                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                        <button type="button" @click="open = false" class="btn">No</button>
+                            <div x-cloak x-show="open" class="fixed inset-0 flex bg-black backdrop-blur-sm bg-opacity-50">
+                                <div class="bg-white pt-4 px-4 pb-3 rounded-lg h-fit mx-auto mt-[10%]">
+                                    <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                        <x-ionicon-trash-bin-sharp class="h-5 fill-rose-500" />
+                                        <p>Are you sure you want to delete this employee?</p>
+                                    </div>
+                                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-300 ps-10">
+                                        <button type="button" @click="open = false" class="btn w-32">No</button>
                                         <form
                                         id="delete-employee-form-{{ $index }}"
                                         action="{{ route('employees.destroy', $employee) }}"
@@ -58,7 +61,7 @@
                                             @method('DELETE')
                                             <button
                                             type="submit"
-                                            class="btn"
+                                            class="btn-delete w-32"
                                             x-on:click="submitting=true; document.getElementById('delete-employee-form-{{ $index }}').submit();"
                                             >Yes</button>
                                         </form>

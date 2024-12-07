@@ -1,7 +1,7 @@
 <x-layout>
     <div class="flex gap-x-2 justify-between items-center mb-5">
-        <h3 class="text-base font-semibold">Application for Leave of Abscence</h3>
-        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+        <h3 class="text-base font-semibold text-white">Application for Leave of Abscence</h3>
+        <div class="flex gap-x-2 items-center text-white hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-user-profile class="h-5" />
             <a href="{{ route('profile.index') }}" class="border-none bg-none underline">
                 Profile
@@ -81,14 +81,14 @@
                      placeholder="Please specify your reason" />
             </div>
         </div>
-        <button type="submit" class="btn w-40">Submit</button>
+        <button type="submit" class="btn-submit w-40">Submit</button>
     </form>      
     @endif
     
 
-    <hr class="border-t border-slate-600/30">
+    <hr class="border-t border-white">
 
-    <h3 class="text-base font-semibold my-5">Leave Records</h3>
+    <h3 class="text-base font-semibold my-5 text-white">Leave Records</h3>
 
     <table class="mt-4 mb-10">
         <thead>
@@ -122,10 +122,10 @@
                         $bgColor = '';
                         switch($request->status) {
                             case 'pending':
-                                $bgColor = 'bg-yellow-500';
+                                $bgColor = 'bg-yellow-600';
                                 break;
                             case 'approved':
-                                $bgColor = 'bg-green-500';
+                                $bgColor = 'bg-emerald-600';
                                 break;
                             case 'rejected':
                                 $bgColor = 'bg-red-500';

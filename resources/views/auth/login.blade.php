@@ -1,11 +1,7 @@
 <x-layout>
-    <div class="flex justify-stretch gap-x-2">
-        <div class="w-1/2">
-            <div class="px-2 py-10 mt-5 bg-white rounded-md shadow-md flex justify-center items-center">
-                <img src="{{ asset('/assets/restaurant.jpg') }}" class="w-96" alt="restaurant-logo">
-            </div>
-        </div>
-        <form class="w-1/2 my-auto px-12" action="{{ route('auth.login') }}" method="POST">
+    <div class="flex justify-between gap-x-2 mt-14 w-[60rem] mx-auto bg-white/70 backdrop-blur-sm border border-white p-5 rounded-md">
+        <img src="{{ asset('/assets/transparent-logo.png') }}" class="w-96" alt="restaurant-logo">
+        <form class="w-[30rem] my-auto px-12" action="{{ route('auth.login') }}" method="POST">
             @csrf
             <h3 class="text-4xl text-center font-semibold mb-8">Sign in</h3>
 
@@ -38,4 +34,9 @@
             </button>
         </form>
     </div>
+
+    <section class="text-white mx-auto text-center mt-5 text-sm">
+        <p>Cafe Leone Modern Restaurant | Human Resource Information System</p>
+        <p>Copyright &copy; 2024 . All Rights Reserved</p>
+    </section>
 </x-layout>

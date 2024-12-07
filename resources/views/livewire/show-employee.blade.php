@@ -5,7 +5,7 @@
             Search
         </button>
         <div wire:loading.delay>
-            <x-carbon-awake class="w-5 text-slate-500 animate-spin" />
+            <x-ionicon-reload-sharp class="w-5 text-slate-500 animate-spin" />
         </div>
 
         @if (!$employee && !is_null($search) && $search !== '')

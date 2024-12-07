@@ -1,5 +1,5 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-5">Leave Requests</h3>
+    <h3 class="text-base font-semibold mb-5 text-white">Leave Requests</h3>
     <table class="mt-4 mb-10">
         <thead>
             <tr class="bg-slate-300">
@@ -38,10 +38,10 @@
                         $bgColor = '';
                         switch($request->status) {
                             case 'pending':
-                                $bgColor = 'bg-yellow-500';
+                                $bgColor = 'bg-yellow-600';
                                 break;
                             case 'approved':
-                                $bgColor = 'bg-green-500';
+                                $bgColor = 'bg-emerald-600';
                                 break;
                             case 'rejected':
                                 $bgColor = 'bg-red-500';
@@ -64,9 +64,12 @@
                                 </button>
                                 <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                     <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                        <p class="mb-4 text-lg text-rose-700/80">Rejection Confirmation</p>
+                                        <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                            <x-ionicon-backspace class="h-5 fill-rose-500" />
+                                            <p>Reject Confirmation</p>
+                                        </div>
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                            <button type="button" @click="open = false" class="btn">No</button>
+                                            <button type="button" @click="open = false" class="btn w-32">No</button>
                                             <form
                                             id="reject-request-form-{{ $index }}"
                                             action="{{ route('requests.destroy', $request) }}"
@@ -76,7 +79,7 @@
                                                 @method('DELETE')
                                                 <button
                                                 type="submit"
-                                                class="btn"
+                                                class="btn-delete w-32"
                                                 x-on:click="submitting=true; document.getElementById('reject-request-form-{{ $index }}').submit();"
                                                 >Yes</button>
                                             </form>
@@ -90,9 +93,12 @@
                                 </button>
                                 <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                     <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                        <p class="mb-4 text-lg text-emerald-700/80">Approval Confirmation</p>
+                                        <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                            <x-ionicon-checkmark-circle class="h-5 fill-teal-600" />
+                                            <p>Approval Confirmation</p>
+                                        </div>
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                            <button type="button" @click="open = false" class="btn">No</button>
+                                            <button type="button" @click="open = false" class="btn w-32">No</button>
                                             <form
                                             id="approve-request-form-{{ $index }}"
                                             action="{{ route('requests.update', $request) }}"
@@ -102,7 +108,7 @@
                                                 @method('PUT')
                                                 <button
                                                 type="submit"
-                                                class="btn"
+                                                class="btn-submit w-32"
                                                 x-on:click="submitting=true; document.getElementById('approve-request-form-{{ $index }}').submit();"
                                                 >Yes</button>
                                             </form>

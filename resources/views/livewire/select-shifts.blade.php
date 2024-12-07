@@ -1,5 +1,5 @@
 <div class="my-4">
-    <label for="shift_id">Select Shift</label>
+    <label for="shift_id" class="text-slate-500">Select Shift</label>
     <div class="flex items-center gap-x-2">
         <select 
             wire:model.live="selectedShift" 
@@ -15,7 +15,7 @@
             @endforeach
         </select>
         <div wire:loading.delay>
-            <x-carbon-awake class="w-5 text-slate-500 animate-spin" />
+            <x-ionicon-reload-sharp class="w-5 text-slate-500 animate-spin" />
         </div>
     </div>
 

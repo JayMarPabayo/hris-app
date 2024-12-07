@@ -1,7 +1,7 @@
 <x-layout>
     <div class="flex gap-x-2 justify-between items-center mb-5">
-        <h3 class="text-base font-semibold">Yearly Records</h3>
-        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+        <h3 class="text-base font-semibold text-white">Yearly Records</h3>
+        <div class="flex gap-x-2 items-center text-white hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-calendar-heat-map class="h-5" />
             <a href="{{ route('evaluations.index') }}" class="border-none bg-none underline">
                 Evaluations
@@ -11,7 +11,7 @@
 
 
     <form method="GET" action="{{ route('evaluations.monthly') }}" class="flex w-64 items-center gap-2 mb-4" id="yearFilterForm">
-        <div class="text-teal-700 text-sm w-36">Select Year</div>
+        <div class="text-teal-500 text-sm w-36">Select Year</div>
         <select 
             name="year"
             onchange="document.getElementById('yearFilterForm').submit()">
@@ -40,7 +40,7 @@
                 </thead>
                 <tbody>
                     @forelse ($yearlyEOM as $monthYear => $employee)
-                        <tr class="{{ $loop->even ? 'bg-gray-100' : 'bg-white' }} border-b">
+                        <tr class="{{ $loop->even ? 'bg-slate-300/60' : 'bg-slate-200/60' }} border-b">
                             <td class="px-4 py-2">
                                 {{ date('F', mktime(0, 0, 0, (int)substr($monthYear, 5), 1)) }}
                             </td>

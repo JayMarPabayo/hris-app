@@ -1,5 +1,5 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Administration</h3>
+    <h3 class="text-base font-semibold mb-3 text-white">Administration</h3>
     <div class="flex gap-x-2">
         @include('layouts.navbar')
         <main class="grow">
@@ -14,7 +14,7 @@
                         value="{{ old('maxCredits', $config->maxCredits) }}"
                         @class(['border-red-400' => $errors->has('maxCredits')])/>
                     </div>
-                    <button type="submit" class="btn" >Update</button>
+                    <button type="submit" class="btn-submit" >Update</button>
                 </div>
             </form>
         </main>

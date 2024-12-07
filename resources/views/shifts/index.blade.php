@@ -1,5 +1,5 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Administration</h3>
+    <h3 class="text-base font-semibold mb-3 text-white">Administration</h3>
     <div class="flex gap-x-2">
         @include('layouts.navbar')
         <main class="grow">
@@ -127,7 +127,7 @@
                                 $endTime = new DateTime($shift->end_time);
                                 $colorClass = $colors[$index % count($colors)];
                             @endphp
-                            <tr class="border-b border-slate-400/50 cursor-pointer hover:bg-slate-100/70 duration-300">
+                            <tr class="border-b border-slate-400/50 cursor-pointer bg-slate-200/40 hover:bg-slate-200/30 duration-300">
                                     <td class="flex items-center font-medium">
                                         {{ $shift->name }}
                                     </td>
@@ -152,7 +152,7 @@
                                                 <x-carbon-pen class="w-4 mx-auto"/>
                                             </button>
                                             <div x-cloak x-show="openEdit" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                                <div class="w-80 bg-white pt-4 px-6 pb-3 rounded-lg">
+                                                <div class="w-96 bg-white pt-4 px-6 pb-3 rounded-lg">
                                                     <form
                                                     id="update-shift-form-{{ $index }}"
                                                     action="{{ route('shifts.update', $shift) }}"
@@ -160,8 +160,10 @@
                                                     >
                                                         @csrf
                                                         @method("PUT")
-                                                        <h5 class="text-sm mb-4">Update Shift</h5>
-                        
+                                                        <div class="flex items-center gap-x-2 mb-5 text-slate-600 text-sm">
+                                                            <x-ionicon-create class="h-5 fill-teal-600" />
+                                                            <p>Update Shift</p>
+                                                        </div>
                                                         <input type="text" name="name"
                                                         placeholder="Shift Name"
                                                         value="{{  $shift->name }}"
@@ -169,7 +171,7 @@
                         
                                                         <div class="mb-4 border border-slate-200 p-2 grid grid-cols-2 gap-2">
                                                             @foreach($weekdays as $day)
-                                                                <label class="flex justify-between items-center py-1 px-3 bg-slate-200 rounded-md shadow-sm cursor-pointer">
+                                                                <label class="flex justify-between items-center py-1 px-3 bg-slate-500/70 rounded-md shadow-sm cursor-pointer">
                                                                     <span class="text-xs font-medium">{{ $day }}</span>
                                                                     <input 
                                                                         type="checkbox" 
@@ -195,12 +197,12 @@
                                                             class="mb-4" />
                         
                                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                                            <button type="button" @click="openEdit = false" class="btn">
+                                                            <button type="button" @click="openEdit = false" class="btn w-32">
                                                                 Cancel
                                                             </button>
                                                             <button
                                                             type="submit"
-                                                            class="btn"
+                                                            class="btn-submit w-32"
                                                             x-on:click="submitting=true; document.getElementById('update-shift-form-{{ $index }}').submit();"
                                                             >
                                                                 Update

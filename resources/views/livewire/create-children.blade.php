@@ -1,6 +1,6 @@
 <div>
     <div class="flex items-center gap-x-2 mb-3">
-        <h3 class="text-sm font-normal text-teal-600">Children</h3>
+        <h3 class="text-sm font-normal text-teal-400">Children</h3>
         <button type="button" class="btn-add" wire:click.prevent="addChild">✚</button>
     </div>
     <div class="flex flex-col gap-y-2 mb-2 pb-5 border-b border-slate-300">
@@ -33,7 +33,7 @@
                 value="{{ old("children.{$index}.birthdate", $child['birthdate']) }}"
                 class="w-1/4 @error("children.{$index}.birthdate") border-red-400 @enderror" />
                 
-                <button type="button" title="Remove" class="btn" wire:click.prevent="removeChild({{ $index }})">
+                <button type="button" title="Remove" class="btn-remove" wire:click.prevent="removeChild({{ $index }})">
                     <x-carbon-trash-can class="w-4 mx-auto"/>
                 </button>
             </div>

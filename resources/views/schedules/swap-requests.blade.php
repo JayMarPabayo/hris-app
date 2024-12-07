@@ -1,7 +1,7 @@
 <x-layout>
     <div class="flex justify-between">
-        <h3 class="text-lg font-semibold mb-3">Swap Schedule Requests</h3>
-        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+        <h3 class="text-lg font-semibold mb-3 text-white">Swap Schedule Requests</h3>
+        <div class="flex gap-x-2 items-center text-white hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-event-schedule class="h-5" />
             <a href="{{ route('schedules.index') }}" class="border-none bg-none underline">
                 Schedules
@@ -49,30 +49,36 @@
                     $formattedWeek = getOrdinalSuffix($weekOfMonth);
                 @endphp
 
-                <tr class="data-row">
+                <tr class="data-row bg-slate-300/60">
                     <td class="align-middle">{{ "{$lastname}, {$firstname} {$middlename}." }}</td>
                     <td class="flex flex-col gap-y-1">
                         <div class="flex gap-x-2 items-center">
                             <div>
-                                <span class="font-semibold">{{ $month }} {{ $year }}</span> <span class="font-medium text-slate-500">
+                                <span class="font-semibold">{{ $month }} {{ $year }}</span>
+                                <span class="font-medium text-slate-600 ms-1">
                                     {{ $formattedWeek }} Week
                                 </span>
                             </div>
                             <div class="font-bold">
                                 •
                             </div>
-                            <span class="font-medium rounded-sm text-teal-700/80">
+                            <span class="font-medium rounded-sm text-teal-700">
                                 {{($request->status === "approved") ? $request->getCoworkerSchedule()?->shift?->name : $request->getSchedule()?->shift?->name }}
                             </span>
                         </div>
                         <div class="flex gap-x-2 justify-start items-center">
-                            @foreach (($request->status === "approved") ? $request->getCoworkerSchedule()?->shift->weekdays : $request->getSchedule()?->shift->weekdays as $day)
-                                @if (!in_array($day, ($request->status === "approved") ? $request->getCoworkerSchedule()?->dayoffs : $request->getSchedule()?->dayoffs))
+                            @foreach (($request->status === "approved") 
+                                ? ($request->getCoworkerSchedule()?->shift->weekdays ?? []) 
+                                : ($request->getSchedule()?->shift->weekdays ?? []) as $day)
+                                @if (!in_array($day, ($request->status === "approved") 
+                                    ? ($request->getCoworkerSchedule()?->dayoffs ?? []) 
+                                    : ($request->getSchedule()?->dayoffs ?? [])))
                                     <div class="time-style bg-white" style="margin-inline: 0; color: darkgreen">
                                         {{ strtoupper(substr($day, 0, 3)) }}
                                     </div>
                                 @endif
                             @endforeach
+                        
                         </div>
                     </td>
                     <td class="align-middle">
@@ -81,7 +87,7 @@
                     <td class="flex flex-col gap-y-1">
                         <div class="flex gap-x-2 items-center">
                             <div>
-                                <span class="font-semibold">{{ $month }} {{ $year }}</span> <span class="font-medium text-slate-500">
+                                <span class="font-semibold">{{ $month }} {{ $year }}</span> <span class="font-medium text-slate-600 ms-1">
                                     {{ $formattedWeek }} Week
                                 </span>
                             </div>
@@ -93,39 +99,43 @@
                             </span>
                         </div>
                         <div class="flex gap-x-2 justify-start items-center">
-                            @foreach (($request->status === "approved") ? $request->getSchedule()?->shift->weekdays : $request->getCoworkerSchedule()?->shift->weekdays as $day)
-                            @if (!in_array($day, ($request->status === "approved") ? $request->getSchedule()?->dayoffs : $request->getCoworkerSchedule()?->dayoffs))
-                            <div class="time-style bg-white" style="margin-inline: 0; color: darkgreen">
-                                {{ strtoupper(substr($day, 0, 3)) }}
-                            </div>
-                        @endif
+                            @foreach (($request->status === "approved") 
+                                ? ($request->getSchedule()?->shift->weekdays ?? []) 
+                                : ($request->getCoworkerSchedule()?->shift->weekdays ?? []) as $day)
+                                @if (!in_array($day, ($request->status === "approved") 
+                                    ? ($request->getSchedule()?->dayoffs ?? []) 
+                                    : ($request->getCoworkerSchedule()?->dayoffs ?? [])))
+                                    <div class="time-style bg-white" style="margin-inline: 0; color: darkgreen">
+                                        {{ strtoupper(substr($day, 0, 3)) }}
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
                     </td>
                     @php
-                    $bgColor = '';
-                        switch($request->status) {
-                            case 'pending':
-                                $bgColor = 'bg-yellow-500';
-                                break;
-                            case 'approved':
-                                $bgColor = 'bg-green-500';
-                                break;
-                            case 'rejected':
-                                $bgColor = 'bg-red-500';
-                                break;
-                            default:
-                                $bgColor = 'bg-gray-500';
-                                break;
-                        }
+                        $bgColor = '';
+                            switch($request->status) {
+                                case 'pending':
+                                    $bgColor = 'bg-yellow-600';
+                                    break;
+                                case 'approved':
+                                    $bgColor = 'bg-emerald-600';
+                                    break;
+                                case 'rejected':
+                                    $bgColor = 'bg-red-500';
+                                    break;
+                                default:
+                                    $bgColor = 'bg-gray-500';
+                                    break;
+                            }
                     @endphp
                     <td class="text-center align-middle">
                         <span class="px-2 py-1 rounded text-white {{ $bgColor }}">
                             {{ ucfirst($request->status) }}
                         </span>
                     </td>
-                    @if ($request->status !== "rejected" && $request->status !== "approved")
-                        <td>
+                    <td>
+                        @if ($request->status !== "rejected" && $request->status !== "approved")          
                             <div class="flex items-center justify-center gap-x-2">
                                 <div x-data="{ open: false }">
                                     <button @click.prevent="open = true" title="Reject" class="btn">
@@ -133,9 +143,12 @@
                                     </button>
                                     <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                         <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                            <p class="mb-4 text-lg text-rose-700/80">Rejection Confirmation</p>
+                                            <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                                <x-ionicon-backspace class="h-5 fill-rose-500" />
+                                                <p>Reject Confirmation</p>
+                                            </div>
                                             <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                                <button type="button" @click="open = false" class="btn">No</button>
+                                                <button type="button" @click="open = false" class="btn w-32">No</button>
                                                 <form
                                                 id="reject-request-form-{{ $index }}"
                                                 action="{{ route('schedules.swap.reject', $request) }}"
@@ -145,7 +158,7 @@
                                                     @method('DELETE')
                                                     <button
                                                     type="submit"
-                                                    class="btn"
+                                                    class="btn-delete w-32"
                                                     x-on:click="submitting=true; document.getElementById('reject-request-form-{{ $index }}').submit();"
                                                     >Yes</button>
                                                 </form>
@@ -159,9 +172,12 @@
                                     </button>
                                     <div x-cloak x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                                         <div class="bg-white pt-4 px-4 pb-3 rounded-lg w-96">
-                                            <p class="mb-4 text-lg text-emerald-700/80">Approval Confirmation</p>
+                                            <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                                <x-ionicon-checkmark-circle class="h-5 fill-teal-600" />
+                                                <p>Approval Confirmation</p>
+                                            </div>
                                             <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                                <button type="button" @click="open = false" class="btn">No</button>
+                                                <button type="button" @click="open = false" class="btn w-32">No</button>
                                                 <form
                                                 id="approve-request-form-{{ $index }}"
                                                 action="{{ route('schedules.swap.approved', $request) }}"
@@ -171,7 +187,7 @@
                                                     @method('PUT')
                                                     <button
                                                     type="submit"
-                                                    class="btn"
+                                                    class="btn-submit w-32"
                                                     x-on:click="submitting=true; document.getElementById('approve-request-form-{{ $index }}').submit();"
                                                     >Yes</button>
                                                 </form>
@@ -180,8 +196,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </td>
-                    @endif
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr>

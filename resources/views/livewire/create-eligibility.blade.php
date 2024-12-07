@@ -1,6 +1,6 @@
 <div>
     <div class="flex items-center gap-x-2 mb-3">
-        <h3 class="text-sm font-normal text-teal-600">Government Employment Eligibilities</h3>
+        <h3 class="text-sm font-normal text-teal-400">Government Employment Eligibilities</h3>
         <button type="button" class="btn-add" wire:click.prevent="addEligibility">✚</button>
     </div>
 
@@ -68,7 +68,7 @@
                 </div>
 
                 <div class="col-span-1 mt-auto">
-                    <button type="button" title="Remove" class="btn" wire:click.prevent="removeEligibility({{ $index }})">
+                    <button type="button" title="Remove" class="btn-remove" wire:click.prevent="removeEligibility({{ $index }})">
                         <x-carbon-trash-can class="w-4 mx-auto"/>
                     </button>
                 </div>

@@ -1,33 +1,33 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Reports</h3>
+    <h3 class="text-base font-semibold mb-3 text-white">Reports</h3>
 
     <div x-data="{ openTab: 'individual' }" class="flex">
         <!-- Menu -->
         <div class="w-52">
             <nav>
                 <a href="#" @click.prevent="openTab = 'individual'" 
-                   :class="{'bg-slate-500 text-white': openTab === 'individual', 'text-gray-700': openTab !== 'individual'}"
-                   class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
+                   :class="{'bg-teal-600 text-white': openTab === 'individual', 'text-teal-500': openTab !== 'individual'}"
+                   class="block py-2 px-4 rounded-sm hover:bg-teal-500/30 duration-300">
                    Individual
                 </a>
                 <a href="#" @click.prevent="openTab = 'records'" 
-                   :class="{'bg-slate-500 text-white': openTab === 'records', 'text-gray-700': openTab !== 'records'}"
-                   class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
+                   :class="{'bg-teal-600 text-white': openTab === 'records', 'text-teal-500': openTab !== 'records'}"
+                   class="block py-2 px-4 rounded-sm hover:bg-teal-500/30 duration-300">
                    Employee Records
                 </a>
                 {{-- <a href="#" @click.prevent="openTab = 'department'" 
-                   :class="{'bg-slate-500 text-white': openTab === 'department', 'text-gray-700': openTab !== 'department'}"
-                   class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
+                   :class="{'bg-teal-600 text-white': openTab === 'department', 'text-teal-500': openTab !== 'department'}"
+                   class="block py-2 px-4 rounded-sm hover:bg-teal-500/30 duration-300">
                    Department
                 </a> --}}
                 <a href="#" @click.prevent="openTab = 'designation'" 
-                   :class="{'bg-slate-500 text-white': openTab === 'designation', 'text-gray-700': openTab !== 'designation'}"
-                   class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
+                   :class="{'bg-teal-600 text-white': openTab === 'designation', 'text-teal-500': openTab !== 'designation'}"
+                   class="block py-2 px-4 rounded-sm hover:bg-teal-500/30 duration-300">
                    Department & Designation
                 </a>
                 {{-- <a href="#" @click.prevent="openTab = 'schedules'" 
-                   :class="{'bg-slate-500 text-white': openTab === 'schedules', 'text-gray-700': openTab !== 'schedules'}"
-                   class="block py-2 px-4 rounded-sm hover:bg-slate-300 duration-300">
+                   :class="{'bg-teal-600 text-white': openTab === 'schedules', 'text-teal-500': openTab !== 'schedules'}"
+                   class="block py-2 px-4 rounded-sm hover:bg-teal-500/30 duration-300">
                    Schedules
                 </a> --}}
             </nav>

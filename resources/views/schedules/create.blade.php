@@ -1,7 +1,7 @@
 <x-layout>
     <div class="flex gap-x-2 justify-between items-center mb-5">
-        <h3 class="text-base font-semibold">Add Schedules</h3>
-        <div class="flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+        <h3 class="text-base font-semibold text-white">Add Schedules</h3>
+        <div class="flex gap-x-2 items-center text-teal-500 hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-event-schedule class="h-5" />
             <a href="{{ route('schedules.index') }}" class="border-none bg-none underline">
                 Schedules
@@ -44,10 +44,10 @@
                         {{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}
                     </td>
                     <td>
-                        <span class="block text-teal-700">
+                        <span class="block text-teal-500">
                             {{ $employee->department->name }}
                         </span>
-                        <span class="block text-slate-500/70">
+                        <span class="block text-slate-200">
                             {{ $employee->designation }}
                         </span>
                     </td>
@@ -57,14 +57,17 @@
                                 ✚
                             </button>
                             <div x-cloak x-show="openAddSchedule" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                <div class="w-[30rem] bg-white pt-4 px-6 pb-3 rounded-lg">
+                                <div class="w-[30rem] bg-white pt-4 px-4 pb-3 rounded-lg text-slate-600">
                                     <form
                                     id="add-schedule-form-{{ $index }}"
                                     action="{{ route('schedules.store') }}"
                                     method="POST"
                                     >
                                         @csrf
-                                        <h5 class="text-sm mb-4">Add Schedule</h5>
+                                        <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                            <x-ionicon-create class="h-5 fill-teal-500" />
+                                            <p>Create Schedule</p>
+                                        </div>
 
                                         <div class="px-2 py-1 rounded-sm bg-stone-600/20 font-medium mb-3">
                                             <span class="block">
@@ -81,18 +84,18 @@
 
                                         <input type="hidden" name="employee_id" value="{{ $employee->id }}">
                                         
-                                        <label for="week">Week</label>
+                                        <label for="week" class="text-slate-500">Week</label>
                                         <input type="week" name="week" class="w-full block mt-1" min="{{ date('Y-\WW') }}" value="{{ request('week') ?? date('Y-\WW') }}">
 
                                         @livewire('select-shifts')
 
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                            <button type="button" @click="openAddSchedule = false" class="btn">
+                                            <button type="button" @click="openAddSchedule = false" class="btn w-32">
                                                 Cancel
                                             </button>
                                             <button
                                             type="submit"
-                                            class="btn"
+                                            class="btn-submit w-32"
                                             x-on:click="submitting=true; document.getElementById('add-schedule-form-{{ $index }}').submit();"
                                             >
                                                 Submit
@@ -113,7 +116,7 @@
             @endforelse
         </tbody>
     </table>
-    <i class="text-xs text-slate-500 italic mt-2">
+    <i class="text-xs text-white italic mt-2">
         List of employees without schedule.
     </i>
     @if ($employees->count())

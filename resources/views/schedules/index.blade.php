@@ -1,5 +1,5 @@
 <x-layout>
-    <h3 class="text-base font-semibold mb-3">Schedules</h3>
+    <h3 class="text-base font-semibold mb-3 text-white">Schedules</h3>
 
     <section class="flex items-center gap-2 mb-4">
         <a href="{{ route('schedules.create') }}" class="btn w-32">Add New ✚</a>
@@ -12,7 +12,7 @@
                 @endforeach
             </select>
         </form>
-        <div class="ms-auto relative flex gap-x-2 items-center hover:text-teal-700 hover:scale-105 active:scale-95 duration-300">
+        <div class="ms-auto relative flex gap-x-2 items-center text-teal-500 hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-container-image-push-pull class="h-5" />
             <a href="{{ route('schedules.swap.requests') }}" class="border-none bg-none underline">
                 Schedule Swap Requests
@@ -23,7 +23,7 @@
         </div>
     </section>
     @foreach ($schedules as $department => $departmentSchedules)
-        <h1 class="text-2xl font-bold mt-8 mb-4">{{ $department }}</h1>
+        <h1 class="text-base font-normal text-white mt-8">{{ $department }}</h1>
         <table class="w-full mb-8">
             <thead>
                 <tr class="bg-slate-300">
@@ -98,13 +98,13 @@
                         $endTime = new DateTime($schedule->shift->end_time);
                         $colorClass = $colors[($schedule->shift->id - 1) % count($colors)];
                     @endphp
-                    <tr class="data-row" title="{{ $schedule->shift->name }}">
+                    <tr class="data-row bg-slate-300/60" title="{{ $schedule->shift->name }}">
                         <td class="max-w-36">
                             <div class="text-sm font-medium">{{ "{$schedule->employee->lastname}, {$schedule->employee->firstname} " . strtoupper(substr($schedule->employee->middlename, 0, 1)) . "." }}</div>
                             <span class="block text-teal-700">
                                 {{ $schedule->employee->department->name }}
                             </span>
-                            <span class="block text-slate-500/70 truncate">
+                            <span class="block text-slate-600 truncate">
                                 {{ $schedule->employee->designation }}
                             </span>
                         </td>
@@ -156,8 +156,8 @@
                                 <button type="button" @click.prevent="openEdit = true" title="Delete" class="btn-add" style="padding: 0.3rem 0.8rem;">
                                     <x-carbon-pen class="w-4 mx-auto"/>
                                 </button>
-                                <div x-cloak x-show="openEdit" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                    <div class="bg-white pt-4 px-6 pb-3 rounded-lg">
+                                <div x-cloak x-show="openEdit" class="fixed inset-0 flex bg-black bg-opacity-50 z-20">
+                                    <div class="bg-white pt-4 px-6 pb-3 rounded-lg h-fit mx-auto mt-[5%] text-slate-600">
                                         <form
                                         id="update-schedule-form-{{ $schedule->id }}"
                                         action="{{ route('schedules.update', $schedule) }}"
@@ -165,7 +165,10 @@
                                         >
                                             @csrf
                                             @method("PUT")
-                                            <h5 class="text-sm mb-4">Update Schedule</h5>
+                                            <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                                <x-ionicon-create class="h-5 fill-teal-500" />
+                                                <p>Edit Schedule</p>
+                                            </div>
 
                                             <div class="px-2 py-1 rounded-sm bg-stone-600/20 font-medium">
                                                 <span class="block">
@@ -188,7 +191,7 @@
                                                     <h5 class="text-xs mt-4">Day Offs</h5>
                                                     <div class="py-2 grid grid-cols-2 gap-2">
                                                         @foreach($weekdays as $day)
-                                                            <label class="flex justify-between items-center py-1 px-3 w-32 bg-slate-200 rounded-md shadow-sm cursor-pointer">
+                                                            <label class="flex justify-between items-center py-1 px-3 w-32 bg-slate-400 rounded-md shadow-sm cursor-pointer">
                                                                 <span class="text-xs font-medium">{{ $day }}</span>
                                                                 <input 
                                                                     type="checkbox" 
@@ -237,12 +240,12 @@
                                             </div>
 
                                             <div class="flex justify-end gap-x-4 pt-3 border-t border-slate-200">
-                                                <button type="button" @click="openEdit = false" class="btn w-52 shadow-md">
+                                                <button type="button" @click="openEdit = false" class="btn w-52">
                                                     Cancel
                                                 </button>
                                                 <button
                                                 type="submit"
-                                                class="btn w-52 shadow-md"
+                                                class="btn-submit w-52"
                                                 x-on:click="submitting=true; document.getElementById('update-schedule-form-{{ $schedule->id }}').submit();"
                                                 >
                                                     Update
@@ -257,11 +260,14 @@
                                 <button type="button" @click.prevent="openDelete = true" title="Delete" class="btn-add" style="padding: 0.3rem 0.8rem;">
                                     <x-carbon-trash-can class="w-4 mx-auto"/>
                                 </button>
-                                <div x-cloak x-show="openDelete" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                                    <div class="bg-white pt-4 px-6 pb-3 rounded-lg">
-                                        <p class="text-sm">Are you sure you want to delete this Schedule?</p>
+                                <div x-cloak x-show="openDelete" class="fixed inset-0 bg-black bg-opacity-50 z-20">
+                                    <div class="bg-white pt-4 px-6 pb-3 rounded-lg h-fit mx-auto mt-[10%]">
+                                        <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                            <x-ionicon-trash-bin-sharp class="h-5 fill-rose-500" />
+                                            <p>Are you sure you want to delete this schedule?</p>
+                                        </div>
                                         <div class="flex justify-end gap-2 mt-3 pt-3 border-t border-slate-200">
-                                            <button @click="openDelete = false" class="btn">No</button>
+                                            <button @click="openDelete = false" class="btn w-32">No</button>
                                             <form
                                             id="delete-schedule-form-{{ $schedule->id }}"
                                             action="{{ route('schedules.destroy', $schedule) }}"
@@ -271,7 +277,7 @@
                                                 @method('DELETE')
                                                 <button
                                                 type="submit"
-                                                class="btn"
+                                                class="btn-delete w-32"
                                                 x-on:click="submitting=true; document.getElementById('delete-schedule-form-{{ $schedule->id }}').submit();"
                                                 >Yes</button>
                                             </form>
