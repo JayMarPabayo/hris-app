@@ -22,7 +22,7 @@
                 onchange="this.form.submit()"
             >
             @if (!$hasScheduleForThisWeek)
-                <span class="text-red-500">You have no existing schedule for this week. Unable to swap.</span>
+                <span class="text-white">You have no existing schedule for this week. Unable to swap.</span>
             @endif
         </form>
     </section>
@@ -61,9 +61,9 @@
                 <div class="flex gap-x-2 items-end mb-2">
                     <img src="{{ asset('storage/' . $schedule->employee->picture) }}" alt="Employee Picture" class="w-16 h-16 object-cover rounded-md opacity-90 border border-teal-600">
                     <div class="w-56">
-                        <h3 class="text-base font-semibold"> {{ $schedule->employee->firstname . ' ' . $schedule->employee->middlename . ' ' . $schedule->employee->lastname . ($schedule->employee->nameextension ? ' ' . $schedule->employee->nameextension : '') }}</h3>
+                        <h3 class="text-base font-semibold w-80"> {{ $schedule->employee->firstname . ' ' . $schedule->employee->middlename . ' ' . $schedule->employee->lastname . ($schedule->employee->nameextension ? ' ' . $schedule->employee->nameextension : '') }}</h3>
                         <div class="flex gap-x-2">
-                            <h3 class="text-xs font-medium text-pink-800/70">{{ $schedule->employee->designation }}</h3>
+                            <h3 class="text-xs font-medium text-slate-600">{{ $schedule->employee->designation }}</h3>
                         </div>
                     </div>
                 </div>
@@ -71,11 +71,14 @@
 
             <div class="mb-4 flex text-sm items-center gap-x-2">
                 <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
-                <div><span class="font-semibold">{{ $month }} {{ $year }}</span> <span class="font-medium text-slate-500">{{ $formattedWeek }} Week</span></div>
+                <div>
+                    <span class="font-semibold">{{ $month }} {{ $year }}</span>
+                    <span class="font-medium text-white/80">{{ $formattedWeek }} Week</span>
+                </div>
                 <div class="font-bold">
                     •
                 </div>
-                <span class="font-medium rounded-sm text-teal-700/80">
+                <span class="font-medium rounded-sm text-teal-700">
                     {{ $schedule->shift->name }}
                 </span>
             </div>
@@ -88,11 +91,11 @@
                                 $date = new DateTime();
                                 $date->setISODate(substr($schedule->week, 0, 4), substr($schedule->week, 6)); 
                                 $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
-                                $actualDate = $date->format('Y-m-d'); // Get the actual date for this weekday
+                                $actualDate = $date->format('M d, Y'); 
                             @endphp
                             <th class="text-center">
                                 {{ $day }} <br>
-                                <span class="text-[0.7rem] text-slate-400">{{ $actualDate }}</span>
+                                <span class="text-[0.7rem] text-slate-500">{{ $actualDate }}</span>
                             </th>
                         @endforeach
                     </tr>
@@ -125,10 +128,10 @@
                                     $actualDate = $date->format('Y-m-d');
                                 @endphp
                             
-                                <p class="mb-1 text-slate-700/70">{{ $schedule->shift->name }}</p>
+                                <p class="mb-1 text-white/80">{{ $schedule->shift->name }}</p>
                                 @if (in_array($day, $schedule->dayoffs ?? []) || in_array($actualDate, $employee->leaveRequestDates()->toArray()))
                                     <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
-                                        Dayoff
+                                        Leave
                                     </span>
                                 @else
                                     <span class="time-style bg-teal-700/70" style="margin-inline: 0">
@@ -148,9 +151,7 @@
                 <input type="hidden" name="employee" value="{{ $schedule->employee->id ?? '' }}">
                
                 @if ($schedule->isRequestedByThisEmployee)
-                    <div class="text-yellow-800/80 text-lg font-semibold tracking-wider rounded-sm">
-                        SWAP SCHEDULE
-                    </div>
+                    <div></div>
                 @else
                 <div x-data="{ open: false }">
                     <button 
@@ -169,7 +170,7 @@
                     >
                         <div class="bg-white pt-4 w-fit px-4 pb-3 rounded-lg fixed top-1/4 -translate-y-1/2 -translate-x-1/2 left-1/2">
                             <div class="flex items-center gap-x-2 mb-5 text-slate-600">
-                                <x-ionicon-trash-bin-sharp class="h-5 fill-teal-600" />
+                                <x-ionicon-swap-horizontal-outline class="h-5 fill-teal-600 text-teal-600" />
                                 <p>Are you sure you want to request a schedule swap?</p>
                             </div>
                            

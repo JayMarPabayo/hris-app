@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\Schedule;
 use App\Models\Shift;
 use App\Models\SwapRequest;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 
@@ -18,24 +19,41 @@ class ScheduleController extends Controller
         $selectedDay = $request->input('day');
         $week = $request->input('week') ?? date('Y-\WW');
 
-        $schedules = Schedule::where('week', $week)
-            ->with(['employee', 'shift'])
-            ->when($selectedDay, function ($query, $selectedDay) {
-                return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
-                    $shiftQuery->whereJsonContains('weekdays', $selectedDay);
+        $weeksWithSchedules = Schedule::distinct()
+            ->pluck('week')
+            ->toArray();
+
+        do {
+            $schedules = Schedule::where('week', $week)
+                ->with(['employee', 'shift'])
+                ->when($selectedDay, function ($query, $selectedDay) {
+                    return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
+                        $shiftQuery->whereJsonContains('weekdays', $selectedDay);
+                    })
+                        ->whereJsonDoesntContain('dayoffs', $selectedDay);
                 })
-                    ->whereJsonDoesntContain('dayoffs', $selectedDay);
-            })
-            ->get()
-            ->groupBy('employee.designation');
+                ->get()
+                ->groupBy('employee.designation');
+
+            if ($schedules->isEmpty()) {
+                $week = date('Y-\WW', strtotime('+1 week', strtotime($week)));
+            } else {
+                break;
+            }
+        } while (true);
+
+        $selectedWeekEndDate = Carbon::parse($week . '-7'); // Assumes weeks start on Monday
+        $isPastWeek = $selectedWeekEndDate->isPast();
 
         return view('schedules.index', [
             'schedules' => $schedules,
             'shifts' => Shift::all(),
             'weekdays' => Shift::$weekdays,
+            'weeksWithSchedules' => $weeksWithSchedules,
             'selectedDay' => $selectedDay,
             'week' => $week,
             'hasAnyPendingRequest' => SwapRequest::hasAnyPendingRequest(),
+            'isPastWeek' => $isPastWeek,
         ]);
     }
 
@@ -72,10 +90,10 @@ class ScheduleController extends Controller
     public function update(Request $request, Schedule $schedule)
     {
         $validatedData = $request->validate([
-
             'dayoffs' => 'nullable|array',
 
         ]);
+        $week = $request->input('week') ?? date('Y-\WW');
 
         if (!$request->has('dayoffs') || empty($request->dayoffs)) {
             $validatedData['dayoffs'] = [];
@@ -102,7 +120,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return redirect()->route('schedules.index')->with('success', 'Schedule successfully updated.');
+        return redirect()->route('schedules.index', ['week' => $week])->with('success', 'Schedule successfully updated.');
     }
 
     public function destroy(Schedule $schedule)

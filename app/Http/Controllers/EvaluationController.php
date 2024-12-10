@@ -18,14 +18,17 @@ class EvaluationController extends Controller
             ->groupBy('department.name')
             ->map(function ($employees) use ($currentMonth) {
                 return $employees->sortByDesc(function ($employee) use ($currentMonth) {
-                    $avgRating = Evaluation::where('coworker_id', $employee->id)
+                    $evaluations = Evaluation::where('coworker_id', $employee->id)
                         ->whereMonth('created_at', date('m', strtotime($currentMonth)))
-                        ->whereYear('created_at', date('Y', strtotime($currentMonth)))
-                        ->avg('rating');
+                        ->whereYear('created_at', date('Y', strtotime($currentMonth)));
+
+                    $avgRating = $evaluations->avg('rating');
+                    $evaluationCount = $evaluations->distinct('coworker_id')->count('coworker_id');
 
                     $employee->avg_rating = $avgRating;
+                    $employee->evaluation_count = $evaluationCount;
 
-                    return $avgRating; // Sorting by avg_rating
+                    return $avgRating;
                 });
             });
 

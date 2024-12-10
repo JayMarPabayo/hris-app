@@ -1,7 +1,7 @@
 <x-layout>
     <div class="flex gap-x-2 justify-between items-center mb-5">
         <h3 class="text-base font-semibold text-white">Add Schedules</h3>
-        <div class="flex gap-x-2 items-center text-teal-500 hover:text-teal-600 hover:scale-105 active:scale-95 duration-300">
+        <div class="flex gap-x-2 items-center text-white hover:text-teal-500 hover:scale-105 active:scale-95 duration-300">
             <x-carbon-event-schedule class="h-5" />
             <a href="{{ route('schedules.index') }}" class="border-none bg-none underline">
                 Schedules
@@ -22,6 +22,7 @@
             name="week" 
             class="w-48 block mt-1" 
             value="{{ request('week') ?? date('Y-\WW') }}"
+            min="{{ date('Y-\WW') }}" 
             @change="$event.target.form.submit()"
         >
     </form>
@@ -85,7 +86,7 @@
                                         <input type="hidden" name="employee_id" value="{{ $employee->id }}">
                                         
                                         <label for="week" class="text-slate-500">Week</label>
-                                        <input type="week" name="week" class="w-full block mt-1" min="{{ date('Y-\WW') }}" value="{{ request('week') ?? date('Y-\WW') }}">
+                                        <input type="week" name="week" class="w-full block mt-1" min="{{ date('Y-\WW') }}" value="{{ request('week') ?? date('Y-\WW') }}" readonly>
 
                                         @livewire('select-shifts')
 
@@ -117,7 +118,7 @@
         </tbody>
     </table>
     <i class="text-xs text-white italic mt-2">
-        List of employees without schedule.
+        List of employees without schedule in this week.
     </i>
     @if ($employees->count())
         <div class="text-xs mt-2">

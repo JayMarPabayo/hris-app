@@ -136,7 +136,7 @@ Route::middleware('auth')->group(function () {
             $schedules = Schedule::where('employee_id', $employee->id)->get();
             $systemConfig = SystemConfig::first();
             $isMonthlyEvaluationOpen = $systemConfig ? $systemConfig->isMonthlyEvaluationOpen() : false;
-
+            $hasConsentRequest = SwapRequest::where('coworker_id', $employeeId)->where('status', 'waiting for consent')->first();
             $hasVotedForThisMonth = Evaluation::where('employee_id', $employeeId)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->whereMonth('created_at', Carbon::now()->month)
@@ -149,6 +149,7 @@ Route::middleware('auth')->group(function () {
                 'isMonthlyEvaluationOpen' => $isMonthlyEvaluationOpen,
                 'notification' => $notification,
                 'hasVotedForThisMonth' => $hasVotedForThisMonth,
+                'hasConsentRequest' => $hasConsentRequest
             ]);
         })->name('profile.index');
 
@@ -294,13 +295,31 @@ Route::middleware('auth')->group(function () {
                 'employee_id' => $requesterId,
                 'coworker_id' => $request->input('employee'),
                 'week' => $request->input('week'),
-                'status' => 'pending',
+                'status' => 'waiting for consent',
             ]);
 
             return redirect()->route('profile.swap-request', [
                 'week' => $request->input('week')
             ])->with('success', 'Your swap request has been submitted!');
         })->name('profile.swap-post');
+
+        Route::delete('profile/swap-request/consent/{request}', function (SwapRequest $request) {
+
+            $request->update(['status' => 'consent rejected']);
+
+            $request->employee->user->update(['notification' => 'Your leave request consent has been rejected.']);
+
+            return redirect()->back()->with('success', 'Consent Request Successfully Rejected');
+        })->name('swap.consent.delete');
+
+        Route::put('profile/swap-request/consent/{request}', function (SwapRequest $request) {
+
+            $request->update(['status' => 'pending']);
+
+            $request->employee->user->update(['notification' => 'Your leave request consent has been approved. Waiting for admin approval.']);
+
+            return redirect()->back()->with('success', 'Consent Request Successfully Approved');
+        })->name('swap.consent.approve');
 
         Route::get('profile/evaluation', function () {
             $employee = Auth::user()->employee;
@@ -387,9 +406,14 @@ Route::middleware('auth')->group(function () {
         Route::resource('evaluations', EvaluationController::class)->only(['index']);
 
         Route::get('monthly-evaluations', function (RequestRequest $request) {
-            $year = $request->input('year') ?? date('Y');
+            $availableYears = Evaluation::selectRaw('YEAR(created_at) as year')
+                ->groupBy('year')
+                ->orderBy('year', 'desc')
+                ->pluck('year');
 
-            if (!preg_match('/^\d{4}$/', $year) || (int)$year < 1900 || (int)$year > date('Y')) {
+            $year = $request->input('year') ?? $availableYears->first();
+
+            if (!in_array($year, $availableYears->toArray())) {
                 return redirect()->route('evaluations.monthly')->with('error', 'Invalid Year');
             }
 
@@ -419,8 +443,10 @@ Route::middleware('auth')->group(function () {
             return view('evaluation.monthly', [
                 'yearlyEOM' => $yearlyEOM,
                 'currentYear' => $year,
+                'availableYears' => $availableYears,
             ]);
         })->name('evaluations.monthly');
+
 
         Route::get('reports', function () {
 

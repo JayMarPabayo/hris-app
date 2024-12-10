@@ -15,19 +15,15 @@
         <select 
             name="year"
             onchange="document.getElementById('yearFilterForm').submit()">
-            @php
-                $currentYear = date('Y');
-                $startYear = $currentYear - 5;
-                $endYear = $currentYear + 5;
-            @endphp
-    
             <option value="" disabled>Select a Year</option>
-            @for ($year = $startYear; $year <= $endYear; $year++)
-                <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
-            @endfor
+            @foreach ($availableYears as $availableYear)
+                <option value="{{ $availableYear }}" {{ request('year') == $availableYear ? 'selected' : '' }}>
+                    {{ $availableYear }}
+                </option>
+            @endforeach
         </select>
-        {{-- <button type="submit" class="btn w-32 flex justify-center gap-1 items-center">Filter</button> --}}
     </form>
+    
 
     <div class="flex gap-x-4">
         <div class="w-1/2">

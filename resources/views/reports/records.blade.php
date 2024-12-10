@@ -72,7 +72,7 @@
                                 $appliedTime = new DateTime($request->created_at);
                             @endphp
             
-                            <tr class="data-row">
+                            <tr class="data-row text-slate-800">
                                 <td class="align-top max-w-36">{{ $appliedTime->format('F j, Y ⌚ g:i A') }}</td>
                                 <td class="align-top max-w-56 flex flex-col gap-y-1">
                                     <span>{{ $request->reason }}</span>
@@ -191,7 +191,7 @@
                                     @endphp
                                     @if (in_array($actualDate, $employee->leaveRequestDates()->toArray()))
                                         <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
-                                            Dayoff
+                                            Leave
                                         </span>
                                     @else
                                         @if (in_array($day, $schedule->shift->weekdays))

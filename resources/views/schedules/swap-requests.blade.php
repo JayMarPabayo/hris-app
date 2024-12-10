@@ -49,20 +49,20 @@
                     $formattedWeek = getOrdinalSuffix($weekOfMonth);
                 @endphp
 
-                <tr class="data-row bg-slate-300/60">
+                <tr class="data-row">
                     <td class="align-middle">{{ "{$lastname}, {$firstname} {$middlename}." }}</td>
                     <td class="flex flex-col gap-y-1">
                         <div class="flex gap-x-2 items-center">
                             <div>
                                 <span class="font-semibold">{{ $month }} {{ $year }}</span>
-                                <span class="font-medium text-slate-600 ms-1">
+                                <span class="font-medium text-white ms-1">
                                     {{ $formattedWeek }} Week
                                 </span>
                             </div>
                             <div class="font-bold">
                                 •
                             </div>
-                            <span class="font-medium rounded-sm text-teal-700">
+                            <span class="font-medium rounded-sm text-teal-500">
                                 {{($request->status === "approved") ? $request->getCoworkerSchedule()?->shift?->name : $request->getSchedule()?->shift?->name }}
                             </span>
                         </div>
@@ -87,14 +87,15 @@
                     <td class="flex flex-col gap-y-1">
                         <div class="flex gap-x-2 items-center">
                             <div>
-                                <span class="font-semibold">{{ $month }} {{ $year }}</span> <span class="font-medium text-slate-600 ms-1">
+                                <span class="font-semibold">{{ $month }} {{ $year }}</span>
+                                <span class="font-medium text-white ms-1">
                                     {{ $formattedWeek }} Week
                                 </span>
                             </div>
                             <div class="font-bold">
                                 •
                             </div>
-                            <span class="font-medium rounded-sm text-teal-700/80">
+                            <span class="font-medium rounded-sm text-teal-500">
                                 {{ ($request->status === "approved") ? $request->getSchedule()?->shift?->name : $request->getCoworkerSchedule()?->shift?->name }}
                             </span>
                         </div>
@@ -116,6 +117,7 @@
                         $bgColor = '';
                             switch($request->status) {
                                 case 'pending':
+                                case 'waiting for consent':
                                     $bgColor = 'bg-yellow-600';
                                     break;
                                 case 'approved':
@@ -135,7 +137,7 @@
                         </span>
                     </td>
                     <td>
-                        @if ($request->status !== "rejected" && $request->status !== "approved")          
+                        @if ($request->status === "pending")          
                             <div class="flex items-center justify-center gap-x-2">
                                 <div x-data="{ open: false }">
                                     <button @click.prevent="open = true" title="Reject" class="btn">

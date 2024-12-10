@@ -44,7 +44,74 @@
                 </form>
             </div>
         @endif
-    
+
+        @if ($hasConsentRequest)
+            <div class="absolute top-1 end-1 flex justify-between items-center gap-x-4 rounded-md p-2 bg-white hover:bg-white/90 shadow-md duration-300">
+                <x-ionicon-swap-horizontal-outline class="h-10 text-teal-600"/>
+                <div>
+                    <p>Schedule Swap Consent</p>
+                    <p>Requested by: <span class="font-semibold">Jay Mar B. Pabayo</span></p>
+                </div>
+                <div x-data="{ open: false }">
+                    <button @click.prevent="open = true" title="Delete" class="btn-delete w-32">
+                        Reject
+                    </button>
+                    <div x-cloak x-show="open" class="fixed inset-0 flex bg-black backdrop-blur-sm bg-opacity-50">
+                        <div class="bg-white pt-4 px-4 pb-3 rounded-lg h-fit mx-auto mt-[10%]">
+                            <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                <x-ionicon-thumbs-down-sharp class="h-5 fill-rose-500" />
+                                <p>Are you sure you want to reject this request?</p>
+                            </div>
+                            <div class="flex justify-end gap-2 pt-3 border-t border-slate-300 ps-10">
+                                <button type="button" @click="open = false" class="btn w-32">No</button>
+                                <form
+                                id="reject-consent-form"
+                                action="{{ route('swap.consent.delete', $hasConsentRequest->id) }}"
+                                method="POST"
+                                >
+                                    @csrf
+                                    @method('DELETE')
+                                    <button
+                                    type="submit"
+                                    class="btn-delete w-32"
+                                    x-on:click="submitting=true; document.getElementById('reject-consent-form').submit();"
+                                    >Yes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div x-data="{ open: false }">
+                    <button @click.prevent="open = true" title="Delete" class="btn-submit w-32">
+                        Approve
+                    </button>
+                    <div x-cloak x-show="open" class="fixed inset-0 flex bg-black backdrop-blur-sm bg-opacity-50">
+                        <div class="bg-white pt-4 px-4 pb-3 rounded-lg h-fit mx-auto mt-[10%]">
+                            <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                <x-ionicon-thumbs-up-sharp class="h-5 fill-teal-600" />
+                                <p>Approval Confirmation</p>
+                            </div>
+                            <div class="flex justify-end gap-2 pt-3 border-t border-slate-300 ps-10">
+                                <button type="button" @click="open = false" class="btn w-32">No</button>
+                                <form
+                                id="approve-consent-form"
+                                action="{{ route('swap.consent.approve', $hasConsentRequest->id) }}"
+                                method="POST"
+                                >
+                                    @csrf
+                                    @method('PUT')
+                                    <button
+                                    type="submit"
+                                    class="btn-submit w-32"
+                                    x-on:click="submitting=true; document.getElementById('approve-consent-form').submit();"
+                                    >Yes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
     
 
@@ -81,7 +148,7 @@
             <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
             <div>
                 <span class="font-semibold text-white">{{ $month }} {{ $year }}</span>
-                <span class="font-medium text-slate-400 ms-1">{{ $formattedWeek }} Week</span>
+                <span class="font-medium text-white ms-1">{{ $formattedWeek }} Week</span>
             </div>
             <div class="font-bold">
                 •
@@ -99,11 +166,11 @@
                             $date = new DateTime();
                             $date->setISODate(substr($schedule->week, 0, 4), substr($schedule->week, 6)); 
                             $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
-                            $actualDate = $date->format('Y-m-d');
+                            $actualDate = $date->format('M d, Y');
                         @endphp
                         <th class="text-center">
                             {{ $day }} <br>
-                            <span class="text-[0.7rem] text-slate-400">{{ $actualDate }}</span>
+                            <span class="text-[0.7rem] text-slate-500">{{ $actualDate }}</span>
                         </th>
                     @endforeach
                 </tr>
@@ -114,7 +181,7 @@
                     $endTime = new DateTime($schedule->shift->end_time);
                 @endphp
 
-                <tr class="data-row bg-slate-300/60">
+                <tr class="data-row">
                     @foreach ($weekdays as $day)
                         <td class="text-center">
                         @php
@@ -125,7 +192,7 @@
                         @endphp
                         @if (in_array($actualDate, $employee->leaveRequestDates()->toArray()))
                             <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
-                                Dayoff
+                                Leave
                             </span>
                         @else
                             @if (in_array($day, $schedule->shift->weekdays))
@@ -141,7 +208,7 @@
                                     }
                                 @endphp
                             
-                                <p class="mb-1 text-slate-700/70">{{ $schedule->shift->name }}</p>
+                                <p class="mb-1 text-white/80">{{ $schedule->shift->name }}</p>
                                 @if (in_array($day, $schedule->dayoffs ?? []))
                                     <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
                                         Dayoff

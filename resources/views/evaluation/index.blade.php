@@ -34,6 +34,7 @@
                             <thead>
                                 <tr class="bg-slate-300">
                                     <th>Employee</th>
+                                    <th>No. of Entries</th>
                                     <th class="text-center">Rating</th>
                                 </tr>
                             </thead>
@@ -50,7 +51,13 @@
                                                     </span>
                                                 </div>
                                             </div>
-                                            
+                                        </td>
+                                        <td>
+                                            <div class="flex items-center gap-x-2">
+                                                <x-ionicon-person class="h-4 fill-teal-400/70" />
+                                                <p class="text-lg font-normal">{{ $employee->evaluation_count }}</p>
+                                                <p class="text-slate-100/70 text-base">/ {{ $employees->count() }}</p>
+                                            </div>
                                         </td>
                                         <td class="text-center">
                                             <p class="text-lg font-medium">{{ number_format($employee->avg_rating, 2) }}</p>

@@ -24,7 +24,7 @@
 
             <div class="flex items-center justify-start gap-x-2 w-full mb-5 px-2 py-1">
                 <input type="checkbox" name="remember" class="cursor-pointer w-fit" style="margin: 0;">
-                <label for="remember" class="whitespace-nowrap text-sm">Remember me?</label>
+                <label for="remember" class="whitespace-nowrap text-sm text-white">Remember me?</label>
 
                 <a href="{{ route('password.request') }}" class="ms-auto text-sky-700 hover:underline">Forgot Password?</a>
             </div>

@@ -37,7 +37,7 @@ td {
 }
 
 .data-row {
-    @apply border-b border-neutral-300 text-white hover:bg-slate-100/40 whitespace-nowrap transition-all duration-300;
+    @apply border-b border-neutral-300 text-white hover:bg-slate-100/20 whitespace-nowrap transition-all duration-300;
 }
 
 .btn {

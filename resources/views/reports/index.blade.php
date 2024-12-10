@@ -45,7 +45,7 @@
                 <!-- Department Table Container -->
                 @livewire('show-employees')
             </div> --}}
-            <div x-cloak x-show="openTab === 'designation'" class="p-4 bg-white/30 shadow rounded h-full">
+            <div x-cloak x-show="openTab === 'designation'">
                 <!-- Department & Designation Table Container -->
                 @livewire('show-employees', ['withDesignation' => true])
             </div>
