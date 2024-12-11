@@ -10,118 +10,118 @@
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Name
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->firstname . ' ' . $employee->middlename . ' ' . $employee->lastname . ($employee->nameextension ? ' ' . $employee->nameextension : '') }}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Telephone No.
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }}  font-semibold">
           {{ $employee->telephone ?? "N/A"}}
         </div>
         {{-- 2nd Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Gender
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
           {{ $employee->gender ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Mobile No.
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->mobile ?? "N/A"}}
         </div>
         {{-- 3rd Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Birthdate
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->birthdate ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Email
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->email ?? "N/A"}}
         </div>
         {{-- 4th Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Place of Birth
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->birthplace ?? "N/A"}}
         </div>
         {{-- <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           GSIS No.
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->gsis ?? "N/A"}}
         </div> --}}
 
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Civil Status
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->civilstatus ?? "N/A"}}
         </div>
                {{-- 5th Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Pag-ibig No.
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->pagibig ?? "N/A"}}
         </div>
         {{-- 6th Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Citizenship
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->citizenship ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           PhilHealth No.
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->philhealth ?? "N/A"}}
         </div>
         {{-- 7th Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Blood Type
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->bloodtype ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           SSS No.
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->sss ?? "N/A"}}
         </div>
         {{-- 8th Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Height (m)
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->height ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           TIN No.
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->tin ?? "N/A"}}
         </div>
         {{-- 9th Row --}}
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Weight (kg)
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ number_format($employee->weight, 2) ?? "N/A"}}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
           Agency Employee No.
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->agencynumber ?? "N/A"}}
         </div>
     </div>
@@ -132,13 +132,13 @@
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
             Father
         </div>
-        <div class="col-span-4 text-white font-semibold">
+        <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             {{ $employee->father_firstname . ' ' . $employee->father_middlename . ' ' . $employee->father_lastname . ($employee->father_nameextension ? ' ' . $employee->father_nameextension : '') }}
         </div>
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
             {{ $employee->spouse_firstname ? 'Spouse' : 'Mother' }}
         </div>
-        <div class="col-span-3 text-white font-semibold">
+        <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             @if ($employee->spouse_firstname)
                 {{ $employee->spouse_firstname . ' ' . $employee->spouse_middlename . ' ' . $employee->spouse_lastname . ($employee->spouse_nameextension ? ' ' . $employee->spouse_nameextension : '') }}
             @else
@@ -149,7 +149,7 @@
             <div class="col-span-2 text-slate-400 tracking-wider text-xs">
                 Mother
             </div>
-            <div class="col-span-4 text-white font-semibold">
+            <div class="col-span-4 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
                 {{ $employee->mother_firstname . ' ' . $employee->mother_middlename . ' ' . $employee->mother_lastname . ($employee->mother_nameextension ? ' ' . $employee->mother_nameextension : '') }}
             </div>
         @endif
@@ -157,14 +157,14 @@
             <div class="col-span-2 text-slate-400 tracking-wider text-xs">
                 Occupation
             </div>
-            <div class="col-span-3 text-white font-semibold">
+            <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
                 {{ $employee->spouse_occupation }}
             </div>
         @endif
         <div class="col-span-2 text-slate-400 tracking-wider text-xs">
             {{ $employee->children->count() > 0 ? 'Children' : '' }}
         </div>
-        <div class="col-span-4 row-span-2 text-white font-semibold">
+        <div class="col-span-4 row-span-2 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
             @foreach ($employee->children as $child)
                 <p>
                     {{ $child->fullname }} <span class="font-medium text-xs text-slate-400">({{ $child->gender }})</span>
@@ -175,7 +175,7 @@
             <div class="col-span-2 text-slate-400 tracking-wider text-xs">
                 Employer/Business
             </div>
-            <div class="col-span-3 text-white font-semibold">
+            <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
                 {{ $employee->spouse_employerbusiness }}
             </div>
         @endif
@@ -183,7 +183,7 @@
             <div class="col-start-7 col-span-2 text-slate-400 tracking-wider text-xs">
                 Business Address
             </div>
-            <div class="col-span-3 text-white font-semibold">
+            <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
                 {{ $employee->spouse_businessaddress }}
             </div>
         @endif
@@ -191,7 +191,7 @@
             <div class="col-start-7 col-span-2 text-slate-400 tracking-wider text-xs">
                 Telephone
             </div>
-            <div class="col-span-3 text-white font-semibold">
+            <div class="col-span-3 {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} font-semibold">
                 {{ $employee->spouse_telephone }}
             </div>
         @endif
@@ -201,7 +201,7 @@
         <div class="avoid-break">
             <h3 class="text-base font-semibold text-cyan-500 mb-3">Educational Background</h3>
     
-            <table class="table-auto w-full text-sm text-left text-white mb-5">
+            <table class="table-auto w-full text-sm text-left {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }} mb-5">
                 <thead class="text-gray-700 uppercase bg-slate-200" style="font-size: 0.65rem;">
                     <tr>
                         <th scope="col" class="py-2 ps-2">Level</th>
@@ -277,7 +277,7 @@
         <div class="avoid-break">
             <h3 class="text-base font-semibold text-cyan-500 mb-3">Work Experience</h3>
     
-            <table class="table-auto w-full text-sm text-left text-white">
+            <table class="table-auto w-full text-sm text-left {{ request()->routeIs('employees.show') ? 'text-white' : 'text-slate-600' }}">
                 <thead class="text-gray-700 uppercase bg-slate-200" style="font-size: 0.65rem;">
                     <tr>
                         <th scope="col" class="py-2 ps-2">Inclusive Dates</th>

@@ -169,7 +169,7 @@
                                     @endphp
                                     <th class="text-center">
                                         {{ $day }} <br>
-                                        <span class="text-[0.7rem] text-slate-400">{{ $actualDate }}</span>
+                                        <span class="text-[0.7rem] text-slate-500">{{ $actualDate }}</span>
                                     </th>
                                 @endforeach
                             </tr>
@@ -252,11 +252,15 @@
             const imgProps = doc.getImageProperties(imgData);
             const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
+            const paddingTop = parseInt(document.getElementById('printable-area').style.paddingTop, 10) || 0;
+            const availableHeight = pdfHeight - paddingTop;
+
             const paddingBottom = 0;
             const availableHeight = pdfHeight - paddingBottom;
             const finalHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
-
-            doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalHeight);
+            const yPosition = pdfHeight - finalHeight - 2;
+            doc.addImage(imgData, 'PNG', 0, yPosition, pdfWidth, finalHeight);
+            // doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalHeight);
             doc.save(`HRIS-${employeename}.pdf`);
         }
     </script>

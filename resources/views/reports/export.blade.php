@@ -63,7 +63,7 @@
                 </thead>
                 <tbody>
                     @forelse ($employees as $employee)
-                        <tr class="data-row">
+                        <tr class="data-row text-slate-600">
                             <td>{{ $employee->id }}</td>
                             <td>{{ "{$employee->lastname}, {$employee->firstname} " . strtoupper(substr($employee->middlename, 0, 1)) . "." }}</td>
                             <td>{{ $employee->department->name }}</td>

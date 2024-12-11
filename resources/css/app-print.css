@@ -11,9 +11,11 @@ main {
         size: legal;
     }
 
-    body * {
+    html,
+    body {
         visibility: hidden;
         margin: 2;
+        background: none !important;
     }
 
     main {
