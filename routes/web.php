@@ -233,11 +233,6 @@ Route::middleware('auth')->group(function () {
                 ->where('employee_id', $employeeId)
                 ->first();
 
-            // if (!$employeeSchedule) {
-            //     $weekNumber = date('W', strtotime($week . '-1'));
-            //     return redirect()->back()->with('error', "You have no week {$weekNumber} schedule to swap with.");
-            // }
-
             $iHavePendingRequest = SwapRequest::where('employee_id', $employeeId)
                 ->where('status', 'pending')
                 ->exists();
@@ -253,10 +248,12 @@ Route::middleware('auth')->group(function () {
                     return $schedule->id;
                 })
                 ->map(function ($schedule) use ($employeeId, $week) {
-                    $schedule->isRequestedByThisEmployee = SwapRequest::where('employee_id', $employeeId)
+                    $swapRequest = SwapRequest::where('employee_id', $employeeId)
                         ->where('coworker_id', $schedule->employee->id)
                         ->where('week', $week)
-                        ->exists();
+                        ->first();
+
+                    $schedule->isRequestedByThisEmployee = $swapRequest ? $swapRequest->status : null;
 
                     return $schedule;
                 });
@@ -307,7 +304,7 @@ Route::middleware('auth')->group(function () {
 
             $request->update(['status' => 'consent rejected']);
 
-            $request->employee->user->update(['notification' => 'Your leave request consent has been rejected.']);
+            $request->employee->user->update(['notification' => 'Your swap request consent has been rejected.']);
 
             return redirect()->back()->with('success', 'Consent Request Successfully Rejected');
         })->name('swap.consent.delete');
@@ -316,7 +313,7 @@ Route::middleware('auth')->group(function () {
 
             $request->update(['status' => 'pending']);
 
-            $request->employee->user->update(['notification' => 'Your leave request consent has been approved. Waiting for admin approval.']);
+            $request->employee->user->update(['notification' => 'Your swap request consent has been approved. Waiting for admin approval.']);
 
             return redirect()->back()->with('success', 'Consent Request Successfully Approved');
         })->name('swap.consent.approve');
@@ -365,23 +362,25 @@ Route::middleware('auth')->group(function () {
                 'questions' => 'required|array',
                 'questions.*' => 'required|array',
                 'ratings' => 'required|array',
-                'ratings.*' => 'required|array',
-                'ratings.*.*' => 'required|integer|between:1,5',
+                'ratings.*' => 'required|array', // Validate coworker-level ratings array
+                'ratings.*.*' => 'required|integer|between:1,5', // Validate question-level ratings array
             ]);
 
             $evaluations = [];
 
             foreach ($request->coworkers as $coworkerId) {
                 if (isset($request->questions[$coworkerId]) && isset($request->ratings[$coworkerId])) {
-                    foreach ($request->questions[$coworkerId] as $index => $questionId) {
-                        $evaluations[] = [
-                            'employee_id' => $employeeId,
-                            'coworker_id' => $coworkerId,
-                            'question_id' => $questionId,
-                            'rating' => $request->ratings[$coworkerId][$index],
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
+                    foreach ($request->questions[$coworkerId] as $questionId) {
+                        if (isset($request->ratings[$coworkerId][$questionId])) {
+                            $evaluations[] = [
+                                'employee_id' => $employeeId,
+                                'coworker_id' => $coworkerId,
+                                'question_id' => $questionId,
+                                'rating' => $request->ratings[$coworkerId][$questionId],
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ];
+                        }
                     }
                 }
             }
@@ -586,6 +585,7 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('schedule-swap-requests/{request}', function (SwapRequest $request) {
             $request->update(['status' => 'rejected']);
+            $request->employee->user->update(['notification' => 'Your swap request has been rejected.']);
             return redirect()->route('schedules.swap.requests')->with('success', 'Swap Request Rejected.');
         })->name('schedules.swap.reject');
 
@@ -612,6 +612,7 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('leave-requests/{request}', function (LeaveRequest $request) {
             $request->update(['status' => 'rejected']);
+            $request->user->update(['notification' => 'Your leave request has been rejected.']);
             return redirect()->route('requests.index')->with('success', 'Leave request rejected successfully.');
         })->name('requests.destroy');
 

@@ -50,7 +50,7 @@
                 <x-ionicon-swap-horizontal-outline class="h-10 text-teal-600"/>
                 <div>
                     <p>Schedule Swap Consent</p>
-                    <p>Requested by: <span class="font-semibold">Jay Mar B. Pabayo</span></p>
+                    <p>Requested by: <span class="font-semibold">{{ $hasConsentRequest->getCoworkerFullname() }}</span></p>
                 </div>
                 <div x-data="{ open: false }">
                     <button @click.prevent="open = true" title="Delete" class="btn-delete w-32">

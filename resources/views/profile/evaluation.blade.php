@@ -37,7 +37,7 @@
         x-init="initializeRatings({{ $coworkers->pluck('id') }})" >
             @csrf
             @foreach ($coworkers as $coworker)
-                <div class="bg-white/80 rounded-md shadow-md p-3 mb-5">
+                <div class="bg-white/90 rounded-md shadow-md p-3 mb-5">
                     <div class="flex gap-x-4 items-center mb-5">
                         <img src="{{ asset('storage/' . $coworker->picture) }}" alt="Employee Picture" class="w-16 h-16 object-cover rounded-md opacity-90 border border-teal-600">
                         <div class="flex flex-col">
@@ -47,27 +47,32 @@
                             <h4 class="text-sm font-medium text-pink-800/70">{{ $coworker->designation }}</h4>
                         </div>
                     </div>
-    
+
                     <input type="hidden" name="coworkers[]" value="{{ $coworker->id }}">
                     @foreach ($questions as $question)
-                        <div class="flex items-center gap-x-2 text-base text-slate-700 font-normal mb-2 pb-1 border-b border-slate-200/20">
+                        <div class="flex flex-col gap-y-2 text-base text-slate-700 font-normal mb-4 pb-2 border-b border-slate-200/20">
                             <input type="hidden" name="questions[{{ $coworker->id }}][]" value="{{ $question->id }}">
-                            <div class="font-medium w-5">
-                                {{ $question->number }}.
+                            <div class="flex items-center gap-x-2">
+                                <div class="font-medium w-5">
+                                    {{ $question->number }}.
+                                </div>
+                                <div class="w-[30rem]">
+                                    {{ $question->question }}
+                                </div>
                             </div>
-                            <div class="w-[30rem]">
-                                {{ $question->question }}
+                            <div class="flex gap-x-4">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <label class="flex items-center gap-x-1 text-slate-500">
+                                        <input
+                                            type="radio"
+                                            name="ratings[{{ $coworker->id }}][{{ $question->id }}]"
+                                            value="{{ $i }}" 
+                                            class="cursor-pointer"
+                                            x-on:change="updateRating({{ $coworker->id }}, {{ $question->id }}, {{ $i }})">
+                                        <span class="text-sm whitespace-nowrap ms-2 me-4">{{ $i }} - {{ [1 => 'Strongly Disagree', 2 => 'Disagree', 3 => 'Neutral', 4 => 'Agree', 5 => 'Strongly Agree'][$i] }}</span>
+                                    </label>
+                                @endfor
                             </div>
-                            <select name="ratings[{{ $coworker->id }}][]" class="w-72 bg-none rating-select" 
-                                x-on:change="updateRating({{ $coworker->id }}, {{ $question->id }}, $event.target.value)">
-                                <option value="" selected disabled>--- Select Rating ---</option>
-                                <option value="1">1 - Strongly Disagree</option>
-                                <option value="2">2 - Disagree</option>
-                                <option value="3">3 - Neutral</option>
-                                <option value="4">4 - Agree</option>
-                                <option value="5">5 - Strongly Agree</option>
-                            </select>
-                            
                         </div>
                     @endforeach
                 </div>
@@ -80,46 +85,6 @@
             </div>
         </form>
     @endif
-
-
-    
-    {{-- @if ($coworker)
-        <form action="{{ route('profile.evaluation.post') }}" method="POST" class="bg-slate-500/20 p-5 mb-10 -mx-5">
-            @csrf
-            <img src="{{ asset('storage/' . $coworker->picture) }}" alt="Employee Picture" class="w-24 h-24 object-cover rounded-md opacity-90 border border-teal-600">
-            <div class="flex flex-col mb-3">
-                <h3 class="text-lg font-semibold"> {{ $coworker->firstname . ' ' . $coworker->middlename . ' ' . $coworker->lastname . ($coworker->nameextension ? ' ' . $coworker->nameextension : '') }}</h3>
-                <div class="flex gap-x-2">
-                    <h3 class="text-sm font-medium text-pink-800/70">{{ $coworker->designation }}</h3>
-                </div>
-            </div>
-
-            <input type="hidden" name="coworker" value="{{ $coworker->id }}">
-            @foreach ($questions as $question)
-                <div class="flex items-center gap-x-2 text-base text-slate-700 font-normal mb-2 pb-1 border-b border-slate-200/20">
-                    <input type="hidden" name="question[]" value="{{ $question->id }}">
-                    <div class="font-medium w-5">
-                        {{ $question->number }}.
-                    </div>
-                    <div class="w-[30rem]">
-                        {{ $question->question }}
-                    </div>
-
-                    <select name="rating[]" class="w-72 bg-none rating-select">
-                        <option value="1">1 - Strongly Disagree</option>
-                        <option value="2">2 - Disagree</option>
-                        <option value="3">3 - Neutral</option>
-                        <option value="4">4 - Agree</option>
-                        <option value="5">5 - Strongly Agree</option>
-                    </select>
-                </div>
-            @endforeach
-
-            <div class="flex justify-end">
-                <button type="submit"  x-on:click="submitting=true" class="btn w-48 ms-auto">Submit</button>
-            </div>
-        </form>       
-    @endif --}}
 
     @if ($coworkers->isNotEmpty() && $evaluatedCoworkers->isNotEmpty())
         <h3 class="text-base font-semibold mb-5">

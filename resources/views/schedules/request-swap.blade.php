@@ -54,20 +54,46 @@
         @endphp
 
             <div @class([
-                'rounded-md p-4 mb-5 shadow-md',
+                'rounded-md p-4 mb-5 shadow-md relative',
                 'bg-yellow-200/50' => $schedule->isRequestedByThisEmployee,
                 'bg-slate-200/50' => !$schedule->isRequestedByThisEmployee,
             ]) >
-                <div class="flex gap-x-2 items-end mb-2">
-                    <img src="{{ asset('storage/' . $schedule->employee->picture) }}" alt="Employee Picture" class="w-16 h-16 object-cover rounded-md opacity-90 border border-teal-600">
-                    <div class="w-56">
-                        <h3 class="text-base font-semibold w-80"> {{ $schedule->employee->firstname . ' ' . $schedule->employee->middlename . ' ' . $schedule->employee->lastname . ($schedule->employee->nameextension ? ' ' . $schedule->employee->nameextension : '') }}</h3>
-                        <div class="flex gap-x-2">
-                            <h3 class="text-xs font-medium text-slate-600">{{ $schedule->employee->designation }}</h3>
-                        </div>
+
+            <div class="flex gap-x-2 items-end mb-2">
+                <img src="{{ asset('storage/' . $schedule->employee->picture) }}" alt="Employee Picture" class="w-16 h-16 object-cover rounded-md opacity-90 border border-teal-600">
+                <div class="w-56">
+                    <h3 class="text-base font-semibold w-80"> {{ $schedule->employee->firstname . ' ' . $schedule->employee->middlename . ' ' . $schedule->employee->lastname . ($schedule->employee->nameextension ? ' ' . $schedule->employee->nameextension : '') }}</h3>
+                    <div class="flex gap-x-2">
+                        <h3 class="text-xs font-medium text-slate-600">{{ $schedule->employee->designation }}</h3>
                     </div>
                 </div>
-            </section>
+            </div>
+
+            @if ($schedule->isRequestedByThisEmployee)
+                <div class="absolute top-4 end-4">
+                    @php
+                        $bgColor = '';
+                            switch($schedule->isRequestedByThisEmployee) {
+                                case 'pending':
+                                case 'waiting for consent':
+                                    $bgColor = 'bg-yellow-600';
+                                    break;
+                                case 'approved':
+                                    $bgColor = 'bg-emerald-600';
+                                    break;
+                                case 'rejected':
+                                    $bgColor = 'bg-red-500';
+                                    break;
+                                default:
+                                    $bgColor = 'bg-gray-500';
+                                    break;
+                            }
+                    @endphp
+                    <span class="px-2 py-1 rounded text-white {{ $bgColor }}">
+                        {{ ucfirst($schedule->isRequestedByThisEmployee) }}
+                    </span>
+                </div>
+            @endif
 
             <div class="mb-4 flex text-sm items-center gap-x-2">
                 <x-carbon-calendar-heat-map class="w-5 text-teal-700"/>
