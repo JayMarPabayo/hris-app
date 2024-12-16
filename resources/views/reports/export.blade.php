@@ -8,8 +8,8 @@
         <link rel="shortcut icon" href="{{ asset('assets/logo.png') }}">
         @vite('resources/css/app.css')
         @vite('resources/css/app-print.css')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> --}}
     </head> 
 <body>
     <div class="h-fit min-h-screen pb-4 bg-black/50">
@@ -20,7 +20,7 @@
         $employees = $data['employees'] ?? [];
     @endphp
     <header class="bg-slate-700/60 text-white py-4 px-56 font-normal tracking-wide">
-        @if ($data['employee'])
+        {{-- @if ($data['employee'])
             <button title="Download as PDF" onclick="convertToPdf('{{ $employee->id . ':' . $employee->lastname . '-' . $employee->firstname }}')" class="btn-add bg-rose-500 text-white shadow-md hover:bg-rose-600">
                 <x-carbon-generate-pdf class="w-6" />
             </button>
@@ -28,7 +28,7 @@
             <button title="Download as PDF" onclick="convertToPdf('{{ $department->name }}')" class="btn-add bg-rose-500 text-white shadow-md hover:bg-rose-600">
                 <x-carbon-generate-pdf class="w-6" />
             </button>
-        @endif
+        @endif --}}
         <button title="Print data" onclick="printMainContent()" class="btn-add bg-slate-500 text-white shadow-md hover:bg-slate-600">
             <x-carbon-printer class="w-6" />
         </button>
@@ -85,24 +85,24 @@
             window.print();
         }
 
-        async function convertToPdf(employeename) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'in', format: 'legal' });
-            const canvas = await html2canvas(document.getElementById('printable-area'));
-            const imgData = canvas.toDataURL('image/png');
+        // async function convertToPdf(employeename) {
+        //     const { jsPDF } = window.jspdf;
+        //     const doc = new jsPDF({ unit: 'in', format: 'legal' });
+        //     const canvas = await html2canvas(document.getElementById('printable-area'));
+        //     const imgData = canvas.toDataURL('image/png');
             
-            const pdfWidth = doc.internal.pageSize.getWidth();
-            const pdfHeight = doc.internal.pageSize.getHeight();
-            const imgProps = doc.getImageProperties(imgData);
-            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        //     const pdfWidth = doc.internal.pageSize.getWidth();
+        //     const pdfHeight = doc.internal.pageSize.getHeight();
+        //     const imgProps = doc.getImageProperties(imgData);
+        //     const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-            const paddingBottom = 0;
-            const availableHeight = pdfHeight - paddingBottom;
-            const finalHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
+        //     const paddingBottom = 0;
+        //     const availableHeight = pdfHeight - paddingBottom;
+        //     const finalHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
 
-            doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalHeight);
-            doc.save(`HRIS-${employeename}.pdf`);
-        }
+        //     doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalHeight);
+        //     doc.save(`HRIS-${employeename}.pdf`);
+        // }
     </script>
 </body>
 </html>

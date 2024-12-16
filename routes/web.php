@@ -218,7 +218,7 @@ Route::middleware('auth')->group(function () {
         })->name('profile.leave');
 
         Route::get('profile/swap-request', function (RequestRequest $request) {
-            $departmentId = Auth::user()->employee->department_id;
+            $designation = Auth::user()->employee->designation;
             $employeeId = Auth::user()->employee->id;
 
             $employee = $request->input('employee_id');
@@ -238,8 +238,8 @@ Route::middleware('auth')->group(function () {
                 ->exists();
 
             $schedules = Schedule::where('week', $week)
-                ->whereHas('employee', function ($query) use ($departmentId) {
-                    $query->where('department_id', $departmentId);
+                ->whereHas('employee', function ($query) use ($designation) {
+                    $query->where('designation', $designation);
                 })
                 ->whereNot('employee_id', $employeeId)
                 ->with('employee')
@@ -454,7 +454,7 @@ Route::middleware('auth')->group(function () {
             return view('reports.index', ['employees' => $employees]);
         })->name('reports.index');
 
-        Route::get('export', function (Illuminate\Http\Request $request) {
+        Route::get('export', function (RequestRequest $request) {
             $employeeId = $request->query('employee');
             $departmentId = $request->query('department');
             $designation = $request->query('designation');
@@ -486,8 +486,9 @@ Route::middleware('auth')->group(function () {
             return view('reports.export', ['data' => $data]);
         })->name('reports.export');
 
-        Route::get('records', function (Illuminate\Http\Request $request) {
+        Route::get('records', function (RequestRequest $request) {
             $employeeId = $request->query('employee');
+            $selectedDay = $request->input('day');
 
             $user = User::where('employee_id', $employeeId)->first();
 
@@ -501,6 +502,12 @@ Route::middleware('auth')->group(function () {
                 ->get();
 
             $schedules = Schedule::where('employee_id', $employeeId)
+                ->when($selectedDay, function ($query, $selectedDay) {
+                    return $query->whereHas('shift', function ($shiftQuery) use ($selectedDay) {
+                        $shiftQuery->whereJsonContains('weekdays', $selectedDay);
+                    })
+                        ->whereJsonDoesntContain('dayoffs', $selectedDay);
+                })
                 ->get();
 
             $employee = Employee::findOrFail($employeeId);
