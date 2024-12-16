@@ -171,61 +171,63 @@
                 </tbody>
             </table>
     
-            <form action="{{ route('profile.swap-post') }}" method="post" class="flex justify-end">
-                @csrf
-                <input type="hidden" name="week" value="{{ $week ?? date('Y-\WW') }}">
-                <input type="hidden" name="employee" value="{{ $schedule->employee->id ?? '' }}">
-               
-                @if ($schedule->isRequestedByThisEmployee)
-                    <div></div>
-                @else
-                <div x-data="{ open: false }">
-                    <button 
-                        @click.prevent="open = true" 
-                        type="button" 
-                        class="btn w-56"
-                        @disabled($iHavePendingRequest)
-                    >
-                        REQUEST SWAP
-                    </button>
+            @if ($hasScheduleForThisWeek)
+                <form action="{{ route('profile.swap-post') }}" method="post" class="flex justify-end">
+                    @csrf
+                    <input type="hidden" name="week" value="{{ $week ?? date('Y-\WW') }}">
+                    <input type="hidden" name="employee" value="{{ $schedule->employee->id ?? '' }}">
                 
-                    <div 
-                        x-cloak 
-                        x-show="open" 
-                        class="fixed inset-0 bg-black bg-opacity-50 z-20"
-                    >
-                        <div class="bg-white pt-4 w-fit px-4 pb-3 rounded-lg fixed top-1/4 -translate-y-1/2 -translate-x-1/2 left-1/2">
-                            <div class="flex items-center gap-x-2 mb-5 text-slate-600">
-                                <x-ionicon-swap-horizontal-outline class="h-5 fill-teal-600 text-teal-600" />
-                                <p>Are you sure you want to request a schedule swap?</p>
-                            </div>
-                           
-                            <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                                <button 
-                                    type="button" 
-                                    @click="open = false" 
-                                    class="btn w-32"
-                                >
-                                    No
-                                </button>
-                                <form action="{{ route('profile.swap-post') }}" method="post" class="inline-block">
-                                    @csrf
-                                    <input type="hidden" name="week" value="{{ $week ?? date('Y-\WW') }}">
-                                    <input type="hidden" name="employee" value="{{ $schedule->employee->id ?? '' }}">
-                                    <button type="submit" class="btn-submit w-32">
-                                        Yes
+                    @if ($schedule->isRequestedByThisEmployee)
+                        <div></div>
+                    @else
+                    <div x-data="{ open: false }">
+                        <button 
+                            @click.prevent="open = true" 
+                            type="button" 
+                            class="btn w-56"
+                            @disabled($iHavePendingRequest)
+                        >
+                            REQUEST SWAP
+                        </button>
+                    
+                        <div 
+                            x-cloak 
+                            x-show="open" 
+                            class="fixed inset-0 bg-black bg-opacity-50 z-20"
+                        >
+                            <div class="bg-white pt-4 w-fit px-4 pb-3 rounded-lg fixed top-1/4 -translate-y-1/2 -translate-x-1/2 left-1/2">
+                                <div class="flex items-center gap-x-2 mb-5 text-slate-600">
+                                    <x-ionicon-swap-horizontal-outline class="h-5 fill-teal-600 text-teal-600" />
+                                    <p>Are you sure you want to request a schedule swap?</p>
+                                </div>
+                            
+                                <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                                    <button 
+                                        type="button" 
+                                        @click="open = false" 
+                                        class="btn w-32"
+                                    >
+                                        No
                                     </button>
-                                </form>
+                                    <form action="{{ route('profile.swap-post') }}" method="post" class="inline-block">
+                                        @csrf
+                                        <input type="hidden" name="week" value="{{ $week ?? date('Y-\WW') }}">
+                                        <input type="hidden" name="employee" value="{{ $schedule->employee->id ?? '' }}">
+                                        <button type="submit" class="btn-submit w-32">
+                                            Yes
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                @endif
-            </form>
+                    @endif
+                </form>
+            @endif
         </div>
     @empty
-    <div class="text-sm text-teal-800">
-        
-    </div>
+        <div class="text-sm text-teal-800">
+            
+        </div>
     @endforelse
 </x-layout>
