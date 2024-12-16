@@ -14,6 +14,7 @@ class ShowShifts extends Component
     public $schedules = [];
     public $shifts;
     public $sort = 'asc';
+    public $week = '';
 
     public function render()
     {
@@ -24,7 +25,9 @@ class ShowShifts extends Component
     {
         $this->shifts = Shift::all();
 
-        $this->selectedShift = $this->shifts->first()->id ?? '';
+        $this->selectedShift = '0';
+
+        $this->week = '2024-W52';
 
         $this->getEmployeesByShift();
     }
@@ -42,7 +45,7 @@ class ShowShifts extends Component
             return;
         }
 
-        $this->schedules = $query->join('employees', 'schedules.employee_id', '=', 'employees.id')
+        $this->schedules = $query->where('week', $this->week)->join('employees', 'schedules.employee_id', '=', 'employees.id')
             ->orderBy('employees.lastname', $this->sort)->get();
     }
 

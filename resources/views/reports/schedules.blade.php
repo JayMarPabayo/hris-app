@@ -48,7 +48,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Schedule</th>
-                            <th class="text-center">Time</th>
+                            <th>Shift</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,14 +59,14 @@
                                 $endTime = new DateTime($schedule->shift->end_time);
                             @endphp
             
-                            <tr class="data-row" style="padding-block: 0.5rem">
+                            <tr class="data-row text-slate-500" style="padding-block: 0.5rem">
                                 <td>{{ $schedule->employee->id }}</td>
                                 <td>{{ "{$schedule->employee->lastname}, {$schedule->employee->firstname} " . strtoupper(substr($schedule->employee->middlename, 0, 1)) . "." }}</td>
                                 <td>
                                     <div class="flex gap-x-2 justify-start items-center">
                                         @foreach ($schedule->shift->weekdays as $day)
                                             @if (!in_array($day, $schedule->dayoffs ?? []))
-                                                <div class="time-style bg-white" style="margin-inline: 0; color: darkgreen">
+                                                <div class="time-style bg-slate-200" style="margin-inline: 0; color: darkgreen">
                                                     {{ strtoupper(substr($day, 0, 3)) }}
                                                 </div>
                                             @endif
@@ -75,12 +75,12 @@
                                 </td>
                                 <td>
                                 <div class="flex flex-col">
-                                        <p class="text-base font-medium">
-                                            {{ $schedule->shift->name }}
-                                        </p>
-                                        <p class="time-style" style="margin-inline: 0; color: darkgreen; padding-left: 0">
-                                            {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
-                                        </p>
+                                    <p class="text-sm font-medium">
+                                        {{ $schedule->shift->name }}
+                                    </p>
+                                    <p class="time-style" style="margin-inline: 0; color: darkgreen; padding-left: 0">
+                                        {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                                    </p>
                                 </div>
                                 </td>
                                 

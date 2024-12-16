@@ -118,7 +118,24 @@
             @endif
 
             @if ($schedules->count())
-                <h3 class="text-sm mb-2">Schedules</h3>
+                <div class="flex items-center justify-start gap-x-2 mb-2">
+                    <h3 class="text-sm">Schedules</h3>
+                    <form id="weekdays-form" method="GET" action="{{ route('reports.records') }}" class="flex items-center gap-x-2">
+                        @foreach($weekdays as $day)
+                            <label class="flex justify-between items-center cursor-pointer gap-x-1">
+                                <input 
+                                    type="checkbox" 
+                                    name="days[]" 
+                                    value="{{ $day }}"
+                                    class="weekday-checkbox w-fit focus:outline-none cursor-pointer"
+                                    checked
+                                    onchange="toggleDayVisibility('{{ $day }}')"
+                                />
+                                <div class="text-xs font-medium text-teal-800 whitespace-nowrap">{{ $day }}</div>
+                            </label>
+                        @endforeach
+                    </form>
+                </div>
                 <hr class="border-t border-slate-500/30 mb-4">
 
                 @php    
@@ -167,65 +184,58 @@
                                         $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
                                         $actualDate = $date->format('Y-m-d');
                                     @endphp
-                                    <th class="text-center">
-                                        <a href="{{ route('reports.records', array_merge(request()->query(), ['day' => $day])) }}" class="hover:tracking-wider active:tracking-tighter duration-300">
-                                            {{ $day }} <br>
-                                            <span class="text-[0.7rem] text-slate-500">{{ $actualDate }}</span>
-                                        </a>
+                                    <th class="header-{{ $day }} text-center">
+                                        {{ $day }} <br>
+                                        <span class="text-[0.7rem] text-slate-500">{{ $actualDate }}</span>
                                     </th>
                                 @endforeach
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $startTime = new DateTime($schedule->shift->start_time);
-                                $endTime = new DateTime($schedule->shift->end_time);
-                            @endphp
-            
                             <tr class="data-row">
                                 @foreach ($weekdays as $day)
-                                    <td class="text-center">
-                                    @php
-                                        $date = new DateTime();
-                                        $date->setISODate(substr($schedule->week, 0, 4), substr($schedule->week, 6)); 
-                                        $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
-                                        $actualDate = $date->format('Y-m-d');
-                                    @endphp
-                                    @if (in_array($actualDate, $employee->leaveRequestDates()->toArray()))
-                                        <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
-                                            Leave
-                                        </span>
-                                    @else
-                                        @if (in_array($day, $schedule->shift->weekdays))
-                                            @php
-                                                $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
-                                                
-                                                if ($customTime) {
-                                                    $startTime = new DateTime($customTime['start_time']);
-                                                    $endTime = new DateTime($customTime['end_time']);
-                                                } else {
-                                                    $startTime = new DateTime($schedule->shift->start_time);
-                                                    $endTime = new DateTime($schedule->shift->end_time);
-                                                }
-                                            @endphp
-                                        
-                                            <p class="mb-1 text-slate-700/70">{{ $schedule->shift->name }}</p>
-                                            @if (in_array($day, $schedule->dayoffs ?? []))
-                                                <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
-                                                    Dayoff
-                                                </span>
-                                            @else
-                                                <span class="time-style bg-teal-700/70" style="margin-inline: 0">
-                                                    {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
-                                                </span>
+                                    <td class="col-{{ $day }} text-center">
+                                        @php
+                                            $date = new DateTime();
+                                            $date->setISODate(substr($schedule->week, 0, 4), substr($schedule->week, 6)); 
+                                            $date->modify("+" . (array_search($day, $weekdays)) . " days"); 
+                                            $actualDate = $date->format('Y-m-d');
+                                        @endphp
+                                        @if (in_array($actualDate, $employee->leaveRequestDates()->toArray()))
+                                            <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
+                                                Leave
+                                            </span>
+                                        @else
+                                            @if (in_array($day, $schedule->shift->weekdays))
+                                                @php
+                                                    $customTime = collect($schedule->customTimes)->firstWhere('day', $day);
+                                                    
+                                                    if ($customTime) {
+                                                        $startTime = new DateTime($customTime['start_time']);
+                                                        $endTime = new DateTime($customTime['end_time']);
+                                                    } else {
+                                                        $startTime = new DateTime($schedule->shift->start_time);
+                                                        $endTime = new DateTime($schedule->shift->end_time);
+                                                    }
+                                                @endphp
+                                            
+                                                <p class="mb-1 text-slate-700/70">{{ $schedule->shift->name }}</p>
+                                                @if (in_array($day, $schedule->dayoffs ?? []))
+                                                    <span class="time-style bg-neutral-500 px-5" style="margin-inline: 0">
+                                                        Dayoff
+                                                    </span>
+                                                @else
+                                                    <span class="time-style bg-teal-700/70" style="margin-inline: 0">
+                                                        {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                                                    </span>
+                                                @endif
                                             @endif
                                         @endif
-                                    @endif
-            
                                     </td>
                                 @endforeach
                             </tr>
                         </tbody>
+                        
                     </table>
                 @empty
                         <div class="mb-4 flex text-sm items-center gap-x-2">
@@ -242,32 +252,21 @@
         function printMainContent() {
             window.print();
         }
-    
-        // async function convertToPdf(employeename) {
-        //     const { jsPDF } = window.jspdf;
-        //     const doc = new jsPDF({ unit: 'in', format: 'legal' });
-        //     const canvas = await html2canvas(document.getElementById('printable-area'));
-        //     const imgData = canvas.toDataURL('image/png');
-            
-        //     const pdfWidth = doc.internal.pageSize.getWidth();
-        //     const pdfHeight = doc.internal.pageSize.getHeight();
-        //     const imgProps = doc.getImageProperties(imgData);
-        //     const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    
-        //     // Consolidate paddingTop and paddingBottom logic
-        //     const paddingTop = parseInt(document.getElementById('printable-area').style.paddingTop, 10) || 0;
-        //     const paddingBottom = 0; // Adjust this value if necessary
-        //     const availableHeight = pdfHeight - paddingTop - paddingBottom;
-    
-        //     // Ensure image fits within the available height
-        //     const finalHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
-        //     const yPosition = pdfHeight - finalHeight - 2; // Adjust Y position as needed
-            
-        //     doc.addImage(imgData, 'PNG', 0, yPosition, pdfWidth, finalHeight);
-        //     doc.save(`HRIS-${employeename}.pdf`);
-        // }
+
+        function toggleDayVisibility(day) {
+        const isChecked = document.querySelector(`input[value="${day}"]`).checked;
+        const headers = document.querySelectorAll(`.header-${day}`);
+        const columns = document.querySelectorAll(`.col-${day}`);
+
+        if (isChecked) {
+            headers.forEach(header => header.style.display = '');
+            columns.forEach(col => col.style.display = '');
+        } else {
+            headers.forEach(header => header.style.display = 'none');
+            columns.forEach(col => col.style.display = 'none');
+        }
+    }
     </script>
-    
 </body>
 </html>
 

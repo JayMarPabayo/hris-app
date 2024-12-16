@@ -8,13 +8,15 @@
             @endforeach
         </select>
 
+        <input type="week" class="w-52" wire:model="week" wire:change="getEmployeesByShift" />
+
         <div wire:loading.delay wire:target="getEmployeesByShift">
-            <x-ionicon-reload-sharp class="w-5 text-slate-500 animate-spin" />
+            <x-ionicon-logo-ionic class="w-5 text-teal-300 animate-spin" />
         </div>
         
         @if ($schedules)
             <a
-            href="{{ route('reports.schedules', $this->getShift() ) }}"
+            href="{{ route('reports.schedules', ['shift' => $this->getShift(), 'week' => $this->week]) }}"
             class="btn ml-auto"
             target="_blank"
             >
@@ -27,7 +29,7 @@
         <thead>
             <tr class="bg-slate-300">
                 <th>ID</th>
-                <th class="flex items-center justify-between">
+                <th class="flex items-center justify-start gap-x-4">
                     <span>
                         Name
                     </span>
@@ -63,14 +65,12 @@
                         </div>
                     </td>
                     <td>
-                       <div class="flex flex-col">
-                            <p class="text-base font-medium">
-                                {{ $schedule->shift->name }}
-                            </p>
-                            <p class="time-style" style="margin-inline: 0; color: darkgreen; padding-left: 0">
-                                {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
-                            </p>
-                       </div>
+                        <div class="text-sm font-medium">
+                            {{ $schedule->shift->name }}
+                        </div>
+                        <div class="time-style bg-teal-700/80" style="margin: 0">
+                            {{ $startTime->format('g:i A') }} - {{ $endTime->format('g:i A') }}
+                        </div> 
                     </td>
                     
                 </tr>

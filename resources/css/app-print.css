@@ -36,6 +36,10 @@ main {
         top: 0;
     }
 
+    #weekdays-form {
+        display: none;
+    }
+
     .avoid-break {
         page-break-inside: avoid;
     }

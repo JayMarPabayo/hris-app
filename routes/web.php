@@ -512,17 +512,22 @@ Route::middleware('auth')->group(function () {
 
             $employee = Employee::findOrFail($employeeId);
 
-            return view('reports.records', ['employee' => $employee, 'leaveRequests' => $leaveRequests, 'schedules' => $schedules, 'weekdays' => Shift::$weekdays,]);
+            return view('reports.records', [
+                'employee' => $employee,
+                'leaveRequests' => $leaveRequests,
+                'schedules' => $schedules,
+                'weekdays' => Shift::$weekdays,
+            ]);
         })->name('reports.records');
 
-        Route::get('export/{shift:slug}', function ($slug) {
+        Route::get('export/{shift:slug}/{week}', function ($slug, $week) {
             $shift = null;
             $schedules = [];
 
             if ($slug === 'all-shifts') {
-                $schedules = Schedule::all();
+                $schedules = Schedule::where('week', $week)->get();
             } else {
-                $shift = Shift::where('slug', $slug)->firstOrFail();
+                $shift = Shift::where('slug', $slug)->where('week', $week)->firstOrFail();
                 $schedules = $shift->schedules;
             }
 
