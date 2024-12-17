@@ -47,6 +47,8 @@
                         <tr class="bg-slate-300">
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Month</th>
+                            <th>Week</th>
                             <th>Schedule</th>
                             <th>Shift</th>
                         </tr>
@@ -62,6 +64,8 @@
                             <tr class="data-row text-slate-500" style="padding-block: 0.5rem">
                                 <td>{{ $schedule->employee->id }}</td>
                                 <td>{{ "{$schedule->employee->lastname}, {$schedule->employee->firstname} " . strtoupper(substr($schedule->employee->middlename, 0, 1)) . "." }}</td>
+                                <td>{{ $schedule->month }}</td>
+                                <td>{{ $schedule->weekName }}</td>
                                 <td>
                                     <div class="flex gap-x-2 justify-start items-center">
                                         @foreach ($schedule->shift->weekdays as $day)
@@ -99,25 +103,6 @@
         function printMainContent() {
             window.print();
         }
-
-        // async function convertToPdf(filename) {
-        //     const { jsPDF } = window.jspdf;
-        //     const doc = new jsPDF({ unit: 'in', format: 'legal' });
-        //     const canvas = await html2canvas(document.getElementById('printable-area'));
-        //     const imgData = canvas.toDataURL('image/png');
-            
-        //     const pdfWidth = doc.internal.pageSize.getWidth();
-        //     const pdfHeight = doc.internal.pageSize.getHeight();
-        //     const imgProps = doc.getImageProperties(imgData);
-        //     const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-        //     const paddingBottom = 0;
-        //     const availableHeight = pdfHeight - paddingBottom;
-        //     const finalHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
-
-        //     doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalHeight);
-        //     doc.save(`HRIS-${filename}.pdf`);
-        // }
     </script>
 </body>
 </html>

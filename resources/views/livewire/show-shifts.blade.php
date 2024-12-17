@@ -38,6 +38,8 @@
                         <span class="cursor-pointer {{ $sort === 'asc' ? 'text-cyan-600' : '' }}">▼</span>
                     </button>
                 </th>
+                <th>Month</th>
+                <th>Week</th>
                 <th>Weekdays</th>
                 <th>Shift</th>
             </tr>
@@ -53,6 +55,8 @@
                 <tr class="data-row" style="padding-block: 0.5rem">
                     <td>{{ $schedule->employee->id }}</td>
                     <td>{{ "{$schedule->employee->lastname}, {$schedule->employee->firstname} " . strtoupper(substr($schedule->employee->middlename, 0, 1)) . "." }}</td>
+                    <td>{{ $schedule->week }}</td>
+                    <td>{{ $schedule->week }}</td>
                     <td>
                         <div class="flex gap-x-2 justify-start items-center">
                             @foreach ($schedule->shift->weekdays as $day)

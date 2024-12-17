@@ -531,6 +531,20 @@ Route::middleware('auth')->group(function () {
                 $schedules = $shift->schedules;
             }
 
+            $schedules = $schedules->map(function ($schedule) {
+                $date = \Carbon\Carbon::parse($schedule->date); // Assuming 'date' exists
+
+                // Calculate the start and end dates of the week
+                $startOfWeek = $date->startOfWeek()->format('d F Y'); // Start of the week (Monday)
+                $endOfWeek = $date->endOfWeek()->format('d F Y');     // End of the week (Sunday)
+
+                // Add formatted week range and month
+                $schedule->weekName = "{$startOfWeek} → {$endOfWeek}";
+                $schedule->month = $date->format('F'); // Full month name
+
+                return $schedule;
+            });
+
             return view('reports.schedules', ['shift' => $shift, 'schedules' => $schedules]);
         })->name('reports.schedules');
 
