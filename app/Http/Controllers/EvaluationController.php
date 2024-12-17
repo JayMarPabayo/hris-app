@@ -23,7 +23,7 @@ class EvaluationController extends Controller
                         ->whereYear('created_at', date('Y', strtotime($currentMonth)));
 
                     $avgRating = $evaluations->avg('rating');
-                    $evaluationCount = $evaluations->distinct('coworker_id')->count('coworker_id');
+                    $evaluationCount = $evaluations->distinct('employee_id')->count('employee_id');
 
                     $employee->avg_rating = $avgRating;
                     $employee->evaluation_count = $evaluationCount;
