@@ -23,6 +23,9 @@ class ScheduleController extends Controller
             ->pluck('week')
             ->toArray();
 
+        $maxIterations = 52; // Limit to one year of weeks
+        $iterations = 0;
+
         do {
             $schedules = Schedule::where('week', $week)
                 ->with(['employee', 'shift'])
@@ -37,12 +40,19 @@ class ScheduleController extends Controller
 
             if ($schedules->isEmpty()) {
                 $week = date('Y-\WW', strtotime('+1 week', strtotime($week)));
+                $iterations++;
+
+                if ($iterations > $maxIterations) {
+                    $week = date('Y-\WW');
+                    $schedules = collect();
+                    break;
+                }
             } else {
                 break;
             }
         } while (true);
 
-        $selectedWeekEndDate = Carbon::parse($week . '-7'); // Assumes weeks start on Monday
+        $selectedWeekEndDate = Carbon::parse($week . '-7');
         $isPastWeek = $selectedWeekEndDate->isPast();
 
         return view('schedules.index', [
@@ -56,6 +66,7 @@ class ScheduleController extends Controller
             'isPastWeek' => $isPastWeek,
         ]);
     }
+
 
     public function create(Request $request)
     {

@@ -22,7 +22,7 @@ class ScheduleFactory extends Factory
         $employeeId = Employee::inRandomOrder()->first()->id;
         $shiftId = Shift::inRandomOrder()->first()->id;
 
-        $week = '2024-W49';
+        $week = '2025-W2';
 
         return [
             'employee_id' => $employeeId,

@@ -27,7 +27,7 @@ class ShowShifts extends Component
 
         $this->selectedShift = '0';
 
-        $this->week = '2024-W52';
+        $this->week = '2025-W2';
 
         $this->getEmployeesByShift();
     }
